@@ -1,0 +1,94 @@
+#>> toys
+# visual programs
+
+[ 1840 alloc { m } 0 { stop }
+  "sieve" title wipe nocursor
+  2 1840 [ { n } 219 n 80 mod n 80 / 14 put ] for
+  2 43 [ { p }
+    m p + peek 0 = stop not and [
+      p p * { k }
+      [ k 1840 < ] [
+        m k + peek 0 = [ 1 m k + poke 250 k 80 mod k 80 / 1 put ] when
+        k p + ->k
+      ] while
+      "  Removing multiples of " p 2 fmt cat 2 23 8 text
+      60 waitkey quit-key? ->stop
+    ] when
+  ] for
+  0 { c } 2 1840 [ m swap + peek 0 = [ c 1 + ->c ] when ] for
+  c str " primes below 1840. Any key leaves.      " cat 2 23 8 text
+  key drop m free wipe "omega" title
+] :sieve
+
+[ spread { x y dx dy c }
+  250 x y 8 put
+  x dx + 0 < x dx + 79 > or [ dx neg ->dx ] when
+  y dy + 0 < y dy + 22 > or [ dy neg ->dy ] when
+  x dx + ->x  y dy + ->y
+  219 x y c put
+  x y dx dy c 5 list
+] :bounce-step
+
+[ "bounce" title wipe nocursor
+  [ [ 10 5 1 1 12 ] [ 40 12 -1 1 10 ] [ 60 3 1 -1 14 ]
+    [ 20 18 -1 -1 11 ] [ 70 15 -1 1 13 ] [ 5 20 1 -1 9 ] ] { balls }
+  "  Any key leaves." 2 23 8 text
+  [ key? -1 = ] [
+    balls [ bounce-step ] map ->balls
+    3 sleep
+  ] while
+  wipe "omega" title
+] :bounce
+
+[ { m i } m i + peek { h }
+  0 22 [ { r }
+    0 2 [ { d }
+      22 r - h <= [ 219 ] [ 32 ] if
+      i 2 * 2 + d + r h 14 mod 1 + put
+    ] for
+  ] for
+] :sort-col
+
+[ "sorting" title wipe nocursor
+  38 alloc { m } 1 { moved } 0 { stop }
+  0 38 [ { i } 22 rand 1 + m i + poke  m i sort-col ] for
+  [ moved stop not and ] [
+    0 ->moved
+    0 37 [ { i }
+      m i + peek { a } m i + 1 + peek { b }
+      a b > [
+        b m i + poke  a m i + 1 + poke  1 ->moved
+        m i sort-col  m i 1 + sort-col  1 sleep
+      ] when
+    ] for
+    key? quit-key? ->stop
+  ] while
+  "  Sorted by swapping neighbours. Any key leaves." 2 23 8 text
+  key drop m free wipe "omega" title
+] :sorting
+
+[ spread { px py vx vy }
+  32 40 px 256 / + 12 py 256 / + 0 put
+  px vx + { nx } py vy + { ny }
+  vx vx 8 / + ->vx  vy vy 8 / + ->vy
+  nx 256 / abs 39 > ny 256 / abs 10 > or [
+    0 ->nx 0 ->ny
+    200 rand 40 + 2 rand [ neg ] when ->vx
+    200 rand 40 + 2 / 2 rand [ neg ] when ->vy
+  ] when
+  nx 256 / abs { d }
+  d 20 > [ 254 15 ] [ d 8 > [ 42 7 ] [ 250 8 ] if ] if { ch col }
+  ch 40 nx 256 / + 12 ny 256 / + col put
+  nx ny vx vy 4 list
+] :star-step
+
+[ "stars" title wipe nocursor
+  0 70 range [ drop 0 0 200 rand 40 + 2 rand [ neg ] when
+    100 rand 20 + 2 rand [ neg ] when 4 list ] map { sky }
+  "  Any key leaves." 2 23 8 text
+  [ key? -1 = ] [
+    sky [ star-step ] map ->sky
+    2 sleep
+  ] while
+  wipe "omega" title
+] :stars

@@ -1,0 +1,35 @@
+# games, tabs, install
+wait 5000
+key f2
+wait 300
+cmd snake  ~900
+shot build/25-snake.png
+key f3
+wait 300
+cmd life  ~2500
+shot build/26-life.png
+key f4
+wait 300
+cmd rain  ~2500
+shot build/27-rain.png
+key f1
+wait 500
+cmd top  ~2500
+shot build/28-top-tabs.png
+key q
+wait 500
+cmd empty wipe
+cmd fortune  ~500
+cmd fortune  ~500
+cmd fortune  ~500
+cmd [ 1 2 3 ] [ 2 * ] map  ~300
+cmd words  ~500
+cmd [ dup * ] :sq  ~300
+cmd words  ~500
+shot build/29-fortune-words.png
+cmd empty wipe
+cmd install  ~800
+cmd 0  ~600
+shot build/30-install-confirm.png
+cmd yes  ~6000
+shot build/31-installed.png

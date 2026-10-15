@@ -1,0 +1,97 @@
+#>> fun
+# games
+
+[ [ "There are as many even numbers as there are numbers."
+    "\w + 1 is bigger than \w, but 1 + \w is just \w."
+    "Half, then a quarter, then an eighth, and so on adds up to 1."
+    "Everything runs in ring 0, so you can poke anything."
+    "A line that fails changes nothing."
+    "Type back to undo your last line."
+    "There are more real numbers than natural numbers."
+    "Whether 2^aleph0 equals aleph1 can't be decided in ZFC."
+    "epsilon0 is the first ordinal where \w^x = x."
+    "There are no users, files or permissions here."
+  ] ] :fortunes
+
+[ 13 color "  " write fortunes dup len rand at say 7 color ] :fortune
+
+[ 2 76 rand + 2 20 rand + 80 * + ] :food-spot      # y*80+x
+[ { p } 42 p 80 mod p 80 / 12 put ] :draw-food
+
+# arrows steer
+[ "snake" title wipe nocursor
+  "Snake: arrow keys steer, q quits" 1 0 14 1 attr text
+  1 0 [ ] 4 0 0 0 { dx dy body grow food score dead }
+  40 12 { hx hy }
+  food-spot ->food
+  food draw-food
+  1 23 [ { y } 177 0 y 8 put 177 79 y 8 put ] for
+  0 80 [ { x } 177 x 1 8 put 177 x 23 8 put ] for
+  [ dead not ] [
+    key? { k }
+    k quit-key? [ 1 ->dead ] when
+    k 256 = dy 1 = not and [ 0 ->dx -1 ->dy ] when
+    k 257 = dy -1 = not and [ 0 ->dx 1 ->dy ] when
+    k 258 = dx 1 = not and [ -1 ->dx 0 ->dy ] when
+    k 259 = dx -1 = not and [ 1 ->dx 0 ->dy ] when
+    hx dx + ->hx  hy dy + ->hy
+    hy 80 * hx + { head }
+    hx 1 < hx 78 > or hy 2 < hy 22 > or or body head has or [ 1 ->dead ] when
+    dead not [
+      body head append ->body
+      219 hx hy 10 put
+      head food = [ grow 3 + ->grow score 1 + ->score food-spot ->food food draw-food ] when
+      grow 0 > [ grow 1 - ->grow ] [
+        body first { tail } 32 tail 80 mod tail 80 / 0 put body rest ->body
+      ] if
+      "score " score str cat 60 0 15 1 attr text
+      8 sleep
+    ] when
+  ] while
+  "Game over. Your score was " score str cat ". Press any key." cat 30 12 12 text
+  50 sleep key drop wipe "omega" title
+] :snake
+
+# conway
+[ "life" title wipe nocursor
+  80 ->w 22 ->h w h * { n }
+  n alloc n alloc { a b }
+  0 n [ { i } 4 rand 0 = [ 1 a i + poke ] when ] for
+  0 ->gen 1 ->going
+  [ going ] [
+    0 h [ { y } 0 w [ { x }
+      a y w * x + + peek [ 254 ] [ 32 ] if x y 1 + 10 put
+    ] for ] for
+    "Life, generation " gen str cat "   q quits" cat 1 0 14 1 attr text
+    0 h [ { y } 0 w [ { x }
+      0 ->c
+      -1 2 [ { dy } -1 2 [ { dx }
+        dx 0 = dy 0 = and not [
+          y dy + h + h mod w * x dx + w + w mod + a + peek c + ->c
+        ] when
+      ] for ] for
+      a y w * x + + peek { alive }
+      c 3 = alive c 2 = and or [ 1 ] [ 0 ] if b y w * x + + poke
+    ] for ] for
+    a b ->a ->b
+    gen 1 + ->gen
+    key? quit-key? [ 0 ->going ] when
+  ] while
+  a free b free wipe "omega" title
+] :life
+
+# screensaver
+[ "rain" title wipe nocursor
+  0 80 range [ drop 24 rand neg ] map ->drops
+  [ key? -1 = ] [
+    0 80 [ { x }
+      drops x at { y }
+      y 0 >= y 24 < and [ 33 94 rand + x y 10 put ] when
+      y 1 - 0 >= y 1 - 24 < and [ 33 94 rand + x y 1 - 2 put ] when
+      y 6 - 0 >= y 6 - 24 < and [ 32 x y 6 - 0 put ] when
+    ] for
+    drops [ { y } y 1 + y 30 > [ drop 0 10 rand - ] when ] map ->drops
+    4 sleep
+  ] while
+  wipe "omega" title
+] :rain

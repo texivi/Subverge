@@ -1,0 +1,33 @@
+#>> mandel
+# fractal
+
+[ { cx cy mx } 0 { x } 0 { y } 0 { i }
+  [ i mx < x x * 65536 / y y * 65536 / + 262144 < and ] [
+    2 x * y * 65536 / cy + { ny }
+    x x * 65536 / y y * 65536 / - cx + ->x
+    ny ->y
+    i 1 + ->i
+  ] while
+  i
+] :mb-iter
+
+[ { ox oy sc mx }
+  wipe nocursor
+  0 23 [ { r }
+    0 80 [ { c }
+      c 40 - sc * ox + r 12 - sc * 2 * oy + mx mb-iter { i }
+      i mx < [ 219 c r i 15 mod 1 + put ] [ 32 c r 0 put ] if
+    ] for
+  ] for
+] :mandel-at
+
+[ "mandel" title
+  [ [ -32768 0 2816 40 ] [ -114688 0 41 120 ] [ -48824 7405 41 120 ] ] { views }
+  0 { i } 1 { going }
+  [ going i views len < and ] [
+    views i at spread mandel-at
+    "  Any key zooms in, q leaves." 2 23 8 text
+    key quit-key? [ 0 ->going ] [ i 1 + ->i ] if
+  ] while
+  wipe "omega" title
+] :mandel

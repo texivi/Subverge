@@ -1,0 +1,4 @@
+# iso
+wait 5000
+cmd 2 omega * 1 +
+shot build/iso-boot.png

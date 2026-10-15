@@ -1,0 +1,25 @@
+#>> install
+# templeos style
+
+[ drives { ds }
+  ds len 0 = [ 8 color "  No drives were found." say 7 color ] [
+    14 color "  drive  model                           size" say 7 color
+    ds [ spread { n model mb home }
+      "  " write n str 7 fmt write model 32 fmt write mb str "M" cat 8 fmt write
+      home [ 10 color " (installed here)" write 7 color ] when nl
+    ] each
+  ] if
+] :disks
+
+[ disks
+  drives len 0 > [
+    nl "  Install on which drive? " ask >num { n }
+    drives [ first n = ] filter { pick }
+    pick len 0 = [ "  There is no drive " n str cat say ] [
+      pick first spread { num model mb home }
+      12 color "  This will erase drive " write n str write " (" write model write ", " write mb str write "M)" say 7 color
+      "  Type yes to continue: " ask "yes" =
+      [ n install-to ] [ 8 color "  Cancelled. Nothing was written." say 7 color ] if
+    ] if
+  ] when
+] :install

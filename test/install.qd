@@ -1,0 +1,6 @@
+# install
+wait 2500
+cmd install  ~800
+cmd 0  ~600
+cmd yes  ~6000
+shot build/inst.png

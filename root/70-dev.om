@@ -1,0 +1,19 @@
+#>> dev
+# jit tools
+
+[ compile disr ] :jitdis                  # 'name
+
+# 'name xray
+[ { s } s see s compile { a n }
+  8 color "  " write n str write " bytes at " write a >hex say 7 color
+  a 16 dis
+] :xray
+
+# [ code ]
+[ { q } depth { d }
+  jit-off 8 color "  interp" write q timeit
+  [ depth d > ] [ drop ] while
+  jit-on q do q do [ depth d > ] [ drop ] while
+  8 color "  native" write q timeit
+  [ depth d > ] [ drop ] while
+] :bench

@@ -1,0 +1,5 @@
+# install
+wait 5000
+cmd install  ~800
+cmd 0  ~600
+cmd yes  ~6000

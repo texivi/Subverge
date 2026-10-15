@@ -1,0 +1,8 @@
+# installed boot
+wait 5000
+shot build/32-installed-boot.png
+cmd empty wipe
+cmd 5 sq  ~400
+cmd [ 1 2 3 ] [ 2 * ] map  ~400
+cmd words  ~500
+shot build/33-world-restored.png

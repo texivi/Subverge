@@ -1,0 +1,151 @@
+#>> learn
+# guided tour
+
+[ [
+  [ "Operand stack"
+    "  Each tab has one operand stack. Literals push themselves, and a\n  word pops its arguments and pushes its results. There is no other\n  argument passing. Effects are written ( in -- out ): + is ( a b -- c )."
+    "1 2 3" ]
+  [ "Postfix evaluation"
+    "  Evaluation is strictly left to right. There is no precedence and\n  there are no parentheses: (2 + 3) * 4 is written 2 3 + 4 *."
+    "2 3 + 4 *" ]
+  [ "Stack words"
+    "  dup ( a -- a a )   drop ( a -- )   swap ( a b -- b a )\n  over ( a b -- a b a )   rot ( a b c -- b c a )   nip ( a b -- b )\n  depth pushes the stack size, and empty clears the stack."
+    "1 2 3 rot over" ]
+  [ "Integers"
+    "  Integers are signed and exact. / truncates toward zero and mod is\n  the remainder, with the sign of the left number. Hex literals\n  work, and hex formats a number back."
+    "17 5 /  17 5 mod  0xff 255 hex" ]
+  [ "Big numbers"
+    "  Past 64 bits a number turns into a bignum by itself, so 2 100 ^\n  is exact, all 31 digits. The limit is 2^65536, about 19700\n  digits. Past that, you want omega, which comes later."
+    "2 100 ^  2 64 ^ 1 -  2 1000 ^ str len" ]
+  [ "Truth"
+    "  There is no boolean type. Comparisons leave 1 or 0, and if, when,\n  unless and while treat 0 as false and anything else as true.\n  and, or and not are logical. & | xor ~ << >> are bitwise."
+    "3 5 <  4 4 = and  6 3 &" ]
+  [ "Strings"
+    "  Strings are immutable. cat joins, slice is ( s a n -- s ), find\n  returns an index or -1, split cuts at a separator, str and >num\n  convert to and from numbers, chr and hex format."
+    "\"a,b,c\" \",\" split  \"subverge\" 3 4 slice" ]
+  [ "Quotes"
+    "  [ ... ] is an unevaluated sequence of values and words. It is code\n  and a list at once: do runs it, and len, at, map and append treat\n  it as data. Nested quotes are how every control structure works."
+    "[ 1 2 + ] do  [ 1 2 + ] len" ]
+  [ "Definitions"
+    "  :name binds the top value to a name in the current tab. A quote\n  bound to a name is a word. Lookup order is locals, then this tab,\n  then root, then built-ins. forget removes a tab definition."
+    "[ dup * ] :square  7 square" ]
+  [ "Reflection"
+    "  see prints the source of any word, including everything in root.\n  words lists this tab's definitions, and src ( 'x -- s ) returns the\n  text of the root unit that defines x."
+    "'square see  words" ]
+  [ "Locals"
+    "  { a b } pops values into locals, with the last name on top.\n  Locals are dynamically scoped, so a callee sees its caller's.\n  ->a assigns an existing local. With no such local it makes a\n  new one that lasts until the quote or line ends. Use :a to keep it."
+    "[ { a b } a b - a b + * ] :diff  9 4 diff" ]
+  [ "Dynamic scope"
+    "  A word sees the locals of whatever called it. That's handy, and\n  it's a trap: a helper that reads n without binding it gets its\n  caller's n, so the same word acts differently depending on who\n  calls it."
+    "[ n . ] :shown  [ { n } shown ] :caller  5 caller" ]
+  [ "Conditionals"
+    "  if is ( flag then else -- ) and when is ( flag then -- ). The\n  branches are quotes, so they may leave different stack depths.\n  Nothing checks stack effects before the code runs."
+    "7 3 > [ \"bigger\" ] [ \"smaller\" ] if" ]
+  [ "Loops"
+    "  n q times.  a b q for runs q with i on the stack from a to b-1.\n  [ test ] [ body ] while re-evaluates the test each pass.\n  each, map and filter walk a list."
+    "1 6 [ dup * ] for  1 [ dup 100 < ] [ 2 * ] while" ]
+  [ "Recursion"
+    "  A word can call itself. Every level binds its own locals, and\n  only 256 fit at once, so deep recursion with locals fails.\n  Recursion that's really a loop should be a loop."
+    "[ { n } n 2 < [ n ] [ n 1 - fib n 2 - fib + ] if ] :fib  20 fib" ]
+  [ "Tracing"
+    "  trace runs a quote one word at a time and shows the stack before\n  each step. Space steps, c runs the rest, q stops. It's the\n  closest thing omega has to a debugger."
+    "[ 1 2 + 4 * ] trace" ]
+  [ "Lists"
+    "  range ( a b -- l ), at, first, last, rest, has and spread ( l -- ...\n  ) work on quotes. Nothing mutates: append and cat return new lists."
+    "1 11 range [ 2 mod 0 = ] filter  [ 4 5 6 ] spread" ]
+  [ "Transactions"
+    "  Every line is a transaction on the tab's world. If any word fails,\n  the stack and the definitions revert to what they were before the\n  line. back reverts the last line that succeeded, up to 64 deep.\n  This line fails on purpose."
+    "1 2 3 0 /" ]
+  [ "Undo"
+    "  back undoes the last line that changed your stack or your words,\n  up to 64 lines, and back back back undoes three. Lines that only\n  looked at things don't count. Try it at the prompt after learn,\n  because learn is one long line itself."
+    "" ]
+  [ "Catching errors"
+    "  try ( q -- 1|0 ) runs q. On failure it prints the error and leaves\n  0 instead of aborting the line. Whatever q did before the error\n  stays done: only the line as a whole is transactional."
+    "[ 1 2 0 / ] try" ]
+  [ "Tabs"
+    "  F1 to F4 are four tabs, scheduled preemptively. Each has its own\n  stack, definitions, history and heap, and root is shared. A tab\n  stuck in a loop does not block the others. Ctrl-C stops it."
+    "\"notes\" title" ]
+  [ "Help"
+    "  help lists the words by group. 'word help gives the effect and an\n  example, and 'group help lists a group. The table is hand written\n  in kernel/help.c, and a check fails if a word has no entry."
+    "'filter help" ]
+  [ "Time"
+    "  ticks counts hundredths of a second since boot, 100 sleep waits\n  one second, and timeit runs a quote and says how long it took."
+    "[ 100000 [ ] times ] timeit" ]
+  [ "Keys"
+    "  key waits for a key and gives its code. key? gives the key or -1\n  without waiting, which is how games read input. The arrows are\n  256 to 259: up, down, left, right."
+    "key" ]
+  [ "Drawing"
+    "  text writes a string at x y in a colour from 0 to 15, put does one\n  character, and wipe clears the screen. colors shows the numbers.\n  Every game in apps is built out of these three."
+    "\"hello\" 50 18 14 text" ]
+  [ "Ordinals"
+    "  omega and epsilon0 are real values in Cantor normal form. + and *\n  are not commutative past the finite: 1 omega + is omega but\n  omega 1 + is omega+1. Subtraction past infinity is an error."
+    "1 omega +  omega 1 +" ]
+  [ "Cardinals"
+    "  aleph0, aleph1 and continuum are cardinals. Arithmetic and\n  comparison work where ZFC decides them. Where it does not, the\n  word fails and says so. card gives the cardinality of an ordinal."
+    "aleph0 2 aleph0 ^ <" ]
+  [ "Counting past infinity"
+    "  count walks from 0 past every finite number, through omega and\n  epsilon0, up to omega1. The other demos in apps do pairing,\n  Cantor's diagonal and a supertask."
+    "omega omega * 1 +  epsilon0 1 +" ]
+  [ "Machine access"
+    "  Everything runs in ring 0 with no protection. peek and poke use\n  bytes, peekd and poked use 32 bits, peekq and pokeq use 64. in and\n  out use I/O ports. alloc and free manage the heap. 0 poke works."
+    "0xB8000 peek  ticks 100 /" ]
+  [ "JIT"
+    "  A quote that runs twice is compiled to x86-64. compile does it\n  now and leaves ( addr len ). 'name xray shows the machine code\n  next to the source, and bench times native against interpreted.\n  Editing root or redefining a built-in invalidates compiled code."
+    "'square compile" ]
+  [ "Programs"
+    "  A program is a word. apps lists the ones that ship with the\n  system. They run in the current tab like any other word, and q\n  leaves most of them."
+    "apps" ]
+  [ "Small tools"
+    "  clock, stopwatch, timer, todo, convert, password, ascii and colors\n  are ordinary root words. bases ( n -- ) prints n in four radixes."
+    "255 bases" ]
+  [ "Editing a word"
+    "  'name edit opens a word you defined in scrawl, the editor. Ctrl-S\n  saves, Ctrl-Q leaves and redefines it. For words in root, use\n  'name open instead."
+    "'square edit" ]
+  [ "Writing a program"
+    "  A program is a quote bound to a name. It exists in this tab\n  immediately, and once the system is installed it is saved with the\n  world."
+    "[ \"hello\" say ] :hello  hello" ]
+  [ "Registering it in apps"
+    "  apps discovers nothing. It prints app-list, a list literal in\n  root/05-apps.om, so a program appears only if you add its entry by\n  hand. In the editor, add this inside the list:\n    [ \"hello\" \"Says hello.\" ]\n  Ctrl-S rebuilds root and saves, Ctrl-Q leaves. If the unit does not\n  build, the old root stays and your edit is kept as a draft."
+    "'apps open" ]
+  [ "Checking the entry"
+    "  apps reads app-list on every call, so the entry is live as soon as\n  the unit builds. If it is missing the unit did not build, and\n  'apps open shows your draft again."
+    "apps" ]
+  [ "Root units"
+    "  A root unit is a source file linked into the image, loaded in file\n  name order. unit ( s -- ) creates a new one at the end and opens it.\n  Its words are shared by every tab and saved on installed disks.\n  In the editor, type [ \"hi\" say ] :greet, then Ctrl-S and Ctrl-Q."
+    "\"mine\" unit" ]
+  [ "Persistence"
+    "  The live ISO keeps nothing. install writes the bootloader, the\n  kernel and your tabs to a disk. After that every successful line\n  and every root edit is written back. save forces a write now.\n  Use a disk you can lose."
+    "" ]
+  [ "Where next"
+    "  This tour is root/80-learn.om, and 'learn open shows it. mandel\n  and 'mb-iter xray show the JIT on real code. 'dev help lists the\n  rest of the machine-code tools."
+    "" ]
+] ] :lessons
+
+[ { i } depth list { mine }
+  empty lessons len { n } 1 { going }
+  [ going ] [
+    lessons i at spread { ttl body task }
+    wipe nocursor
+    "learn  " i 1 + str cat " of " cat n str cat header
+    nl 11 color "  " write ttl say 7 color nl
+    body say nl
+    task len 0 > [
+      14 color "  Run this, or type your own line:" say 7 color
+      "    " write task say nl
+      empty "  > " ask { line }
+      depth list { snap }
+      line len 0 > [ [ line eval ] try 0 = [ empty snap spread ] when ] when
+      nocursor nl
+      8 color "  The stack is now:" say 7 color
+      "    " write depth list dup write spread nl
+    ] when
+    nl 8 color "  Space next, b back, q stop." say 7 color
+    key { k }
+    k quit-key? [ 0 ->going ]
+    [ k 98 = [ i 0 > [ i 1 - ->i ] when ] [ i n 1 - < [ i 1 + ->i ] [ 0 ->going ] if ] if ] if
+  ] while
+  empty
+  mine spread wipe
+] :lesson
+
+[ 0 lesson ] :learn

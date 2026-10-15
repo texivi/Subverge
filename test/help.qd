@@ -1,0 +1,4 @@
+# help check
+wait 2500
+cmd help
+shot build/p4-help.png

@@ -1,0 +1,156 @@
+#>> tools
+# everyday programs
+
+[ { n } n 10 < [ "0" ] [ "" ] if n str cat ] :two
+
+[ { y mo d h mi s } h two ":" cat mi two cat ":" cat s two cat ] :hms
+
+[ "clock" title wipe nocursor
+  "  q leaves." 2 23 8 text
+  1 { going }
+  [ going ] [
+    time { y mo d h mi s }
+    y mo d h mi s hms 36 11 14 text
+    y str "-" cat mo two cat "-" cat d two cat 35 13 7 text
+    50 waitkey quit-key? [ 0 ->going ] when
+  ] while
+  wipe "omega" title
+] :clock
+
+[ { e } e 6000 / two ":" cat e 100 / 60 mod two cat "." cat e 100 mod two cat ] :mmss
+
+[ "stopwatch" title wipe nocursor
+  "  Space records a lap, q leaves." 2 23 8 text
+  ticks { t0 } 1 { going } 0 { lap }
+  [ going ] [
+    ticks t0 - mmss { s }
+    s 36 5 14 text
+    5 waitkey { k }
+    k quit-key? [ 0 ->going ] when
+    k 32 = lap 14 < and [
+      lap 1 + ->lap
+      "lap " lap 2 fmt cat "  " cat s cat 32 7 lap + 7 text
+    ] when
+  ] while
+  wipe "omega" title
+] :stopwatch
+
+[ { n } "timer" title wipe nocursor
+  "  q cancels." 2 23 8 text
+  ticks n 100 * + { end } 1 { going } 1 { done }
+  [ going ] [
+    end ticks - { r }
+    r 0 > [
+      r 99 + 100 / { sec }
+      sec 60 / two ":" cat sec 60 mod two cat 37 11 14 text
+      5 waitkey quit-key? [ 0 ->going 0 ->done ] when
+    ] [ 0 ->going ] if
+  ] while
+  done [ wipe "  Time is up. Any key leaves." 25 11 10 text key drop ] when
+  wipe "omega" title
+] :timer
+
+[ 'todo-list defined? [ todo-list ] [ [ ] ] if ] :todo-get
+
+[ todo-get swap append 1 list :todo-list ] :todo-add
+
+[ { n } todo-get { l } [ ] { out }
+  0 l len [ { i } i n 1 - = not [ out l i at append ->out ] when ] for
+  out 1 list :todo-list
+] :todo-done
+
+[ todo-get { l } nl
+  l len 0 = [
+    8 color "  Nothing to do. Add something with: \"text\" todo-add" say 7 color
+  ] [
+    0 l len [ { i } 14 color "  " write i 1 + 2 fmt write 7 color "  " write l i at say ] for
+    nl 8 color "  n todo-done removes item n." say 7 color
+  ] if
+] :todo
+
+[ { n b } "" { s } n { m }
+  m 0 = [ "0" ->s ] [
+    [ m 0 > ] [ "0123456789abcdef" m b mod 1 slice s cat ->s m b / ->m ] while
+  ] if
+  s
+] :to-base
+
+[ { l v } 8 color "  " write l 9 fmt write 7 color v say ] :base-row
+
+[ { n } nl
+  "decimal" n str base-row
+  "hex" n 16 to-base base-row
+  "octal" n 8 to-base base-row
+  "binary" n 2 to-base base-row
+  n 32 >= n 126 <= and [ "character" n chr base-row ] when
+] :bases
+
+[ nl 8 color "  The printable characters. Row and column give the hex code." say 7 color nl
+  8 color "       0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f" say 7 color
+  2 8 [ { r }
+    14 color "  " write r hex write "x  " write 7 color
+    0 16 [ { c } r 16 * c + { n } n 127 = [ 46 ->n ] when n chr write "  " write ] for
+    nl
+  ] for
+] :ascii
+
+[ "colors" title wipe nocursor
+  "  Colour numbers, for color, put and text. Any key leaves." 1 1 7 text
+  [ "black" "blue" "green" "cyan" "red" "magenta" "brown" "grey"
+    "dim" "sky" "mint" "aqua" "rose" "pink" "yellow" "white" ] { names }
+  0 16 [ { c }
+    c 2 fmt 4 c 3 + 7 text
+    0 8 [ { x } 219 x 8 + c 3 + c put ] for
+    names c at 18 c 3 + 7 text
+  ] for
+  key drop wipe "omega" title
+] :colors
+
+[ { n } n 100 / str "." cat n 100 mod two cat ] :dec2
+
+[ 62137 * 1000 / dec2 ] :km>mi
+[ 160934 * 1000 / dec2 ] :mi>km
+[ 220462 * 1000 / dec2 ] :kg>lb
+[ 45359 * 1000 / dec2 ] :lb>kg
+[ 180 * 3200 + dec2 ] :c>f
+[ 32 - 500 * 9 / dec2 ] :f>c
+
+[ nl 8 color "  Each of these takes a number and leaves text with two decimals." say 7 color nl
+  14 color "  100 km>mi   100 mi>km   10 kg>lb   10 lb>kg   37 c>f   98 f>c" say 7 color nl
+  "  Try one now, for example:  100 km>mi say" say
+  8 color "  Results come out in miles, km, pounds, kg, Fahrenheit and Celsius." say 7 color
+] :convert
+
+[ "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789" ] :alphabet
+
+[ { n } "" { s } n [ s alphabet dup len rand 1 slice cat ->s ] times s ] :password-of
+
+[ nl 8 color "  Five random passwords. The letters that look alike are left out." say 7 color nl
+  5 [ 14 color "  " write 16 password-of say ] times 7 color
+] :password
+
+[ "pong" title wipe nocursor
+  40 { px } 40 { bx } 4 { by } 1 { dx } 1 { dy } 0 { score } 0 { dead }
+  1 22 [ { y } 177 0 y 8 put 177 79 y 8 put ] for
+  0 80 [ { x } 177 x 1 8 put ] for
+  [ dead not ] [
+    "Pong: arrows move, q quits   score " score str cat 3 0 14 1 attr text
+    32 bx by 0 put
+    0 9 [ { i } 32 px 4 - i + 22 0 put ] for
+    key? { k }
+    k quit-key? [ 1 ->dead ] when
+    k 258 = [ px 3 - 5 max ->px ] when
+    k 259 = [ px 3 + 74 min ->px ] when
+    bx dx + ->bx  by dy + ->by
+    bx 1 < [ 1 ->bx 1 ->dx ] when
+    bx 78 > [ 78 ->bx -1 ->dx ] when
+    by 2 < [ 2 ->by 1 ->dy ] when
+    by 22 = bx px 5 - > and bx px 5 + < and [ 21 ->by -1 ->dy score 1 + ->score ] when
+    by 22 > [ 1 ->dead ] when
+    0 9 [ { i } 223 px 4 - i + 22 11 put ] for
+    219 bx by 14 put
+    8 sleep
+  ] while
+  wipe "  Game over. Score " score str cat ". Any key leaves." cat 20 11 14 text
+  key drop wipe "omega" title
+] :pong

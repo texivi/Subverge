@@ -1,0 +1,46 @@
+#>> apps
+# program list
+
+[ [
+  [ "learn" "A guided tour." ]
+  [ "top" "Live machine view." ]
+  [ "calc" "A calculator." ]
+  [ "clock" "A live clock." ]
+  [ "stopwatch" "Stopwatch with laps." ]
+  [ "timer" "Countdown: 90 timer" ]
+  [ "todo" "Your to-do list." ]
+  [ "bases" "A number in hex, binary." ]
+  [ "convert" "Unit conversions." ]
+  [ "password" "Random passwords." ]
+  [ "ascii" "Character table." ]
+  [ "colors" "The 16 colours." ]
+  [ "hexview" "Hex editor for memory." ]
+  [ "irqmon" "Live interrupt counts." ]
+  [ "snake" "The snake game." ]
+  [ "life" "Game of Life." ]
+  [ "pong" "Paddle and ball." ]
+  [ "rain" "A screensaver." ]
+  [ "bounce" "Bouncing balls." ]
+  [ "stars" "A starfield." ]
+  [ "mandel" "Mandelbrot zoom." ]
+  [ "sieve" "Primes by sieving." ]
+  [ "sorting" "Bubble sort as bars." ]
+  [ "count" "Counts past infinity." ]
+  [ "ord-demo" "Ordinal arithmetic." ]
+  [ "diagonal" "Cantor's diagonal." ]
+  [ "supertask" "Halve a line forever." ]
+  [ "pairing" "Naturals and evens." ]
+  [ "fortune" "A short fact." ]
+] ] :app-list
+
+[ { e w } 14 color "  " write e 0 at 11 fmt write 7 color e 1 at w fmt write ] :app-cell
+
+[ 8 color "  Programs you can run. Type a name, or 'name help to learn about one." say
+  app-list len { n } n 1 + 2 / { rows }
+  0 rows [ { r }
+    app-list r at 26 app-cell
+    r rows + n < [ app-list r rows + at 0 app-cell ] when
+    nl
+  ] for
+  7 color
+] :apps

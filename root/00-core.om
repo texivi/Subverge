@@ -1,0 +1,47 @@
+#>> core
+# shared helpers
+
+[ 1 + ] :inc
+[ 1 - ] :dec
+[ dup * ] :sq
+[ 16 * + ] :attr                          # fg bg
+[ "0x" swap hex cat ] :>hex               # n
+[ { x n } x str n pad ] :fmt              # x width
+[ { n } n 1024 / str "K" cat ] :kb
+[ { n } n 1048576 / str "M" cat ] :mb
+
+# ch x y n c
+[ { ch x y n c } 0 n [ { i } ch x i + y c put ] for ] :fill
+
+# x y w pct c
+[ { x y w pct c }
+  91 x y 8 put
+  0 w [ { i }
+    i 100 * w / pct <
+    [ 219 x i + 1 + y c put ]
+    [ 250 x i + 1 + y 8 put ] if
+  ] for
+  93 x w + 1 + y 8 put
+] :bar
+
+# "title"
+[ { t } 32 0 0 80 1 7 attr fill  t 1 0 14 1 attr text  "q quits" 72 0 8 1 attr text ] :header
+
+[ { k } k 113 = k 27 = or k 3 = or ] :quit-key?    # q esc ^C
+
+# [ code ]
+[ { q } 1 ->going
+  [ going ] [
+    wipe nocursor q do
+    50 waitkey -1 = not [ 0 ->going ] when
+  ] while
+  wipe
+] :watch
+
+# [ code ]
+[ { q } ticks rdtsc { t0 c0 } q do
+  rdtsc c0 - ticks t0 - { cycles t }
+  8 color "  took " write t str write " ticks, " write cycles str write " cycles" say 7 color
+] :timeit
+
+[ ticks hz / { s } s 3600 / str "h " cat s 60 / 60 mod str cat "m " cat s 60 mod str cat "s" cat ] :uptime

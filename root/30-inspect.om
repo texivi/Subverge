@@ -1,0 +1,110 @@
+#>> inspect
+# machine inspectors
+
+[ { v }
+  v 0x8086 = [ "intel" ] [
+  v 0x1234 = [ "qemu/bochs" ] [
+  v 0x1af4 = [ "virtio" ] [
+  v 0x1b36 = [ "red hat" ] [
+  v 0x10ec = [ "realtek" ] [ "?" ] if ] if ] if ] if ] if
+] :vendor
+
+[ [ "unclassified" "storage" "network" "display" "multimedia" "memory" "bridge" "comms"
+    "system" "input" "dock" "cpu" "serial bus" ] ] :classes
+
+[ { c } c classes len < [ classes c at ] [ "other" ] if ] :class-name
+
+# pci devices
+[ 14 color "  bus:dev.fn  vendor:device  class" say 7 color
+  pci [ spread { b d f ven dev cls sub }
+    "  " write b str 3 fmt write ":" write d str -2 fmt write "." write f str write
+    "     " write ven hex -4 fmt write ":" write dev hex -4 fmt write
+    "      " write cls class-name 12 fmt write
+    8 color ven vendor write 7 color nl
+  ] each
+] :pcils
+
+[ { t }
+  t 1 = [ "usable" ] [ t 2 = [ "reserved" ] [ t 3 = [ "acpi" ] [ t 4 = [ "acpi nvs" ] [ "bad" ] if ] if ] if ] if
+] :mem-type
+
+# memory map
+[ 14 color "  base                length        type" say 7 color
+  memmap [ spread { base len t }
+    "  " write base >hex 20 fmt write
+    len 1048576 >= [ len mb ] [ len kb ] if 14 fmt write
+    t 1 = [ 10 ] [ 8 ] if color t mem-type say 7 color
+  ] each
+] :memls
+
+# cpuid register
+[ { r } r 255 & chr r 8 >> 255 & chr cat r 16 >> 255 & chr cat r 24 >> 255 & chr cat ] :reg>str
+
+[ [ "fpu" 0 "tsc" 4 "msr" 5 "pae" 6 "apic" 9 "sep" 11 "mtrr" 12 "pge" 13 "cmov" 15 "pat" 16
+    "clflush" 19 "mmx" 23 "fxsr" 24 "sse" 25 "sse2" 26 "htt" 28 ] ] :edx-flags
+[ [ "sse3" 0 "ssse3" 9 "fma" 12 "cx16" 13 "sse4.1" 19 "sse4.2" 20 "x2apic" 21 "movbe" 22
+    "popcnt" 23 "aes" 25 "xsave" 26 "avx" 28 "rdrand" 30 "hypervisor" 31 ] ] :ecx-flags
+
+[ { reg flags }   # set bits
+  0 flags len 2 / [ { i }
+    reg flags i 2 * 1 + at >> 1 & [ flags i 2 * at write " " write ] when
+  ] for
+] :show-flags
+
+# cpuid
+[ 0 cpuid { max b c d }
+  14 color "  vendor   " write 7 color b reg>str d reg>str cat c reg>str cat say
+  14 color "  brand    " write 7 color cpu say
+  1 cpuid { a b2 c2 d2 }
+  14 color "  family   " write 7 color a 8 >> 15 & str write "  model " write a 4 >> 15 & str write
+    "  stepping " write a 15 & str say
+  14 color "  features " write 7 color d2 edx-flags show-flags c2 ecx-flags show-flags nl
+  14 color "  cr0 " write 7 color 0 cr >hex write 14 color "   cr3 " write 7 color 3 cr >hex write
+  14 color "   cr4 " write 7 color 4 cr >hex say
+] :cpuinfo
+
+# live interrupts
+[ "irqmon" title 0 irq 1 irq ticks { a0 b0 t0 }
+  [ "irqmon" header
+    ticks t0 - 1 max { dt }
+    "  timer     " 2 2 14 text 0 irq str 14 2 7 text
+    0 irq a0 - hz * dt / { r } r str "/s  " cat 28 2 7 text 36 2 40 r 100 min 10 bar
+    "  keyboard  " 2 4 14 text 1 irq str 14 4 7 text
+    1 irq b0 - hz * dt / { r2 } r2 str "/s  " cat 28 4 7 text 36 4 40 r2 10 * 100 min 9 bar
+    "  IRQ 1 is the keyboard." 2 7 8 text
+  ] watch "omega" title
+] :irqmon
+
+# addr
+[ { base } "hex" title wipe nocursor
+  0 ->cur 1 ->going -1 ->hi
+  [ going ] [
+    base >hex "hex  " swap cat header
+    0 21 [ { r }
+      base r 16 * + { a }
+      a >hex 18 fmt 0 r 2 + 8 text
+      0 16 [ { c }
+        a c + peek { v }
+        r 16 * c + cur = [ 0 14 attr ] [ 7 ] if { col }
+        v 16 < [ "0" v hex cat ] [ v hex ] if 19 c 3 * + r 2 + col text
+        v 32 >= v 127 < and [ v ] [ 250 ] if 68 c + r 2 + r 16 * c + cur = [ 0 14 attr ] [ 8 ] if put
+      ] for
+    ] for
+    "Arrow keys move, 0-9 and a-f write, PgUp and PgDn change page, q quits." 2 23 8 text
+    key { k }
+    k quit-key? [ 0 ->going ] when
+    k 256 = [ cur 16 - 0 max ->cur ] when
+    k 257 = [ cur 16 + 335 min ->cur ] when
+    k 258 = [ cur 1 - 0 max ->cur ] when
+    k 259 = [ cur 1 + 335 min ->cur ] when
+    k 262 = [ base 336 - ->base ] when
+    k 263 = [ base 336 + ->base ] when
+    k 48 >= k 57 <= and k 97 >= k 102 <= and or [
+      k 57 <= [ k 48 - ] [ k 87 - ] if { nib }
+      hi 0 < [ nib ->hi ] [
+        hi 16 * nib + base cur + poke  -1 ->hi  cur 1 + 335 min ->cur
+      ] if
+    ] when
+  ] while
+  wipe "omega" title
+] :hexview

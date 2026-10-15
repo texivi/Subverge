@@ -1,0 +1,40 @@
+#>> top
+# tabs, machine
+
+[ { label val y } 32 0 y 80 7 fill label 2 y 14 text val 12 y 7 text ] :row
+
+[ "top" title wipe nocursor
+  ticks idle 0 irq 1 irq { t0 i0 a0 b0 }
+  -1 ->idlepct 0 ->r0 0 ->r1 1 ->going
+  [ going ] [
+    "top" header
+    "cpu" cpu 2 row
+    "idle" idlepct 0 < [ "--" ] [ idlepct str "%" cat ] if 3 row
+    20 3 40 idlepct 0 max 10 bar
+    heap { used total }
+    "heap" used kb " / " cat total kb cat 4 row
+    32 4 28 used 100 * total / 6 bar
+    "kernel" kernel drop kb " ring 0 x86_64" cat 5 row
+    1 5 [ { n }
+      n tab spread { name state shown }
+      "tab " n str cat
+      name 14 fmt state cat shown [ " *" cat ] when
+      6 n + row
+    ] for
+    stats { objs gcs names depth hist }
+    "world" names str " names   " cat depth str cat " stack   " cat hist str cat " history" cat 11 row
+    "objects" objs str " live   " cat gcs str cat " collections" cat 12 row
+    "irq 0" "timer      " 0 irq 10 fmt cat r0 str cat "/s" cat 14 row
+    "irq 1" "keyboard   " 1 irq 10 fmt cat r1 str cat "/s" cat 15 row
+    "uptime" uptime 17 row
+    50 waitkey quit-key? [ 0 ->going ] when
+    ticks { now } now t0 - { dt }
+    dt 0 > [
+      idle i0 - 100 * dt / 100 min ->idlepct
+      0 irq a0 - hz * dt / ->r0
+      1 irq b0 - hz * dt / ->r1
+    ] when
+    now ->t0 idle ->i0 0 irq ->a0 1 irq ->b0
+  ] while
+  wipe "omega" title
+] :top

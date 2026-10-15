@@ -1,0 +1,14 @@
+# jit check
+wait 2500
+cmd [ dup 2 < [ ] [ dup 1 - fib swap 2 - fib + ] if ] :fib
+cmd [ 24 fib drop ] bench  ~9000
+cmd jit
+shot build/p4-bench.png
+cmd 'fib xray  ~1500
+shot build/p4-xray.png
+cmd [ 0 [ 1 ] [ 1 + ] while ] :spin
+cmd spin  ~2000
+key ctrl-c
+wait 800
+cmd 1 2 +
+shot build/p4-break.png

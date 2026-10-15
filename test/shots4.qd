@@ -1,0 +1,28 @@
+# welcome, word help, learn
+wait 5000
+shot build/01-welcome-live.png
+cmd empty wipe
+cmd 'map help  ~800
+shot build/04-help-word.png
+cmd empty wipe
+cmd learn  ~1200
+shot build/34-learn-1.png
+key spc
+wait 500
+key spc
+wait 500
+key spc
+wait 500
+key spc
+wait 500
+shot build/35-learn-5.png
+key spc
+wait 500
+key spc
+wait 500
+key spc
+wait 500
+shot build/36-learn-8.png
+key q
+wait 600
+cmd empty wipe

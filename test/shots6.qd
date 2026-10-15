@@ -1,0 +1,106 @@
+# interactive learn, root units, tools, apps
+wait 5000
+cmd apps  ~800
+shot build/43-apps.png
+cmd empty wipe
+cmd learn  ~1000
+type 1 2 3
+key ret
+wait 700
+shot build/34-learn-1.png
+key q
+wait 600
+cmd 13 lesson  ~1000
+type 1 2 3 0 /
+key ret
+wait 700
+shot build/35-learn-14.png
+key q
+wait 600
+cmd 24 lesson  ~1000
+shot build/36-learn-25.png
+key ctrl-c
+wait 600
+cmd empty wipe
+cmd 'apps open  ~1500
+key down
+key down
+key down
+key down
+key down
+key end
+key ret
+type [ "hello" "Says hello." ]
+wait 300
+shot build/50-apps-editor.png
+key ctrl-s
+wait 1500
+key ctrl-q
+wait 800
+cmd empty wipe
+cmd apps  ~800
+shot build/51-apps-hello.png
+cmd empty wipe
+cmd "mine" unit  ~1500
+type [ "hi" say ] :greet
+wait 300
+shot build/52-new-unit.png
+key ctrl-s
+wait 1500
+key ctrl-q
+wait 800
+cmd empty wipe
+cmd greet  ~400
+cmd root  ~800
+shot build/53-root-mine.png
+cmd empty wipe
+cmd clock  ~2500
+shot build/54-clock.png
+key q
+wait 600
+cmd stopwatch  ~2000
+key spc
+wait 900
+key spc
+wait 1100
+shot build/55-stopwatch.png
+key q
+wait 600
+cmd 90 timer  ~2500
+shot build/56-timer.png
+key q
+wait 600
+cmd empty wipe
+cmd "buy milk" todo-add  ~300
+cmd "write the changelog" todo-add  ~300
+cmd "fix the bootloader" todo-add  ~300
+cmd 2 todo-done  ~300
+cmd todo  ~500
+shot build/57-todo.png
+cmd empty wipe
+cmd 255 bases  ~500
+cmd 100 km>mi say  ~300
+cmd 98 f>c say  ~300
+cmd convert  ~500
+shot build/58-bases-convert.png
+cmd empty wipe
+cmd ascii  ~600
+shot build/59-ascii.png
+cmd colors  ~800
+shot build/60-colors.png
+key q
+wait 600
+cmd empty wipe
+cmd password  ~600
+shot build/61-password.png
+cmd empty wipe
+cmd pong  ~2500
+key left
+key left
+wait 500
+shot build/62-pong.png
+key q
+wait 800
+cmd empty wipe
+cmd help  ~600
+shot build/02-help-overview.png

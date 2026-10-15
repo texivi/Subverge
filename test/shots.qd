@@ -1,0 +1,105 @@
+# screenshot set
+wait 5000
+shot build/01-welcome-live.png
+cmd help  ~800
+shot build/02-help-overview.png
+cmd empty wipe
+cmd 'math help  ~800
+shot build/03-help-group.png
+cmd empty wipe
+cmd 'map help  ~800
+shot build/04-help-word.png
+cmd empty wipe
+cmd omega 1 +  ~300
+cmd 1 omega +  ~300
+cmd omega 2 *  ~300
+cmd 2 omega ^  ~300
+cmd omega omega ^ epsilon0 <  ~300
+cmd aleph1 continuum =  ~500
+cmd 7 3 /  ~300
+cmd foo  ~300
+shot build/05-ordinals-and-errors.png
+cmd empty wipe
+cmd [ dup * ] :sq  ~300
+cmd 12 sq  ~300
+cmd [ 1 2 + ] trace  ~600
+shot build/06-trace.png
+key spc
+wait 300
+key spc
+wait 300
+key spc
+wait 500
+cmd back  ~500
+shot build/07-back.png
+cmd empty wipe
+cmd empty wipe
+cmd sys  ~800
+shot build/08-sys.png
+cmd empty wipe
+cmd pcils  ~800
+shot build/09-pcils.png
+cmd empty wipe
+cmd memls  ~800
+shot build/10-memls.png
+cmd empty wipe
+cmd cpuinfo  ~800
+shot build/11-cpuinfo.png
+cmd empty wipe
+cmd irqmon  ~2500
+shot build/12-irqmon.png
+key q
+wait 400
+cmd 0xB8000 hexview  ~1500
+shot build/13-hexview.png
+key q
+wait 400
+cmd empty wipe
+cmd calc  ~800
+cmd 0xff + 0b101 * 3  ~800
+shot build/14-calc.png
+cmd   ~300
+cmd empty wipe
+cmd [ dup 2 < [ ] [ dup 1 - fib swap 2 - fib + ] if ] :fib  ~300
+cmd [ 24 fib drop ] bench  ~9000
+cmd 'fib xray  ~1500
+shot build/15-jit-xray.png
+cmd jit  ~500
+cmd empty wipe
+cmd [ 24 fib drop ] bench  ~9000
+shot build/16-jit-bench.png
+cmd empty wipe
+cmd count  ~19000
+shot build/17-count.png
+cmd empty wipe
+cmd ord-demo  ~1500
+shot build/18-ord-demo.png
+cmd empty wipe
+cmd diagonal  ~6000
+shot build/19-diagonal.png
+key spc
+wait 500
+cmd empty wipe
+cmd supertask  ~12000
+shot build/20-supertask.png
+key spc
+wait 500
+cmd empty wipe
+cmd pairing  ~4000
+shot build/21-pairing.png
+cmd empty wipe
+cmd empty wipe
+cmd root  ~800
+shot build/22-root.png
+cmd empty wipe
+cmd 'top open  ~1500
+shot build/23-edit-root.png
+key ctrl-q
+wait 800
+cmd empty wipe
+cmd empty wipe
+cmd welcome  ~600
+cmd empty wipe
+cmd install  ~800
+shot build/24-install-prompt.png
+key ret

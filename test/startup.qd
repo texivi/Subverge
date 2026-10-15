@@ -1,0 +1,13 @@
+# live
+wait 5000
+shot build/s-live.png
+cmd help
+shot build/s-help.png
+cmd 1 0 /  ~300
+cmd foo  ~300
+cmd [ 1  ~300
+shot build/s-errs.png
+cmd install  ~800
+cmd 0  ~600
+shot build/s-inst.png
+cmd yes  ~6000

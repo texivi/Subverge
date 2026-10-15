@@ -1,0 +1,9 @@
+# iso install
+wait 5000
+cmd 7 omega +
+cmd [ dup * ] :sq
+cmd install  ~800
+shot build/iso-inst1.png
+cmd 0  ~600
+cmd yes  ~6000
+shot build/iso-inst2.png

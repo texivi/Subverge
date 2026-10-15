@@ -1,0 +1,81 @@
+# learn, apps, programs, editing apps
+wait 5000
+cmd learn  ~1200
+shot build/34-learn-1.png
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+wait 900
+shot build/35-learn-10.png
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+key spc
+wait 900
+shot build/36-learn-29.png
+key q
+wait 600
+cmd empty wipe
+cmd apps  ~800
+shot build/43-apps.png
+cmd empty wipe
+cmd sieve  ~3500
+shot build/44-sieve-running.png
+wait 6000
+shot build/45-sieve-done.png
+key q
+wait 800
+cmd bounce  ~5000
+shot build/46-bounce.png
+key q
+wait 800
+cmd sorting  ~1200
+shot build/47-sorting-running.png
+wait 3000
+shot build/48-sorting-done.png
+key q
+wait 800
+cmd stars  ~3000
+shot build/49-stars.png
+key q
+wait 800
+cmd empty wipe
+cmd 'apps open  ~1500
+key down
+key down
+key down
+key down
+key down
+key end
+key ret
+type [ "hello" "Says hello." ]
+wait 300
+shot build/50-apps-editor.png
+key ctrl-s
+wait 1500
+key ctrl-q
+wait 800
+cmd empty wipe
+cmd apps  ~800
+shot build/51-apps-hello.png
