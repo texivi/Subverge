@@ -44,4 +44,7 @@
   8 color "  took " write t str write " ticks, " write cycles str write " cycles" say 7 color
 ] :timeit
 
+[ 0 swap [ + ] each ] :sum                # list
+[ { l acc q } l [ acc swap q do ->acc ] each acc ] :fold   # list init q
+
 [ ticks hz / { s } s 3600 / str "h " cat s 60 / 60 mod str cat "m " cat s 60 mod str cat "s" cat ] :uptime

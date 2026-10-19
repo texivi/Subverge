@@ -153,8 +153,43 @@ void define(str *name, V v) {
     W->dict = b;
 }
 
+static str *builtins[512];
+static int nbuiltins;
+
 void register_words(const struct builtin *w) {
-    for (; w->name; w++) intern(w->name, (u32)strlen(w->name))->fn = w->fn;
+    for (; w->name; w++) {
+        str *s = intern(w->name, (u32)strlen(w->name));
+        s->fn = w->fn;
+        if (nbuiltins < 512) builtins[nbuiltins++] = s;
+    }
+}
+
+/* prompt completion */
+static int add_match(str **m, int k, str *s, const char *pre, int n) {
+    if (k == 256 || (int)s->len < n || memcmp(s->s, pre, (size_t)n)) return k;
+    for (int i = 0; i < k; i++) if (m[i] == s) return k;
+    m[k] = s;
+    return k + 1;
+}
+
+int complete_name(const char *pre, int n, int nth, char *out, int cap, int *lcp) {
+    str *m[256];
+    int k = 0;
+    for (bind *b = W->cur.dict; b; b = b->next) if (b->v.t != T_NONE && lookup(b->name)) k = add_match(m, k, b->name, pre, n);
+    for (bind *b = root_dict; b; b = b->next) if (b->v.t != T_NONE) k = add_match(m, k, b->name, pre, n);
+    for (int i = 0; i < nbuiltins; i++) k = add_match(m, k, builtins[i], pre, n);
+    if (!k) return 0;
+    for (int i = 1; i < k; i++)
+        for (int j = i; j > 0 && strcmp(m[j - 1]->s, m[j]->s) > 0; j--) { str *t = m[j]; m[j] = m[j - 1]; m[j - 1] = t; }
+    int l = (int)m[0]->len;
+    for (int i = 1; i < k; i++) {
+        int c = 0;
+        while (c < l && c < (int)m[i]->len && m[i]->s[c] == m[0]->s[c]) c++;
+        l = c;
+    }
+    *lcp = MIN(l, cap - 2);
+    scopy(out, m[nth % k]->s, (size_t)cap - 1);
+    return k;
 }
 
 /* printing */
@@ -458,6 +493,7 @@ static void markw(world w) {
 static void gc(void) {
     markw(W->cur);
     for (int i = 0; i < W->nhist; i++) markw(W->hist[i]);
+    for (int i = 0; i < W->nfut; i++) markw(W->fut[i]);
     for (int i = 0; i < W->sp; i++) markv(W->stk[i]);
     for (int i = 0; i < W->nloc; i++) markv(W->loc[i].v);
     for (int i = 0; i < MIN(W->nkeep, 256); i++) markv(W->keep[i]);
@@ -525,7 +561,7 @@ void eval_line(const char *line) {
     W->sp = (int)W->cur.stack->n;
     memcpy(W->stk, W->cur.stack->v, (u64)W->sp * sizeof(V));
     W->dict = W->cur.dict;
-    W->err = W->nback = W->depth = W->nloc = W->tracing = W->nkeep = W->shadowy = 0;
+    W->err = W->nback = W->nredo = W->depth = W->nloc = W->tracing = W->nkeep = W->shadowy = 0;
     kbreak = 0;
 
     quote *q = parse_text(line);
@@ -541,11 +577,28 @@ void eval_line(const char *line) {
     if (W->nback) {
         int k = MIN(W->nback, W->nhist);
         if (!k) { report(C_DIM, "there is nothing to go back to%s", ""); return; }
-        W->nhist -= k;
-        W->cur = W->hist[W->nhist];
+        for (int i = 0; i < k; i++) {
+            if (W->nfut == HIST) { memmove(W->fut, W->fut + 1, (HIST - 1) * sizeof(world)); W->nfut--; }
+            W->fut[W->nfut++] = W->cur;
+            W->cur = W->hist[--W->nhist];
+        }
         char t[16];
         snfmt(t, sizeof t, "%d", k);
         report(C_DIM, "rewound %s", t);
+        if (!W->restoring) persist_save_tab(current->id);
+        return;
+    }
+    if (W->nredo) {
+        int k = MIN(W->nredo, W->nfut);
+        if (!k) { report(C_DIM, "nothing to redo%s", ""); return; }
+        for (int i = 0; i < k; i++) {
+            if (W->nhist == HIST) { memmove(W->hist, W->hist + 1, (HIST - 1) * sizeof(world)); W->nhist--; }
+            W->hist[W->nhist++] = W->cur;
+            W->cur = W->fut[--W->nfut];
+        }
+        char t[16];
+        snfmt(t, sizeof t, "%d", k);
+        report(C_DIM, "redone %s", t);
         if (!W->restoring) persist_save_tab(current->id);
         return;
     }
@@ -555,6 +608,7 @@ void eval_line(const char *line) {
     if (W->nhist == HIST) { memmove(W->hist, W->hist + 1, (HIST - 1) * sizeof(world)); W->nhist--; }
     W->hist[W->nhist++] = W->cur;
     W->cur = (world){ ns, W->dict };
+    W->nfut = 0;
     if (!W->restoring) persist_save_tab(current->id);
 }
 
@@ -596,6 +650,7 @@ void omega_init_world(void) {
 void omega_main(void) {
     char line[LINE_MAX + 1];
     set_title(SHELL_NAME);
+    if (W) W->lines.complete = 1;
     if (!W) {
         omega_init_world();
         u32 len;
@@ -607,6 +662,7 @@ void omega_main(void) {
             W->nhist = 0;
             kfree(saved);
         }
+        W->lines.complete = 1;
         if (current->id == 0) {
             if (root_boot_error()) {
                 sysinfo();

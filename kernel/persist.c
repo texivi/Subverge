@@ -15,7 +15,8 @@ u32 omega_source(struct omega *om, char *buf, u32 cap);
 u32 root_source(char *buf, u32 cap);
 
 #define NSLOTS (1 + NTABS)
-struct state_header { char magic[8]; u32 len[NSLOTS]; u32 sum[NSLOTS]; u64 saves; u8 pad[512 - 8 - 8 * NSLOTS - 8]; };
+struct state_header { char magic[8]; u32 len[NSLOTS]; u32 sum[NSLOTS]; u64 saves; u32 theme; u8 pad[512 - 8 - 8 * NSLOTS - 8 - 4]; };
+_Static_assert(sizeof(struct state_header) == 512, "header is one sector");
 
 static int home = -1;
 static struct state_header hdr;
@@ -50,6 +51,16 @@ void persist_init(void) {
         memset(&hdr, 0, sizeof hdr);
         memcpy(hdr.magic, "SVSTATE1", 8);
     }
+    vga_theme((int)hdr.theme);
+}
+
+void persist_save_theme(void) {
+    if (home < 0) return;
+    u64 f = irq_save();
+    hdr.theme = (u32)vga_current_theme();
+    struct state_header copy = hdr;
+    irq_restore(f);
+    disk_rw(home, LBA_STATE, 1, &copy, 1);
 }
 
 char *persist_load(int slot, u32 *len) {
@@ -158,6 +169,7 @@ static void b_install_to(void) {
 
     memset(&hdr, 0, sizeof hdr);
     memcpy(hdr.magic, "SVSTATE1", 8);
+    hdr.theme = (u32)vga_current_theme();
     bad |= disk_rw((int)n, LBA_STATE, 1, &hdr, 1);
     if (bad) { fail("writing to the drive failed%s", ""); return; }
 

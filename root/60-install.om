@@ -15,7 +15,7 @@
   drives len 0 > [
     nl "  Install on which drive? " ask >num { n }
     drives [ first n = ] filter { pick }
-    pick len 0 = [ "  There is no drive " n str cat say ] [
+    pick len 0 = [ "  Drive " n str cat " isn't in the list." cat say ] [
       pick first spread { num model mb home }
       12 color "  This will erase drive " write n str write " (" write model write ", " write mb str write "M)" say 7 color
       "  Type yes to continue: " ask "yes" =

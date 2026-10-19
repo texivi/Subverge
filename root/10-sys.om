@@ -5,9 +5,9 @@
 [ [ "" "" "/\\_/\\" "( -.-)" "(___)~" "" "" ] ] :logo-cat
 
 [ "user" ] :user
-[ "Subverge 0.8.0" ] :os
+[ "Subverge 0.9.0" ] :os
 [ "subverge" ] :host
-[ "ordinal 0.10.0 x86_64" ] :kernel-name
+[ "ordinal 1.0.0 x86_64" ] :kernel-name
 
 [ heap drop kernel drop + { used }
   used kb " / " cat kernel nip mb cat
@@ -23,7 +23,7 @@
     i 1 = [ "os" os stat ] when
     i 2 = [ "kernel" kernel-name stat ] when
     i 3 = [ "uptime" uptime stat ] when
-    i 4 = [ "shell" "omega 0.9.0" stat ] when
+    i 4 = [ "shell" "omega 1.0.0" stat ] when
     i 5 = [ "cpu" cpu stat ] when
     i 6 = [ "memory" memline stat ] when
     nl
@@ -45,6 +45,7 @@
   "  Type help to see every command." say
   "  F1 to F4 switch tabs, and Ctrl-C stops code that is running." say
   "  Type root to see the utilities, and 'name open to edit one." say
+  "  Type themes to change the colours, for example 'raw theme." say
   "  To change the name before the @ in the logo, type 'user open." say
   nl 8 color "  To remove this message, type 'startup open." say 7 color
 ] :welcome

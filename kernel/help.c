@@ -320,6 +320,50 @@ static const struct doc docs[] = {
     { "helpers", "host", "-- s", "The host name on the sys screen.", "host say" },
     { "helpers", "kernel-name", "-- s", "The kernel name and version.", "kernel-name say" },
     { "helpers", "row", "label val y --", "Prints one row of the top screen.", "\"hi\" \"x\" 3 row" },
+    { "stack", "pick", "... n -- ... x", "Copies the value n below the top.", "1 2 3 2 pick   gives 1" },
+    { "stack", "tuck", "a b -- b a b", "Copies the top under the second.", "1 2 tuck   leaves 2 1 2" },
+    { "stack", "2dup", "a b -- a b a b", "Copies the top two values.", "1 2 2dup   leaves 1 2 1 2" },
+    { "lists", "index", "l x -- i", "Where x is in the list, or -1.", "[ 5 6 7 ] 6 index   gives 1" },
+    { "screen", "theme", "'x --", "Switches to a colour theme, and remembers it.", "'raw theme" },
+    { "screen", "themes", "--", "Lists the themes and shows the colours.", "themes" },
+    { "screen", "theme@", "-- s", "The name of the current theme.", "theme@ say" },
+    { "screen", "rgb", "n r g b --", "Sets colour n to red, green, blue 0 to 255.", "14 255 0 0 rgb" },
+    { "text", "lower", "s -- str", "Turns capitals into small letters.", "\"Hi\" lower   gives \"hi\"" },
+    { "text", "trim", "s -- str", "Drops spaces and newlines at both ends.", "\" hi \" trim   gives \"hi\"" },
+    { "text", "starts?", "s pre -- 1|0", "1 if s begins with pre.", "\"hello\" \"he\" starts?   gives 1" },
+    { "text", "ends?", "s suf -- 1|0", "1 if s ends with suf.", "\"hello\" \"lo\" ends?   gives 1" },
+    { "text", "replace", "s a b -- str", "Replaces every a in s with b.", "\"a-b\" \"-\" \"+\" replace" },
+    { "text", "join", "l sep -- s", "Joins a list into one string with sep between.", "[ 1 2 ] \", \" join   gives \"1, 2\"" },
+    { "lists", "reverse", "l -- list", "A list or string back to front.", "[ 1 2 3 ] reverse" },
+    { "lists", "sort", "l -- list", "Sorts numbers or strings, smallest first.", "[ 3 1 2 ] sort   gives [ 1 2 3 ]" },
+    { "lists", "sum", "l -- n", "Adds up a list of numbers.", "[ 1 2 3 ] sum   gives 6" },
+    { "lists", "fold", "l x q -- y", "Runs q on x and each item in turn.", "[ 1 2 3 ] 1 [ * ] fold   gives 6" },
+    { "math", "sqrt", "n -- r", "The square root, rounded down.", "99 sqrt   gives 9" },
+    { "math", "gcd", "a b -- c", "The greatest common divisor.", "12 18 gcd   gives 6" },
+    { "world", "redo", "--", "Takes back a back.", "back redo" },
+    { "world", "apropos", "s --", "Lists every word whose help mentions s.", "\"string\" apropos" },
+    { "tools", "cal", "--", "This month, with today marked.", "cal" },
+    { "tools", "month", "y m --", "The calendar for any month.", "2026 12 month" },
+    { "tools", "date", "-- s", "Today as year-month-day.", "date say" },
+    { "games", "tiles", "--", "Slide and merge numbered tiles.", "tiles" },
+    { "helpers", "leap?", "y -- 1|0", "1 if y is a leap year.", "2024 leap?   gives 1" },
+    { "helpers", "month-days", "y m -- n", "How many days a month has.", "2024 2 month-days   gives 29" },
+    { "helpers", "first-weekday", "y m -- n", "Weekday of the 1st, 0 is Monday.", "2026 10 first-weekday" },
+    { "helpers", "month-names", "-- l", "The names of the months.", "month-names first" },
+    { "helpers", "month-of", "y m d --", "A month with day d marked.", "2026 10 19 month-of" },
+    { "helpers", "set-at", "l i x -- list", "A copy of l with item i replaced.", "[ 1 2 ] 0 9 set-at" },
+    { "helpers", "slide-row", "l -- l n", "Slides one row of tiles left.", "[ 2 2 4 0 ] slide-row" },
+    { "helpers", "move-board", "b lines -- b n", "Slides the whole tiles board.", "b left-lines move-board" },
+    { "helpers", "left-lines", "-- l", "Board rows in the order a left slide uses.", "left-lines" },
+    { "helpers", "right-lines", "-- l", "Board rows for a right slide.", "right-lines" },
+    { "helpers", "up-lines", "-- l", "Board columns for an up slide.", "up-lines" },
+    { "helpers", "down-lines", "-- l", "Board columns for a down slide.", "down-lines" },
+    { "helpers", "spawn", "b -- b", "Adds a 2 or a 4 on an empty square.", "b spawn" },
+    { "helpers", "moves?", "b lines -- 1|0", "1 if that slide changes the board.", "b up-lines moves?" },
+    { "helpers", "can-move?", "b -- 1|0", "1 if any slide changes the board.", "b can-move?" },
+    { "helpers", "log2", "n -- k", "How many times n halves to 1.", "1024 log2   gives 10" },
+    { "helpers", "tile-color", "n -- c", "The colour of a tile.", "8 tile-color" },
+    { "helpers", "draw-tiles", "b score --", "Draws the tiles board.", "b 0 draw-tiles" },
 };
 
 #define NDOCS ((int)(sizeof docs / sizeof *docs))
@@ -430,7 +474,35 @@ static void b_help(void) {
     overview();
 }
 
-const struct builtin help_words[] = { { "help", b_help }, { NULL, NULL } };
+static int has_ci(const char *h, const char *n) {
+    for (; *h; h++) {
+        int i = 0;
+        while (n[i] && h[i] && (h[i] | 32) == (n[i] | 32)) i++;
+        if (!n[i]) return 1;
+    }
+    return !*n;
+}
+
+static void b_apropos(void) {
+    str *s;
+    if (!pop_str("apropos", &s)) return;
+    int found = 0;
+    for (int i = 0; i < NDOCS; i++) {
+        if (!has_ci(docs[i].name, s->s) && !has_ci(docs[i].text, s->s)) continue;
+        if (!found++) kputc('\n');
+        vga_color(C_MOON);
+        kprintf("  %-11s", docs[i].name);
+        vga_color(C_DIM);
+        kprintf("%-9s", docs[i].group);
+        vga_color(C_TEXT);
+        kprintf("%s\n", docs[i].text);
+    }
+    vga_color(C_DIM);
+    if (!found) kprintf("  nothing mentions %s\n", s->s);
+    vga_color(C_TEXT);
+}
+
+const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos }, { NULL, NULL } };
 
 #ifdef HOST
 int help_check(void) {

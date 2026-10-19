@@ -10,7 +10,7 @@
     "There are more real numbers than natural numbers."
     "Whether 2^aleph0 equals aleph1 can't be decided in ZFC."
     "epsilon0 is the first ordinal where \w^x = x."
-    "There are no users, files or permissions here."
+    "Every word you type has the whole machine to itself."
   ] ] :fortunes
 
 [ 13 color "  " write fortunes dup len rand at say 7 color ] :fortune
@@ -95,3 +95,74 @@
   ] while
   wipe "omega" title
 ] :rain
+
+# sliding tiles
+[ { l k v } 0 l len range [ { i } i k = [ v ] [ l i at ] if ] map ] :set-at
+
+[ { r } r [ 0 = not ] filter { t } [ ] 0 0 { out i gain }
+  [ i t len < ] [
+    i 1 + t len < [ t i at t i 1 + at = ] [ 0 ] if
+    [ out t i at 2 * append ->out  gain t i at 2 * + ->gain  i 2 + ->i ]
+    [ out t i at append ->out  i 1 + ->i ] if
+  ] while
+  [ out len 4 < ] [ out 0 append ->out ] while
+  out gain
+] :slide-row
+
+[ { b lines } b 0 { nb gain }
+  lines [ { idx }
+    idx [ nb swap at ] map slide-row { row g }
+    gain g + ->gain
+    0 4 [ { j } nb idx j at row j at set-at ->nb ] for
+  ] each
+  nb gain
+] :move-board
+
+[ [ [ 0 1 2 3 ] [ 4 5 6 7 ] [ 8 9 10 11 ] [ 12 13 14 15 ] ] ] :left-lines
+[ [ [ 3 2 1 0 ] [ 7 6 5 4 ] [ 11 10 9 8 ] [ 15 14 13 12 ] ] ] :right-lines
+[ [ [ 0 4 8 12 ] [ 1 5 9 13 ] [ 2 6 10 14 ] [ 3 7 11 15 ] ] ] :up-lines
+[ [ [ 12 8 4 0 ] [ 13 9 5 1 ] [ 14 10 6 2 ] [ 15 11 7 3 ] ] ] :down-lines
+
+[ { b } 0 16 range [ b swap at 0 = ] filter { e }
+  e len 0 = [ b ] [ b e e len rand at 10 rand 0 = [ 4 ] [ 2 ] if set-at ] if
+] :spawn
+
+[ { b lines } b lines move-board drop str b str = not ] :moves?
+
+[ { b } b left-lines moves? b right-lines moves? or
+  b up-lines moves? or b down-lines moves? or ] :can-move?
+
+[ { v } 0 { n } [ v 1 > ] [ v 2 / ->v n 1 + ->n ] while n ] :log2
+
+[ { v } v 0 = [ 1 ] [ [ 9 3 2 10 6 4 12 5 13 14 11 15 ] v log2 1 - 11 min at ] if ] :tile-color
+
+[ { b score } "tiles" header
+  0 16 [ { i }
+    b i at { v }
+    i 4 mod 9 * 22 + i 4 / 4 * 3 + v tile-color { x y c }
+    0 3 [ { r } 32 x y r + 8 0 c attr fill ] for
+    v 0 > [ v str { s } s x 8 s len - 2 / + y 1 + 0 c attr text ] when
+  ] for
+  "score " score str cat 8 fmt 22 20 7 text
+  "Arrows slide the tiles, q quits." 22 22 8 text
+] :draw-tiles
+
+[ "tiles" title wipe nocursor
+  [ 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ] spawn spawn 0 1 { b score going }
+  [ going ] [
+    b score draw-tiles
+    key { k }
+    k quit-key? [ 0 ->going ] when
+    k 256 = [ up-lines ] [ k 257 = [ down-lines ] [
+    k 258 = [ left-lines ] [ k 259 = [ right-lines ] [ [ ] ] if ] if ] if ] if { lines }
+    lines len 0 > [
+      b lines move-board { nb g }
+      nb str b str = not [ nb spawn ->b score g + ->score ] when
+      b can-move? not [
+        b score draw-tiles
+        "No moves left. Any key leaves.  " 22 22 12 text key drop 0 ->going
+      ] when
+    ] when
+  ] while
+  wipe "omega" title
+] :tiles

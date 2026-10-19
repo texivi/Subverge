@@ -3,10 +3,10 @@
 
 [ [
   [ "Operand stack"
-    "  Each tab has one operand stack. Literals push themselves, and a\n  word pops its arguments and pushes its results. There is no other\n  argument passing. Effects are written ( in -- out ): + is ( a b -- c )."
+    "  Each tab has one operand stack. Literals push themselves, and a\n  word pops its arguments and pushes its results. All arguments\n  travel this way. Effects are written ( in -- out ): + is ( a b -- c )."
     "1 2 3" ]
   [ "Postfix evaluation"
-    "  Evaluation is strictly left to right. There is no precedence and\n  there are no parentheses: (2 + 3) * 4 is written 2 3 + 4 *."
+    "  Evaluation is strictly left to right, one word at a time, so\n  (2 + 3) * 4 is written 2 3 + 4 *."
     "2 3 + 4 *" ]
   [ "Stack words"
     "  dup ( a -- a a )   drop ( a -- )   swap ( a b -- b a )\n  over ( a b -- a b a )   rot ( a b c -- b c a )   nip ( a b -- b )\n  depth pushes the stack size, and empty clears the stack."
@@ -18,7 +18,7 @@
     "  Past 64 bits a number turns into a bignum by itself, so 2 100 ^\n  is exact, all 31 digits. The limit is 2^65536, about 19700\n  digits. Past that, you want omega, which comes later."
     "2 100 ^  2 64 ^ 1 -  2 1000 ^ str len" ]
   [ "Truth"
-    "  There is no boolean type. Comparisons leave 1 or 0, and if, when,\n  unless and while treat 0 as false and anything else as true.\n  and, or and not are logical. & | xor ~ << >> are bitwise."
+    "  Truth is a number. Comparisons leave 1 or 0, and if, when,\n  unless and while treat 0 as false and anything else as true.\n  and, or and not are logical. & | xor ~ << >> are bitwise."
     "3 5 <  4 4 = and  6 3 &" ]
   [ "Strings"
     "  Strings are immutable. cat joins, slice is ( s a n -- s ), find\n  returns an index or -1, split cuts at a separator, str and >num\n  convert to and from numbers, chr and hex format."
@@ -57,7 +57,7 @@
     "  Every line is a transaction on the tab's world. If any word fails,\n  the stack and the definitions revert to what they were before the\n  line. back reverts the last line that succeeded, up to 64 deep.\n  This line fails on purpose."
     "1 2 3 0 /" ]
   [ "Undo"
-    "  back undoes the last line that changed your stack or your words,\n  up to 64 lines, and back back back undoes three. Lines that only\n  looked at things don't count. Try it at the prompt after learn,\n  because learn is one long line itself."
+    "  back undoes the last line that changed your stack or your words,\n  up to 64 lines, and back back back undoes three. Lines that only\n  looked at things don't count, and redo takes a back back. Try it at\n  the prompt after learn, because learn is one long line itself."
     "" ]
   [ "Catching errors"
     "  try ( q -- 1|0 ) runs q. On failure it prints the error and leaves\n  0 instead of aborting the line. Whatever q did before the error\n  stays done: only the line as a whole is transactional."
@@ -77,6 +77,9 @@
   [ "Drawing"
     "  text writes a string at x y in a colour from 0 to 15, put does one\n  character, and wipe clears the screen. colors shows the numbers.\n  Every game in apps is built out of these three."
     "\"hello\" 50 18 14 text" ]
+  [ "Themes"
+    "  The 16 colours come from a theme. themes lists them, 'raw theme\n  switches to the plain VGA colours, and 'dusk theme switches back.\n  An installed system remembers the choice."
+    "'raw theme" ]
   [ "Ordinals"
     "  omega and epsilon0 are real values in Cantor normal form. + and *\n  are not commutative past the finite: 1 omega + is omega but\n  omega 1 + is omega+1. Subtraction past infinity is an error."
     "1 omega +  omega 1 +" ]
@@ -96,7 +99,7 @@
     "  A program is a word. apps lists the ones that ship with the\n  system. They run in the current tab like any other word, and q\n  leaves most of them."
     "apps" ]
   [ "Small tools"
-    "  clock, stopwatch, timer, todo, convert, password, ascii and colors\n  are ordinary root words. bases ( n -- ) prints n in four radixes."
+    "  clock, stopwatch, timer, todo, convert, password, ascii, colors,\n  cal and date are ordinary root words. bases ( n -- ) prints n in\n  four radixes."
     "255 bases" ]
   [ "Editing a word"
     "  'name edit opens a word you defined in scrawl, the editor. Ctrl-S\n  saves, Ctrl-Q leaves and redefines it. For words in root, use\n  'name open instead."
@@ -105,7 +108,7 @@
     "  A program is a quote bound to a name. It exists in this tab\n  immediately, and once the system is installed it is saved with the\n  world."
     "[ \"hello\" say ] :hello  hello" ]
   [ "Registering it in apps"
-    "  apps discovers nothing. It prints app-list, a list literal in\n  root/05-apps.om, so a program appears only if you add its entry by\n  hand. In the editor, add this inside the list:\n    [ \"hello\" \"Says hello.\" ]\n  Ctrl-S rebuilds root and saves, Ctrl-Q leaves. If the unit does not\n  build, the old root stays and your edit is kept as a draft."
+    "  apps discovers nothing. It prints app-list, a list literal in\n  root/05-apps.om, so a program appears only if you add its entry by\n  hand. In the editor, add this inside the list:\n    [ \"hello\" \"Says hello.\" ]\n  Ctrl-S saves, and Ctrl-Q rebuilds root and leaves. If the unit does not\n  build, the old root stays and your edit is kept as a draft."
     "'apps open" ]
   [ "Checking the entry"
     "  apps reads app-list on every call, so the entry is live as soon as\n  the unit builds. If it is missing the unit did not build, and\n  'apps open shows your draft again."

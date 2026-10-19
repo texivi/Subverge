@@ -95,9 +95,9 @@
 ] :ascii
 
 [ "colors" title wipe nocursor
-  "  Colour numbers, for color, put and text. Any key leaves." 1 1 7 text
-  [ "black" "blue" "green" "cyan" "red" "magenta" "brown" "grey"
-    "dim" "sky" "mint" "aqua" "rose" "pink" "yellow" "white" ] { names }
+  "  Colour numbers in the current theme. Any key leaves." 1 1 7 text
+  [ "background" "bar" "green" "teal" "red" "mauve" "peach" "text"
+    "dim" "blue" "light green" "sky" "light red" "pink" "accent" "bright" ] { names }
   0 16 [ { c }
     c 2 fmt 4 c 3 + 7 text
     0 8 [ { x } 219 x 8 + c 3 + c put ] for
@@ -154,3 +154,35 @@
   wipe "  Game over. Score " score str cat ". Any key leaves." cat 20 11 14 text
   key drop wipe "omega" title
 ] :pong
+
+# dates
+[ time drop drop drop { y m d } y str "-" cat m two cat "-" cat d two cat ] :date
+
+[ { y } y 4 mod 0 = y 100 mod 0 = not y 400 mod 0 = or and ] :leap?
+
+[ { y m } [ 31 28 31 30 31 30 31 31 30 31 30 31 ] m 1 - at
+  m 2 = y leap? and [ 1 + ] when ] :month-days
+
+# 0 is monday
+[ { y m } m 3 < [ y 1 - ] [ y ] if { yy }
+  yy yy 4 / + yy 100 / - yy 400 / + [ 0 3 2 5 0 3 5 1 4 6 2 4 ] m 1 - at + 1 + 6 + 7 mod
+] :first-weekday
+
+[ [ "January" "February" "March" "April" "May" "June" "July" "August"
+    "September" "October" "November" "December" ] ] :month-names
+
+# y m today
+[ { y m today }
+  nl 14 color "  " write month-names m 1 - at " " cat y str cat say
+  8 color "  Mo Tu We Th Fr Sa Su" say 7 color
+  y m first-weekday { off }
+  "  " write 0 off [ drop "   " write ] for
+  1 y m month-days 1 + [ { d }
+    d today = [ 12 ] [ 7 ] if color d str -2 pad write " " write
+    off d + 7 mod 0 = [ nl "  " write ] when
+  ] for
+  7 color nl
+] :month-of
+
+[ { y m } y m 0 month-of ] :month
+[ time drop drop drop month-of ] :cal

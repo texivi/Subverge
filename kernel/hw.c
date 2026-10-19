@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "disk.h"
 #include "kbd.h"
 #include "mem.h"
 #include "omega.h"
@@ -199,6 +200,48 @@ static void b_waitkey(void) {
     push(I(k));
 }
 
+/* themes */
+
+static void b_theme(void) {
+    if (!need(1, "theme")) return;
+    V v = pop();
+    if (!want(v, T_SYM, "theme")) return;
+    for (int i = 0; themes[i].name; i++)
+        if (!strcmp(themes[i].name, name_of(v))) { vga_theme(i); persist_save_theme(); return; }
+    fail("%s isn't a theme, type themes to see them", name_of(v));
+}
+
+static void b_themes(void) {
+    for (int i = 0; themes[i].name; i++) {
+        int on = i == vga_current_theme();
+        vga_color(on ? C_MOON : C_TEXT);
+        kprintf("  %c %s\n", on ? '>' : ' ', themes[i].name);
+    }
+    int x, y;
+    vga_getpos(&x, &y);
+    vga_color(C_DIM);
+    kputs("\n  These colours, in the current theme:\n  ");
+    vga_getpos(&x, &y);
+    for (int c = 0; c < 16; c++) { vga_put(x + c * 3, y, (char)219, (u8)c); vga_put(x + c * 3 + 1, y, (char)219, (u8)c); }
+    kputs("\n\n");
+    vga_color(C_DIM);
+    kputs("  Switch with 'raw theme. An installed system remembers the choice.\n");
+    vga_color(C_TEXT);
+}
+
+static void b_themename(void) {
+    const char *n = themes[vga_current_theme()].name;
+    push(S(str_new(n, (u32)strlen(n))));
+}
+
+static void b_rgb(void) {
+    i64 n, r, g, b;
+    if (!pop_int("rgb", &b) || !pop_int("rgb", &g) || !pop_int("rgb", &r) || !pop_int("rgb", &n)) return;
+    if (n < 0 || n > 15) { fail("rgb takes a colour from 0 to 15%s", ""); return; }
+    if (r < 0 || r > 255 || g < 0 || g > 255 || b < 0 || b > 255) { fail("rgb takes red, green and blue from 0 to 255%s", ""); return; }
+    vga_rgb((int)n, (u32)(r << 16 | g << 8 | b));
+}
+
 static void b_sysc(void) { sysinfo(); }
 
 static void b_reboot(void) {
@@ -226,6 +269,7 @@ const struct builtin hw_words[] = {
     { "put", b_put }, { "text", b_text }, { "screen@", b_getch }, { "wipe", b_wipe },
     { "cursor", b_cursor }, { "nocursor", b_nocursor }, { "where", b_where }, { "size", b_width },
     { "key", b_key }, { "key?", b_keyq }, { "waitkey", b_waitkey },
+    { "theme", b_theme }, { "themes", b_themes }, { "theme@", b_themename }, { "rgb", b_rgb },
     { "sys-c", b_sysc }, { "reboot", b_reboot }, { "halt", b_halt },
     { NULL, NULL }
 };

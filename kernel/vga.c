@@ -12,12 +12,46 @@ static volatile u16 *const HW = host_screen;
 static volatile u16 *const HW = (volatile u16 *)0xB8000;
 #endif
 
-static const u32 theme[16] = {
-    0x1e1e2e, 0x313244, 0xa6e3a1, 0x94e2d5, 0xf38ba8, 0xcba6f7, 0xfab387, 0xcdd6f4,
-    0x6c7086, 0x89b4fa, 0xa6e3a1, 0x89dceb, 0xf38ba8, 0xf5c2e7, 0xf6dfad, 0xcad3f1
+/* bg bar green teal red mauve peach text dim blue lgreen sky lred pink moon cat */
+const struct theme themes[] = {
+    { "dusk", {
+        0x1e1e2e, 0x313244, 0xa6e3a1, 0x94e2d5, 0xf38ba8, 0xcba6f7, 0xfab387, 0xcdd6f4,
+        0x6c7086, 0x89b4fa, 0xa6e3a1, 0x89dceb, 0xf38ba8, 0xf5c2e7, 0xf6dfad, 0xcad3f1 } },
+    { "raw", {
+        0x000000, 0x0000aa, 0x00aa00, 0x00aaaa, 0xaa0000, 0xaa00aa, 0xaa5500, 0xaaaaaa,
+        0x555555, 0x5555ff, 0x55ff55, 0x55ffff, 0xff5555, 0xff55ff, 0xffff55, 0xffffff } },
+    { "paper", {
+        0xf1ebdd, 0xddd3bc, 0x2f7a32, 0x00756a, 0xb3141e, 0x6b2a92, 0xb85600, 0x2d2b26,
+        0x8c8473, 0x1f4f9e, 0x2f7a32, 0x0a6a86, 0xc0262e, 0xa3155e, 0xb0101a, 0x121110 } },
+    { "amber", {
+        0x0c0700, 0x2a1a00, 0xffb000, 0xd99200, 0xff7a00, 0xcc8a00, 0xffc040, 0xffb000,
+        0x8a5c00, 0xe0a000, 0xffcc4d, 0xffd27a, 0xff8c1a, 0xffbf66, 0xffd000, 0xffe0a0 } },
+    { "phosphor", {
+        0x000a02, 0x022a0a, 0x33ff66, 0x22cc77, 0x7dff3d, 0x2ee88a, 0x9cff57, 0x33ff66,
+        0x188a3a, 0x29d17a, 0x66ff8f, 0x8affb0, 0xa6ff4d, 0x5cff9d, 0xb3ff99, 0xd6ffe0 } },
+    { NULL, { 0 } }
 };
+static int cur_theme;
 
 static u8 dac_index(int i) { return i < 6 ? (u8)i : i == 6 ? 0x14 : i == 7 ? 7 : (u8)(0x38 + i - 8); }
+
+void vga_rgb(int i, u32 rgb) {
+    outb(0x3C8, dac_index(i & 15));
+    outb(0x3C9, (u8)((rgb >> 18) & 0x3F));
+    outb(0x3C9, (u8)((rgb >> 10) & 0x3F));
+    outb(0x3C9, (u8)((rgb >> 2) & 0x3F));
+}
+
+int vga_theme(int n) {
+    int k = 0;
+    while (themes[k].name) k++;
+    if (n < 0 || n >= k) return -1;
+    cur_theme = n;
+    for (int i = 0; i < 16; i++) vga_rgb(i, themes[n].rgb[i]);
+    return 0;
+}
+
+int vga_current_theme(void) { return cur_theme; }
 
 void hw_put(int x, int y, char c, u8 a) {
     if (x >= 0 && x < VW && y >= 0 && y <= VH) HW[y * VW + x] = (u16)(u8)c | (u16)a << 8;
@@ -30,12 +64,14 @@ void hw_cursor(int x, int y) {
 }
 
 void vga_init(void) {
-    for (int i = 0; i < 16; i++) {
-        outb(0x3C8, dac_index(i));
-        outb(0x3C9, (u8)((theme[i] >> 18) & 0x3F));
-        outb(0x3C9, (u8)((theme[i] >> 10) & 0x3F));
-        outb(0x3C9, (u8)((theme[i] >> 2) & 0x3F));
-    }
+    vga_theme(0);
+    /* bright backgrounds, no blink */
+    inb(0x3DA);
+    outb(0x3C0, 0x30);
+    u8 mode = inb(0x3C1);
+    inb(0x3DA);
+    outb(0x3C0, 0x30);
+    outb(0x3C0, (u8)(mode & ~0x08));
     outb(0x3D4, 0x0A); outb(0x3D5, 0x00);
     outb(0x3D4, 0x0B); outb(0x3D5, 0x0F);
     for (int i = 0; i < VW * (VH + 1); i++) HW[i] = ' ' | (u16)ATTR(C_TEXT, C_BG) << 8;

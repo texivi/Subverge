@@ -28,6 +28,7 @@ void font_init(void) {}
 char *persist_load(int slot, u32 *len) { (void)slot; (void)len; return NULL; }
 void persist_save_tab(int tab) { (void)tab; }
 void persist_save_root(void) {}
+void persist_save_theme(void) {}
 int persist_home(void) { return -1; }
 static void b_home(void) { push(I(-1)); }
 static void b_nothing(void) {}
@@ -111,6 +112,13 @@ int main(void) {
     while (fgets(line, sizeof line, stdin)) {
         line[strlen(line) - 1] = 0;
         if (!strncmp(line, "@screen", 7)) { dump(); continue; }
+        if (!strncmp(line, "@readline", 9)) {
+            char out[LINE_MAX + 1];
+            W->lines.complete = 1;
+            if (!setjmp(out_of_keys)) { int n = readline(out, &W->lines); printf("readline: %d \"%s\"\n", n, out); }
+            else printf("readline: ran out of keys\n");
+            continue;
+        }
         if (!strncmp(line, "@docs", 5)) { printf("%d problems\n", help_check()); continue; }
         if (!strncmp(line, "@dis ", 5)) {
             char *nm = line + 5;
@@ -155,6 +163,7 @@ int main(void) {
                 else if (!strcmp(tok, "left")) key(K_LEFT); else if (!strcmp(tok, "right")) key(K_RIGHT);
                 else if (!strcmp(tok, "enter")) key('\n'); else if (!strcmp(tok, "esc")) key(27);
                 else if (!strcmp(tok, "space")) key(' ');
+                else if (!strcmp(tok, "tab")) key('\t');
                 else if (!strcmp(tok, "ctrl-s")) key(CTRL('s')); else if (!strcmp(tok, "ctrl-q")) key(CTRL('q'));
                 else for (char *c = tok; *c; c++) key(*c);
             }

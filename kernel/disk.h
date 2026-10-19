@@ -23,3 +23,4 @@ void persist_init(void);
 char *persist_load(int slot, u32 *len);
 void persist_save_tab(int tab);
 void persist_save_root(void);
+void persist_save_theme(void);

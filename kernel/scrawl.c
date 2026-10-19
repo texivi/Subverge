@@ -104,9 +104,9 @@ static void draw(void) {
     vga_fill(0, VH - 1, VW, ' ', A_BAR);
     if (E->msg[0]) vga_puts_at(1, VH - 1, E->msg, ATTR(C_MOON, C_BAR));
     else {
-        static const char *const k[][2] = { { "^S", "save" }, { "^Q", "quit" }, { "^F", "find" }, { "^K", "cut" }, { "^U", "paste" }, { "^T/^B", "top/bot" } };
+        static const char *const k[][2] = { { "^S", "save" }, { "^Q", "quit" }, { "^F", "find" }, { "^G", "line" }, { "^K", "cut" }, { "^U", "paste" }, { "^D", "dup" }, { "^T/^B", "top/bot" } };
         int x = 1;
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             vga_puts_at(x, VH - 1, k[i][0], ATTR(C_SKY, C_BAR));
             x += (int)strlen(k[i][0]) + 1;
             vga_puts_at(x, VH - 1, k[i][1], A_BAR);
@@ -229,6 +229,20 @@ char *scrawl(const char *name, const char *text, u32 len, u32 *outlen) {
             E->cx = 0;
             E->dirty = 1;
             break;
+        case CTRL('d'):
+            ins_line(E->cy + 1, E->L[E->cy].s, E->L[E->cy].len);
+            E->cy++;
+            E->dirty = 1;
+            break;
+        case CTRL('g'): {
+            char in[8];
+            if (ask("go to line:", in, sizeof in) <= 0) break;
+            int n = 0;
+            for (char *p = in; *p >= '0' && *p <= '9'; p++) n = n * 10 + (*p - '0');
+            E->cy = MAX(0, MIN(E->nl - 1, n - 1));
+            E->cx = 0;
+            break;
+        }
         case CTRL('t'): E->cy = E->cx = 0; break;
         case CTRL('b'): E->cy = E->nl - 1; E->cx = E->L[E->cy].len; break;
         case K_UP: if (E->cy > 0) E->cy--; break;

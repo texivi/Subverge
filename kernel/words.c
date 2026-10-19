@@ -15,6 +15,14 @@ static void b_over(void) { if (need(2, "over")) push(W->stk[W->sp - 2]); }
 static void b_rot(void) { if (!need(3, "rot")) return; V a = W->stk[W->sp - 3]; W->stk[W->sp - 3] = W->stk[W->sp - 2]; W->stk[W->sp - 2] = W->stk[W->sp - 1]; W->stk[W->sp - 1] = a; }
 static void b_nip(void) { if (!need(2, "nip")) return; W->stk[W->sp - 2] = W->stk[W->sp - 1]; W->sp--; }
 static void b_empty(void) { W->sp = 0; }
+static void b_pick(void) {
+    i64 n;
+    if (!pop_int("pick", &n)) return;
+    if (n < 0) { fail("pick needs 0 or more%s", ""); return; }
+    if (need((int)n + 1, "pick")) push(W->stk[W->sp - 1 - n]);
+}
+static void b_tuck(void) { if (!need(2, "tuck")) return; V b = pop(), a = pop(); push(b); push(a); push(b); }
+static void b_2dup(void) { if (need(2, "2dup")) { V a = W->stk[W->sp - 2], b = W->stk[W->sp - 1]; push(a); push(b); } }
 static void b_depth(void) { push(I(W->sp)); }
 
 static int num(V v) { return v.t == T_INT || v.t == T_BIG; }
@@ -340,6 +348,15 @@ static int same(V a, V b) {
     return a.p == b.p;
 }
 
+static void b_index(void) {
+    if (!need(2, "index")) return;
+    V it = pop(), xs = pop();
+    if (!want(xs, T_QUOTE, "index")) return;
+    quote *l = (quote *)xs.p;
+    for (u32 i = 0; i < l->n; i++) if (same(as_item(l->v[i]), it)) { push(I(i)); return; }
+    push(I(-1));
+}
+
 static void b_has(void) {   /* list item has */
     if (!need(2, "has")) return;
     V it = pop(), xs = pop();
@@ -501,6 +518,153 @@ static void b_upper(void) {
     push(S(r));
 }
 
+static void b_lower(void) {
+    str *s;
+    if (!pop_str("lower", &s)) return;
+    str *r = str_new(s->s, s->len);
+    if (!r) return;
+    for (u32 i = 0; i < r->len; i++) if (r->s[i] >= 'A' && r->s[i] <= 'Z') r->s[i] += 32;
+    push(S(r));
+}
+
+static int blank(char c) { return c == ' ' || c == '\t' || c == '\n' || c == '\r'; }
+
+static void b_trim(void) {
+    str *s;
+    if (!pop_str("trim", &s)) return;
+    u32 a = 0, b = s->len;
+    while (a < b && blank(s->s[a])) a++;
+    while (b > a && blank(s->s[b - 1])) b--;
+    push(S(str_new(s->s + a, b - a)));
+}
+
+static void b_starts(void) {
+    str *s, *p;
+    if (!pop_str("starts?", &p) || !pop_str("starts?", &s)) return;
+    push(I(p->len <= s->len && !memcmp(s->s, p->s, p->len)));
+}
+
+static void b_ends(void) {
+    str *s, *p;
+    if (!pop_str("ends?", &p) || !pop_str("ends?", &s)) return;
+    push(I(p->len <= s->len && !memcmp(s->s + s->len - p->len, p->s, p->len)));
+}
+
+static void b_replace(void) {
+    str *s, *from, *to;
+    if (!pop_str("replace", &to) || !pop_str("replace", &from) || !pop_str("replace", &s)) return;
+    if (!from->len) { fail("replace needs something to look for%s", ""); return; }
+    u64 n = 0;
+    for (const char *p = s->s; (p = strstr(p, from->s)) && p < s->s + s->len; p += from->len) n++;
+    u64 len = s->len + n * to->len - n * from->len;
+    if (len > 1 << 20) { fail("that string would be too long%s", ""); return; }
+    str *r = (str *)gnew(sizeof(str) + len + 1, O_STR);
+    if (!r) return;
+    r->len = (u32)len;
+    r->fn = NULL;
+    char *o = r->s;
+    const char *p = s->s, *q;
+    while ((q = strstr(p, from->s)) && q < s->s + s->len) {
+        memcpy(o, p, (u64)(q - p)); o += q - p;
+        memcpy(o, to->s, to->len); o += to->len;
+        p = q + from->len;
+    }
+    memcpy(o, p, (u64)(s->s + s->len - p));
+    r->s[len] = 0;
+    push(S(r));
+}
+
+static void b_join(void) {
+    str *sep;
+    if (!pop_str("join", &sep) || !need(1, "join")) return;
+    V xs = pop();
+    if (!want(xs, T_QUOTE, "join")) return;
+    quote *l = (quote *)xs.p;
+    char *t = kmalloc_try(65536);
+    if (!t) { fail("ran out of memory%s", ""); return; }
+    sbuf o = { t, 65536, 0 };
+    t[0] = 0;
+    for (u32 i = 0; i < l->n; i++) {
+        if (i) sput(&o, sep->s, sep->len);
+        repr(&o, as_item(l->v[i]), 1);
+    }
+    if (o.len >= o.cap - 1) fail("that string would be too long%s", "");
+    else push(S(str_new(t, (u32)o.len)));
+    kfree(t);
+}
+
+static void b_reverse(void) {
+    if (!need(1, "reverse")) return;
+    V v = pop();
+    if (v.t == T_STR) {
+        str *s = (str *)v.p, *r = str_new(s->s, s->len);
+        if (!r) return;
+        for (u32 i = 0; i < r->len / 2; i++) { char c = r->s[i]; r->s[i] = r->s[r->len - 1 - i]; r->s[r->len - 1 - i] = c; }
+        push(S(r));
+    } else if (v.t == T_QUOTE) {
+        quote *l = (quote *)v.p, *q = quote_new(NULL, l->n);
+        if (!q) return;
+        for (u32 i = 0; i < l->n; i++) q->v[i] = l->v[l->n - 1 - i];
+        push(Q(q));
+    } else fail("reverse needs a list or a string%s", "");
+}
+
+static int order(V a, V b) {
+    if (num(a) && num(b)) return big_cmp(a, b);
+    if (a.t == T_STR && b.t == T_STR) return strcmp(((str *)a.p)->s, ((str *)b.p)->s);
+    return 2;
+}
+
+static void b_sort(void) {
+    if (!need(1, "sort")) return;
+    V xs = pop();
+    if (!want(xs, T_QUOTE, "sort")) return;
+    quote *l = (quote *)xs.p;
+    int strs = l->n && l->v[0].t == T_STR;
+    for (u32 i = 0; i < l->n; i++)
+        if (strs ? l->v[i].t != T_STR : !num(l->v[i])) { fail("sort needs a list of numbers or a list of strings%s", ""); return; }
+    quote *q = quote_new(l->v, l->n);
+    V *tmp = kmalloc_try((u64)l->n * sizeof(V) + 1);
+    if (!q || !tmp) { kfree(tmp); if (q) fail("ran out of memory%s", ""); return; }
+    /* bottom-up merge */
+    for (u32 w = 1; w < q->n; w *= 2) {
+        for (u32 lo = 0; lo < q->n; lo += 2 * w) {
+            u32 mid = MIN(lo + w, q->n), hi = MIN(lo + 2 * w, q->n), i = lo, j = mid, k = lo;
+            while (i < mid && j < hi) tmp[k++] = order(q->v[j], q->v[i]) < 0 ? q->v[j++] : q->v[i++];
+            while (i < mid) tmp[k++] = q->v[i++];
+            while (j < hi) tmp[k++] = q->v[j++];
+        }
+        memcpy(q->v, tmp, (u64)q->n * sizeof(V));
+    }
+    kfree(tmp);
+    push(Q(q));
+}
+
+static void b_sqrt(void) {
+    V a;
+    if (!pop_num("sqrt", &a)) return;
+    if (big_cmp(a, I(0)) < 0) { fail("sqrt needs a number that isn't negative%s", ""); return; }
+    if (a.t == T_INT) {
+        u64 n = (u64)a.n, x = n, y = (x + 1) / 2;
+        if (n < 2) { push(a); return; }
+        while (y < x) { x = y; y = (x + n / x) / 2; }
+        push(I((i64)x));
+        return;
+    }
+    V x = a, y = big_arith('/', big_arith('+', x, I(1)), I(2));
+    while (!W->err && big_cmp(y, x) < 0) { x = y; y = big_arith('/', big_arith('+', x, big_arith('/', a, x)), I(2)); }
+    if (!W->err) push(x);
+}
+
+static void b_gcd(void) {
+    V b, a;
+    if (!pop_num("gcd", &b) || !pop_num("gcd", &a)) return;
+    if (big_cmp(a, I(0)) < 0) a = big_neg(a);
+    if (big_cmp(b, I(0)) < 0) b = big_neg(b);
+    while (!W->err && big_cmp(b, I(0)) != 0) { V t = big_arith('%', a, b); a = b; b = t; }
+    if (!W->err) push(a);
+}
+
 static void b_print(void) { if (need(1, ".")) { repr(NULL, pop(), 0); kputc('\n'); } }
 static void b_say(void) { if (need(1, "say")) { repr(NULL, pop(), 1); kputc('\n'); } }
 static void b_write(void) { if (need(1, "write")) repr(NULL, pop(), 1); }
@@ -590,6 +754,7 @@ static void b_words(void) {
 }
 
 static void b_back(void) { W->nback++; }
+static void b_redo(void) { W->nredo++; }
 
 static void b_eval(void) {
     str *s;
@@ -651,7 +816,7 @@ static void b_calc(void) { calc(); }
 
 const struct builtin core_words[] = {
     { "dup", b_dup }, { "drop", b_drop }, { "swap", b_swap }, { "over", b_over }, { "rot", b_rot },
-    { "nip", b_nip }, { "empty", b_empty }, { "depth", b_depth },
+    { "nip", b_nip }, { "empty", b_empty }, { "pick", b_pick }, { "tuck", b_tuck }, { "2dup", b_2dup }, { "depth", b_depth },
     { "+", b_add }, { "-", b_sub }, { "*", b_mul }, { "/", b_div }, { "mod", b_mod }, { "^", b_pow },
     { "<", b_lt }, { ">", b_gt }, { "<=", b_le }, { ">=", b_ge }, { "=", b_eq },
     { "&", b_band }, { "|", b_bor }, { "xor", b_bxor }, { "<<", b_shl }, { ">>", b_shr },
@@ -660,14 +825,16 @@ const struct builtin core_words[] = {
     { "do", b_do }, { "if", b_if }, { "when", b_when }, { "unless", b_unless }, { "times", b_times },
     { "for", b_for }, { "while", b_while }, { "each", b_each }, { "map", b_map }, { "filter", b_filter },
     { "append", b_append }, { "range", b_range }, { "list", b_list }, { "spread", b_spread },
-    { "first", b_first }, { "last", b_last }, { "rest", b_rest }, { "has", b_has },
+    { "first", b_first }, { "last", b_last }, { "rest", b_rest }, { "has", b_has }, { "index", b_index },
     { "alloc", b_alloc }, { "free", b_free },
     { "len", b_len }, { "cat", b_cat }, { "str", b_str }, { "hex", b_hex }, { "chr", b_chr }, { "at", b_at },
     { "slice", b_slice }, { "pad", b_pad }, { "find", b_find }, { "split", b_split }, { ">num", b_tonum },
-    { "upper", b_upper },
+    { "upper", b_upper }, { "lower", b_lower }, { "trim", b_trim }, { "starts?", b_starts }, { "ends?", b_ends },
+    { "replace", b_replace }, { "join", b_join }, { "reverse", b_reverse }, { "sort", b_sort },
+    { "sqrt", b_sqrt }, { "gcd", b_gcd },
     { ".", b_print }, { "say", b_say }, { "write", b_write }, { "emit", b_emit }, { "nl", b_nl }, { "color", b_color },
     { "get", b_get }, { "forget", b_forget }, { ">sym", b_tosym }, { "defined?", b_defined }, { "see", b_see },
-    { "words", b_words }, { "back", b_back }, { "eval", b_eval }, { "try", b_try }, { "trace", b_trace }, { "edit", b_edit },
+    { "words", b_words }, { "back", b_back }, { "redo", b_redo }, { "eval", b_eval }, { "try", b_try }, { "trace", b_trace }, { "edit", b_edit },
     { "calc", b_calc },
     { NULL, NULL }
 };

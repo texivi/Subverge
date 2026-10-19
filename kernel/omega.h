@@ -35,8 +35,8 @@ struct omega {
     bind *dict;
     struct { str *name; V v; } loc[NLOC];
     int nloc;
-    world cur, hist[HIST];
-    int nhist;
+    world cur, hist[HIST], fut[HIST];
+    int nhist, nfut, nredo;
     V keep[256];
     int nkeep;
     quote *linequote;
