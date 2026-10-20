@@ -1,36 +1,68 @@
 #>> sys
-# logo, stats
+# logos, stats
 
-[ [ "   _.--._" " .'  .-'" "/   /  " "|   |  " "\\   \\  " " '.  '-.__.-'" "   '-.____.-'" ] ] :logo-moon
-[ [ "" "" "/\\_/\\" "( -.-)" "(___)~" "" "" ] ] :logo-cat
+# a line is a string, or a list of strings in colours 14 and 15
+[ [ "   _.--._" " .'  .-'" [ "/   /  " "/\\_/\\" ] [ "|   |  " "( -.-)" ]
+    [ "\\   \\  " "(___)~" ] " '.  '-.__.-'" "   '-.____.-'" ] ] :logo-subverge
+
+[ [
+  "           MMM"
+  "           MMMM"
+  "           MMMMM"
+  "           MMMMMM"
+  "           MMMMMMa"
+  "           MMMMMMMa"
+  "           MMMMMMM"
+  "            MMMMMM"
+  "             MMMM"
+  "                M"
+  "               oxdo aMa"
+  "           aMd     aMMMMMMMMM"
+  "         aMMMMM     MMMMMMMMMMMMMMa"
+  "       MMMMMMMa       MMMMMMMMMMMMMMMa"
+  "     MMMMMMMMa"
+  "   MMMMMMMMa"
+  " MMMMMMM"
+  "MMMM"
+] ] :logo-haelide
 
 [ "user" ] :user
-[ "Subverge 0.9.0" ] :os
+[ "Subverge 0.9.1" ] :os
 [ "subverge" ] :host
-[ "ordinal 1.0.0 x86_64" ] :kernel-name
+[ "ordinal 1.0.1 x86_64" ] :kernel-name
 
 [ heap drop kernel drop + { used }
   used kb " / " cat kernel nip mb cat
 ] :memline
 
-[ { label val } 14 color label 9 fmt write 7 color val write ] :stat
+[ { line } line type "string" = [ line len ] [ 0 line [ len + ] each ] if ] :sys-width
+
+[ { line } line type "string" =
+  [ 14 color line write ]
+  [ 0 line len [ { i } 14 i 2 mod + color line i at write ] for ] if
+] :sys-line
+
+[ { label val } where { x y }
+  14 color label 9 fmt write 7 color val 0 78 x - 9 - 0 max slice write
+] :stat
 
 [ nl
-  0 7 [ { i }
-    "  " write 14 color logo-moon i at write 15 color logo-cat i at write
-    where { x y } 18 y cursor
+  "logo-" logo@ cat >sym dup defined? not [ drop 'logo-subverge ] when get do { art }
+  0 art [ sys-width max ] each 5 + { col }
+  0 art len 9 max [ { i }
+    "  " write i art len < [ art i at sys-line ] when
+    where { x y } col y cursor
     i 0 = [ 15 color user "@" cat host cat write ] when
     i 1 = [ "os" os stat ] when
     i 2 = [ "kernel" kernel-name stat ] when
     i 3 = [ "uptime" uptime stat ] when
-    i 4 = [ "shell" "omega 1.0.0" stat ] when
+    i 4 = [ "shell" "omega 1.0.1" stat ] when
     i 5 = [ "cpu" cpu stat ] when
     i 6 = [ "memory" memline stat ] when
+    i 8 = [ [ 8 15 3 13 9 14 10 12 ] [ color 7 emit " " write ] each ] when
     nl
   ] for
-  nl where { x y } 18 y cursor
-  [ 8 15 3 13 9 14 10 12 ] [ color 7 emit " " write ] each
-  7 color nl nl
+  7 color nl
 ] :sys
 
 [ home 0 < { live }
@@ -46,7 +78,7 @@
   "  F1 to F4 switch tabs, and Ctrl-C stops code that is running." say
   "  Type root to see the utilities, and 'name open to edit one." say
   "  Type themes to change the colours, for example 'raw theme." say
-  "  To change the name before the @ in the logo, type 'user open." say
+  "  Type logos to change the logo, and 'user open to change the name." say
   nl 8 color "  To remove this message, type 'startup open." say 7 color
 ] :welcome
 

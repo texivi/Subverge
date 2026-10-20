@@ -1,0 +1,52 @@
+# theme gallery, logos
+wait 5000
+cmd 'dusk theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+cmd [ 3 1 2 ] sort .  ~400
+cmd 1 0 /  ~400
+shot build/80-theme-dusk.png
+cmd 'raw theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+cmd [ 3 1 2 ] sort .  ~400
+cmd 1 0 /  ~400
+shot build/80-theme-raw.png
+cmd 'paper theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+cmd [ 3 1 2 ] sort .  ~400
+cmd 1 0 /  ~400
+shot build/80-theme-paper.png
+cmd 'amber theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+cmd [ 3 1 2 ] sort .  ~400
+cmd 1 0 /  ~400
+shot build/80-theme-amber.png
+cmd 'phosphor theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+cmd [ 3 1 2 ] sort .  ~400
+cmd 1 0 /  ~400
+shot build/80-theme-phosphor.png
+cmd 'haelide theme  ~600
+cmd wipe  ~300
+cmd sys  ~800
+shot build/80-theme-haelide.png
+cmd wipe  ~300
+cmd logos  ~600
+cmd 'subverge logo  ~400
+cmd sys  ~800
+shot build/86-logos.png
+cmd 'dusk theme  ~600
+cmd wipe  ~300
+cmd [ [ "  .-." " (o o)" [ " | O |" "  mine" ] "  '~'" ] ] :logo-mine  ~400
+cmd 'mine logo  ~400
+cmd sys  ~800
+shot build/87-logo-mine.png
+
+cmd 'dusk theme  ~600
+cmd wipe  ~300
+cmd themes  ~600
+shot build/71-themes.png

@@ -33,3 +33,4 @@ int vga_theme(int n);
 int vga_current_theme(void);
 void vga_rgb(int i, u32 rgb);
 void hw_cursor(int x, int y);
+extern char logo_name[24];

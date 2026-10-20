@@ -78,8 +78,8 @@
     "  text writes a string at x y in a colour from 0 to 15, put does one\n  character, and wipe clears the screen. colors shows the numbers.\n  Every game in apps is built out of these three."
     "\"hello\" 50 18 14 text" ]
   [ "Themes"
-    "  The 16 colours come from a theme. themes lists them, 'raw theme\n  switches to the plain VGA colours, and 'dusk theme switches back.\n  An installed system remembers the choice."
-    "'raw theme" ]
+    "  The 16 colours come from a theme. themes lists them, 'raw theme\n  switches to the plain VGA colours, and 'dusk theme switches back.\n  'haelide theme also changes the logo that sys draws. logos lists\n  the logos. An installed system remembers both."
+    "'haelide theme sys" ]
   [ "Ordinals"
     "  omega and epsilon0 are real values in Cantor normal form. + and *\n  are not commutative past the finite: 1 omega + is omega but\n  omega 1 + is omega+1. Subtraction past infinity is an error."
     "1 omega +  omega 1 +" ]
@@ -87,7 +87,7 @@
     "  aleph0, aleph1 and continuum are cardinals. Arithmetic and\n  comparison work where ZFC decides them. Where it does not, the\n  word fails and says so. card gives the cardinality of an ordinal."
     "aleph0 2 aleph0 ^ <" ]
   [ "Counting past infinity"
-    "  count walks from 0 past every finite number, through omega and\n  epsilon0, up to omega1. The other demos in apps do pairing,\n  Cantor's diagonal and a supertask."
+    "  count walks from 0 past every finite number, through omega and\n  epsilon0, up to omega1. The other demos in apps do pairing,\n  Cantor's diagonal and a supertask. For the ideas behind\n  them, watch Vsauce's How To Count Past Infinity on YouTube."
     "omega omega * 1 +  epsilon0 1 +" ]
   [ "Machine access"
     "  Everything runs in ring 0 with no protection. peek and poke use\n  bytes, peekd and poked use 32 bits, peekq and pokeq use 64. in and\n  out use I/O ports. alloc and free manage the heap. 0 poke works."

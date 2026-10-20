@@ -87,7 +87,7 @@ static ord *add(ord *a, ord *b) {
     }
     for (u32 i = 0; i < nb && k < 64; i++) {
         out[k] = tb[i];
-        if (i == 0) out[k].c += carry;
+        if (i == 0 && __builtin_add_overflow(out[k].c, carry, &out[k].c)) { fail("that coefficient doesn't fit in 64 bits%s", ""); return NULL; }
         k++;
     }
     return build(out, k);
@@ -105,7 +105,7 @@ static ord *mul(ord *a, ord *b) {
             struct oterm out[64];
             u32 k = MIN(na, 64u);
             for (u32 j = 0; j < k; j++) out[j] = ta[j];
-            out[0].c *= tb[i].c;
+            if (__builtin_mul_overflow(out[0].c, tb[i].c, &out[0].c)) { fail("that coefficient doesn't fit in 64 bits%s", ""); return NULL; }
             piece = build(out, k);
         } else {
             struct oterm one = { add(ta[0].e ? ta[0].e : fin(0), tb[i].e), tb[i].c };
@@ -154,7 +154,7 @@ static ord *power(ord *a, ord *b) {
         }
         ord *bp = build(out, k);
         u64 kn = 1;
-        while (n--) kn *= x;
+        while (n--) if (__builtin_mul_overflow(kn, x, &kn)) { fail("that coefficient doesn't fit in 64 bits%s", ""); return NULL; }
         struct oterm t = { bp, 1 };
         return mul(build(&t, 1), fin(kn));
     }

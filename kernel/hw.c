@@ -202,13 +202,60 @@ static void b_waitkey(void) {
 
 /* themes */
 
+char logo_name[24] = "subverge";
+
+static int has_logo(const char *n) {
+    char w[40];
+    snfmt(w, sizeof w, "logo-%s", n);
+    return lookup(intern(w, (u32)strlen(w))) != NULL;
+}
+
 static void b_theme(void) {
     if (!need(1, "theme")) return;
     V v = pop();
     if (!want(v, T_SYM, "theme")) return;
     for (int i = 0; themes[i].name; i++)
-        if (!strcmp(themes[i].name, name_of(v))) { vga_theme(i); persist_save_theme(); return; }
+        if (!strcmp(themes[i].name, name_of(v))) {
+            /* a theme brings its own logo, if one is defined */
+            if (has_logo(themes[i].name)) scopy(logo_name, themes[i].name, sizeof logo_name);
+            else if (!strcmp(logo_name, themes[vga_current_theme()].name)) scopy(logo_name, "subverge", sizeof logo_name);
+            vga_theme(i);
+            persist_save_theme();
+            return;
+        }
     fail("%s isn't a theme, type themes to see them", name_of(v));
+}
+
+static void b_logo(void) {
+    if (!need(1, "logo")) return;
+    V v = pop();
+    if (!want(v, T_SYM, "logo")) return;
+    if (strlen(name_of(v)) >= sizeof logo_name || !has_logo(name_of(v))) { fail("logo-%s isn't defined, type logos to see the logos", name_of(v)); return; }
+    scopy(logo_name, name_of(v), sizeof logo_name);
+    persist_save_theme();
+}
+
+static void b_logoname(void) { push(S(str_new(logo_name, (u32)strlen(logo_name)))); }
+
+static void list_logos(bind *d) {
+    for (bind *b = d; b; b = b->next) {
+        if (b->v.t == T_NONE || strncmp(b->name->s, "logo-", 5)) continue;
+        int dup = 0;
+        for (bind *c = d; c != b; c = c->next) if (c->name == b->name) dup = 1;
+        if (dup) continue;
+        const char *n = b->name->s + 5;
+        int on = !strcmp(n, logo_name);
+        vga_color(on ? C_MOON : C_TEXT);
+        kprintf("  %c %s\n", on ? '>' : ' ', n);
+    }
+}
+
+static void b_logos(void) {
+    list_logos(root_dict);
+    if (W->dict) list_logos(W->dict);
+    vga_color(C_DIM);
+    kputs("\n  Switch with 'haelide logo. A logo is a word named logo-<name>.\n");
+    vga_color(C_TEXT);
 }
 
 static void b_themes(void) {
@@ -270,6 +317,7 @@ const struct builtin hw_words[] = {
     { "cursor", b_cursor }, { "nocursor", b_nocursor }, { "where", b_where }, { "size", b_width },
     { "key", b_key }, { "key?", b_keyq }, { "waitkey", b_waitkey },
     { "theme", b_theme }, { "themes", b_themes }, { "theme@", b_themename }, { "rgb", b_rgb },
+    { "logo", b_logo }, { "logos", b_logos }, { "logo@", b_logoname },
     { "sys-c", b_sysc }, { "reboot", b_reboot }, { "halt", b_halt },
     { NULL, NULL }
 };

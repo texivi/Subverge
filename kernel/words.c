@@ -388,6 +388,15 @@ static void b_len(void) {
     else fail("len needs a string or a list%s", "");
 }
 
+static void b_type(void) {
+    if (!need(1, "type")) return;
+    static const char *const names[] = { "nothing", "number", "string", "list", "symbol", "word", "word", "word",
+                                         "set", "ordinal", "cardinal", "number" };
+    V v = pop();
+    const char *n = v.t < sizeof names / sizeof *names ? names[v.t] : "word";
+    push(S(str_new(n, (u32)strlen(n))));
+}
+
 static void b_cat(void) {
     if (!need(2, "cat")) return;
     V b = pop(), a = pop();
@@ -763,6 +772,11 @@ static void b_eval(void) {
     if (q) call(Q(q));
 }
 
+static void b_fail(void) {
+    str *s;
+    if (pop_str("fail", &s)) fail("%s", s->s);
+}
+
 static void b_try(void) {
     if (!need(1, "try")) return;
     V q = pop();
@@ -827,14 +841,14 @@ const struct builtin core_words[] = {
     { "append", b_append }, { "range", b_range }, { "list", b_list }, { "spread", b_spread },
     { "first", b_first }, { "last", b_last }, { "rest", b_rest }, { "has", b_has }, { "index", b_index },
     { "alloc", b_alloc }, { "free", b_free },
-    { "len", b_len }, { "cat", b_cat }, { "str", b_str }, { "hex", b_hex }, { "chr", b_chr }, { "at", b_at },
+    { "len", b_len }, { "type", b_type }, { "cat", b_cat }, { "str", b_str }, { "hex", b_hex }, { "chr", b_chr }, { "at", b_at },
     { "slice", b_slice }, { "pad", b_pad }, { "find", b_find }, { "split", b_split }, { ">num", b_tonum },
     { "upper", b_upper }, { "lower", b_lower }, { "trim", b_trim }, { "starts?", b_starts }, { "ends?", b_ends },
     { "replace", b_replace }, { "join", b_join }, { "reverse", b_reverse }, { "sort", b_sort },
     { "sqrt", b_sqrt }, { "gcd", b_gcd },
     { ".", b_print }, { "say", b_say }, { "write", b_write }, { "emit", b_emit }, { "nl", b_nl }, { "color", b_color },
     { "get", b_get }, { "forget", b_forget }, { ">sym", b_tosym }, { "defined?", b_defined }, { "see", b_see },
-    { "words", b_words }, { "back", b_back }, { "redo", b_redo }, { "eval", b_eval }, { "try", b_try }, { "trace", b_trace }, { "edit", b_edit },
+    { "words", b_words }, { "back", b_back }, { "redo", b_redo }, { "eval", b_eval }, { "try", b_try }, { "fail", b_fail }, { "trace", b_trace }, { "edit", b_edit },
     { "calc", b_calc },
     { NULL, NULL }
 };
