@@ -6,8 +6,6 @@
 
 Subverge is a radical and experimental 64-bit operating system written from scratch. See the [features](https://sbvrg.github.io/features.html).
 
-![First boot of the live ISO](https://sbvrg.github.io/images/01-welcome-live.png)
-
 ## Requirements
 
 The virtual machine needs `qemu-system-x86_64` and 256 MB of RAM. Building from source also needs gcc, binutils and nasm, and the ISO needs `grub-mkrescue` and `xorriso`. On Exherbo, QEMU is in the `virtualization` repository:
