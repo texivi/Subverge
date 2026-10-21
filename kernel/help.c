@@ -183,6 +183,7 @@ static const struct doc docs[] = {
     { "time", "time", "-- y mo d h m s", "The clock: year month day hour minute second.", "time" },
     { "time", "idle", "-- n", "Ticks the CPU spent idle.", "idle" },
     { "time", "sleep", "ticks --", "Waits that long. Ctrl-C stops it.", "100 sleep   waits one second" },
+    { "time", "beep", "hz ticks --", "Plays a tone on the PC speaker. Ctrl-C stops it.", "440 50 beep   plays A for half a second" },
     { "time", "rand", "n -- r", "A random number from 0 to n-1.", "6 rand" },
 
     { "screen", "put", "ch x y color --", "Puts one character on the screen.", "42 10 5 14 put" },
@@ -193,6 +194,10 @@ static const struct doc docs[] = {
     { "screen", "nocursor", "--", "Hides the cursor.", "nocursor" },
     { "screen", "where", "-- x y", "Where the cursor is.", "where" },
     { "screen", "size", "-- w h", "The screen size: 80 by 24.", "size" },
+    { "screen", "gfx", "--", "Starts 640 by 480 graphics. A tab key leaves it.", "gfx" },
+    { "screen", "gfx-off", "--", "Back to the text screen.", "gfx-off" },
+    { "screen", "dot", "x y col --", "Sets one pixel in graphics mode.", "320 240 14 dot" },
+    { "screen", "box", "x y w h col --", "Fills a rectangle in graphics mode.", "20 20 100 60 5 box" },
     { "screen", "title", "s --", "Names this tab in the tab bar.", "\"build\" title" },
     { "screen", "tab", "n -- l", "About tab n: [ title state active ].", "2 tab" },
     { "screen", "mytab", "-- n", "Which tab you are in, 1 to 4.", "mytab" },

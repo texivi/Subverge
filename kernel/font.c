@@ -1,4 +1,4 @@
-#include "lib.h"
+#include "sv.h"
 
 static const u8 glyphs[][16] = {
     /* 0x80 omega */
@@ -21,12 +21,33 @@ static const u8 glyphs[][16] = {
 static void seq(u8 i, u8 v) { outb(0x3C4, i); outb(0x3C5, v); }
 static void gfx(u8 i, u8 v) { outb(0x3CE, i); outb(0x3CF, v); }
 
-void font_init(void) {
+static void plane2_open(void) {
     seq(0x02, 0x04); seq(0x04, 0x07);
     gfx(0x04, 0x02); gfx(0x05, 0x00); gfx(0x06, 0x04);
+}
+
+static void plane2_close(void) {
+    seq(0x02, 0x03); seq(0x04, 0x03);
+    gfx(0x04, 0x00); gfx(0x05, 0x10); gfx(0x06, 0x0E);
+}
+
+void font_init(void) {
+    plane2_open();
     volatile u8 *font = (volatile u8 *)0xA0000;
     for (unsigned g = 0; g < sizeof glyphs / sizeof *glyphs; g++)
         for (int r = 0; r < 16; r++) font[(0x80 + g) * 32 + r] = glyphs[g][r];
-    seq(0x02, 0x03); seq(0x04, 0x03);
-    gfx(0x04, 0x00); gfx(0x05, 0x10); gfx(0x06, 0x0E);
+    plane2_close();
+}
+
+/* graphics mode overwrites the font */
+void font_save(u8 *buf) {
+    plane2_open();
+    for (int i = 0; i < FONT_BYTES; i++) buf[i] = ((volatile u8 *)0xA0000)[i];
+    plane2_close();
+}
+
+void font_restore(const u8 *buf) {
+    plane2_open();
+    for (int i = 0; i < FONT_BYTES; i++) ((volatile u8 *)0xA0000)[i] = buf[i];
+    plane2_close();
 }

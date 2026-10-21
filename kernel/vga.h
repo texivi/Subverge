@@ -26,6 +26,10 @@ void kputs(const char *s);
 void kprintf(const char *f, ...);
 
 void hw_put(int x, int y, char c, u8 a);
+extern int gfx_on;
+void gfx_leave(void);
+void vga_save(void);
+void vga_restore(void);
 
 struct theme { const char *name; u32 rgb[16]; };
 extern const struct theme themes[];

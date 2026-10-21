@@ -25,6 +25,8 @@ void panic(const char *msg) { printf("PANIC: %s\n", msg); exit(1); }
 void cpu_brand(char *out, int cap) { scopy(out, "Host CPU", (size_t)cap); }
 void host_yield(void) { fake_ticks++; }
 void font_init(void) {}
+void font_save(u8 *buf) { (void)buf; }
+void font_restore(const u8 *buf) { (void)buf; }
 char *persist_load(int slot, u32 *len) { (void)slot; (void)len; return NULL; }
 void persist_save_tab(int tab) { (void)tab; }
 void persist_save_root(void) {}

@@ -1,0 +1,11 @@
+# graphics mode
+wait 6000
+cmd gfx 20 20 100 60 5 box key drop gfx-off
+wait 700
+shot build/gfx-ex1.png
+key a
+wait 800
+shot build/gfx-ex2.png
+cmd "back" say
+wait 300
+shot build/gfx-ex3.png

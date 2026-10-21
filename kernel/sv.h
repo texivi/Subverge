@@ -5,9 +5,9 @@
 #define HOST_NAME   "subverge"
 #define KERNEL_NAME "ordinal"
 #define SHELL_NAME  "omega"
-#define OS_VERSION     "0.9.1"
-#define KERNEL_VERSION "1.0.1"
-#define SHELL_VERSION  "1.0.1"
+#define OS_VERSION     "0.9.2"
+#define KERNEL_VERSION "1.0.2"
+#define SHELL_VERSION  "1.0.2"
 #define ARCH        "x86_64"
 #define USER_NAME   "user"
 
@@ -27,5 +27,8 @@ void omega_stats(struct omega_stats *s);
 
 void calc(void);
 void font_init(void);
+#define FONT_BYTES 8192
+void font_save(u8 *buf);
+void font_restore(const u8 *buf);
 void omega_init_world(void);
 void eval_line(const char *line);

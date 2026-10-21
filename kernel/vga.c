@@ -35,6 +35,7 @@ const struct theme themes[] = {
     { NULL, { 0 } }
 };
 static int cur_theme;
+int gfx_on;
 
 static u8 dac_index(int i) { return i < 6 ? (u8)i : i == 6 ? 0x14 : i == 7 ? 7 : (u8)(0x38 + i - 8); }
 
@@ -57,13 +58,43 @@ int vga_theme(int n) {
 int vga_current_theme(void) { return cur_theme; }
 
 void hw_put(int x, int y, char c, u8 a) {
-    if (x >= 0 && x < VW && y >= 0 && y <= VH) HW[y * VW + x] = (u16)(u8)c | (u16)a << 8;
+    if (!gfx_on && x >= 0 && x < VW && y >= 0 && y <= VH) HW[y * VW + x] = (u16)(u8)c | (u16)a << 8;
 }
 
 void hw_cursor(int x, int y) {
     u16 p = (u16)(y * VW + x);
     outb(0x3D4, 0x0F); outb(0x3D5, (u8)(p & 0xFF));
     outb(0x3D4, 0x0E); outb(0x3D5, (u8)(p >> 8));
+}
+
+/* text mode registers, which VBE changes */
+
+static struct { u8 misc, sr[5], cr[25], gr[9], ar[21]; } rs;
+static u8 rd(u16 idx, u8 i) { outb(idx, i); return inb((u16)(idx + 1)); }
+static void wr(u16 idx, u8 i, u8 v) { outb(idx, i); outb((u16)(idx + 1), v); }
+
+void vga_save(void) {
+    rs.misc = inb(0x3CC);
+    for (int i = 0; i < 5; i++) rs.sr[i] = rd(0x3C4, (u8)i);
+    for (int i = 0; i < 25; i++) rs.cr[i] = rd(0x3D4, (u8)i);
+    for (int i = 0; i < 9; i++) rs.gr[i] = rd(0x3CE, (u8)i);
+    for (int i = 0; i < 21; i++) { inb(0x3DA); outb(0x3C0, (u8)(i | 0x20)); rs.ar[i] = inb(0x3C1); }
+    inb(0x3DA);
+    outb(0x3C0, 0x20);
+}
+
+void vga_restore(void) {
+    outb(0x3C2, rs.misc);
+    wr(0x3C4, 0, 1);
+    for (int i = 1; i < 5; i++) wr(0x3C4, (u8)i, rs.sr[i]);
+    wr(0x3C4, 0, 3);
+    wr(0x3D4, 0x11, rs.cr[0x11] & 0x7F);
+    for (int i = 0; i < 25; i++) if (i != 0x11) wr(0x3D4, (u8)i, rs.cr[i]);
+    wr(0x3D4, 0x11, rs.cr[0x11]);
+    for (int i = 0; i < 9; i++) wr(0x3CE, (u8)i, rs.gr[i]);
+    for (int i = 0; i < 21; i++) { inb(0x3DA); outb(0x3C0, (u8)i); outb(0x3C0, rs.ar[i]); }
+    inb(0x3DA);
+    outb(0x3C0, 0x20);
 }
 
 void vga_init(void) {
@@ -88,8 +119,8 @@ void vga_put(int x, int y, char c, u8 a) {
     u64 f = irq_save();
     u16 v = (u16)(u8)c | (u16)a << 8;
     T->buf[y * VW + x] = v;
-    if (is_active()) HW[(y + 1) * VW + x] = v;
-    else T->activity = 1;
+    if (!is_active()) T->activity = 1;
+    else if (!gfx_on) HW[(y + 1) * VW + x] = v;
     irq_restore(f);
 }
 
@@ -125,7 +156,7 @@ static void scroll(void) {
     u64 f = irq_save();
     memmove(T->buf, T->buf + VW, VW * (VH - 1) * 2);
     for (int x = 0; x < VW; x++) T->buf[(VH - 1) * VW + x] = ' ' | (u16)ATTR(C_TEXT, C_BG) << 8;
-    if (is_active()) for (int i = 0; i < VW * VH; i++) HW[VW + i] = T->buf[i];
+    if (is_active() && !gfx_on) for (int i = 0; i < VW * VH; i++) HW[VW + i] = T->buf[i];
     irq_restore(f);
     T->cy = VH - 1;
 }
@@ -181,6 +212,7 @@ void draw_tabbar(void) {
 
 void switch_tab(int n) {
     if (n < 0 || n >= NTABS) return;
+    gfx_leave();
     u64 f = irq_save();
     active_tab = n;
     struct term *t = &tabs[n].term;
