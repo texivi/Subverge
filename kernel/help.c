@@ -187,7 +187,7 @@ static const struct doc docs[] = {
     { "time", "rand", "n -- r", "A random number from 0 to n-1.", "6 rand" },
 
     { "screen", "put", "ch x y color --", "Puts one character on the screen.", "42 10 5 14 put" },
-    { "screen", "text", "s x y color --", "Writes a string at a position.", "\"hi\" 10 5 14 text" },
+    { "screen", "text", "s x y color --", "Writes a string at a position, in graphics mode too.", "\"hi\" 10 5 14 text" },
     { "screen", "screen@", "x y -- ch color", "Reads the character and colour there.", "10 5 screen@" },
     { "screen", "wipe", "--", "Clears the screen.", "wipe" },
     { "screen", "cursor", "x y --", "Moves the cursor.", "0 0 cursor" },
@@ -198,6 +198,7 @@ static const struct doc docs[] = {
     { "screen", "gfx-off", "--", "Back to the text screen.", "gfx-off" },
     { "screen", "dot", "x y col --", "Sets one pixel in graphics mode.", "320 240 14 dot" },
     { "screen", "box", "x y w h col --", "Fills a rectangle in graphics mode.", "20 20 100 60 5 box" },
+    { "screen", "window", "x y w h title --", "Draws a titled window frame in graphics mode.", "40 40 300 160 \"first\" window" },
     { "screen", "title", "s --", "Names this tab in the tab bar.", "\"build\" title" },
     { "screen", "tab", "n -- l", "About tab n: [ title state active ].", "2 tab" },
     { "screen", "mytab", "-- n", "Which tab you are in, 1 to 4.", "mytab" },

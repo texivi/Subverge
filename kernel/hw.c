@@ -168,6 +168,35 @@ static void b_box(void) {
         for (i64 i = x; i < x1; i++) lfb[j * GW + i] = (u8)c;
 }
 
+static void glyph(int x, int y, u8 ch, u8 c) {
+    const u8 *g = saved_font + ch * 32;
+    for (int r = 0; r < 16; r++)
+        for (int b = 0; b < 8; b++)
+            if (g[r] & (0x80 >> b) && x + b >= 0 && x + b < GW && y + r >= 0 && y + r < GH) lfb[(y + r) * GW + x + b] = c;
+}
+
+static void gtext(i64 x, i64 y, i64 c, str *s) {
+    for (u32 k = 0; k < s->len; k++) glyph((int)x + 8 * (int)k, (int)y, (u8)s->s[k], (u8)c);
+}
+
+static void rect(i64 x, i64 y, i64 w, i64 h, u8 c) {
+    for (i64 j = y; j < y + h; j++)
+        for (i64 i = x; i < x + w; i++)
+            if (i >= 0 && i < GW && j >= 0 && j < GH) lfb[j * GW + i] = c;
+}
+
+static void b_window(void) {
+    i64 x, y, w, h;
+    str *t;
+    if (!pop_str("window", &t) || !pop_int("window", &h) || !pop_int("window", &w) || !pop_int("window", &y) || !pop_int("window", &x)) return;
+    if (!gfx_on) { fail("graphics mode is off, run gfx first%s", ""); return; }
+    if (w < 16 || h < 24) { fail("window needs at least 16 by 24%s", ""); return; }
+    rect(x, y, w, h, 7);
+    rect(x + 1, y + 1, w - 2, 18, 1);
+    rect(x + 2, y + 20, w - 4, h - 22, 0);
+    for (u32 i = 0; i < t->len && 8 * (i64)i + 12 < w; i++) glyph((int)x + 6 + 8 * (int)i, (int)y + 2, (u8)t->s[i], 15);
+}
+
 static void b_memmap(void) {
     V ents[32];
     for (int i = 0; i < boot_nmmap; i++) {
@@ -263,8 +292,10 @@ static void b_put(void) {
 static void b_text(void) {
     i64 x, y, col;
     str *s;
-    if (pop_int("text", &col) && pop_int("text", &y) && pop_int("text", &x) && pop_str("text", &s))
+    if (pop_int("text", &col) && pop_int("text", &y) && pop_int("text", &x) && pop_str("text", &s)) {
+        if (gfx_on) { gtext(x, y, col & 15, s); return; }
         vga_puts_at((int)x, (int)y, s->s, (u8)col);
+    }
 }
 
 static void b_getch(void) {
@@ -412,7 +443,7 @@ const struct builtin hw_words[] = {
     { "put", b_put }, { "text", b_text }, { "screen@", b_getch }, { "wipe", b_wipe },
     { "cursor", b_cursor }, { "nocursor", b_nocursor }, { "where", b_where }, { "size", b_width },
     { "key", b_key }, { "key?", b_keyq }, { "waitkey", b_waitkey },
-    { "gfx", b_gfx }, { "gfx-off", b_gfxoff }, { "dot", b_dot }, { "box", b_box },
+    { "gfx", b_gfx }, { "gfx-off", b_gfxoff }, { "dot", b_dot }, { "box", b_box }, { "window", b_window },
     { "theme", b_theme }, { "themes", b_themes }, { "theme@", b_themename }, { "rgb", b_rgb },
     { "logo", b_logo }, { "logos", b_logos }, { "logo@", b_logoname },
     { "sys-c", b_sysc }, { "reboot", b_reboot }, { "halt", b_halt },

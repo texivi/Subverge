@@ -1,0 +1,6 @@
+# window demo
+wait 6000
+cmd gfx 0 0 640 480 1 box 60 50 360 220 "first" window "hello" 80 100 14 text key drop gfx-off
+wait 700
+shot build/win1.png
+key a
