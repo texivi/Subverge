@@ -5,9 +5,9 @@
 #define HOST_NAME   "subverge"
 #define KERNEL_NAME "ordinal"
 #define SHELL_NAME  "omega"
-#define OS_VERSION     "0.9.3"
-#define KERNEL_VERSION "1.0.3"
-#define SHELL_VERSION  "1.0.3"
+#define OS_VERSION     "0.9.4"
+#define KERNEL_VERSION "1.0.4"
+#define SHELL_VERSION  "1.0.4"
 #define ARCH        "x86_64"
 #define USER_NAME   "user"
 

@@ -557,6 +557,8 @@ static void report(u8 color, const char *fmt, const char *a) {
     vga_color(C_TEXT);
 }
 
+extern char doc_run[200];
+
 void eval_line(const char *line) {
     W->sp = (int)W->cur.stack->n;
     memcpy(W->stk, W->cur.stack->v, (u64)W->sp * sizeof(V));
@@ -680,5 +682,12 @@ void omega_main(void) {
         prompt();
         if (readline(line, &W->lines) <= 0) continue;
         eval_line(line);
+        while (doc_run[0]) {
+            char run[sizeof doc_run];
+            scopy(run, doc_run, sizeof run);
+            doc_run[0] = 0;
+            kprintf("%s\n", run);
+            eval_line(run);
+        }
     }
 }

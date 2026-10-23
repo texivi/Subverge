@@ -25,7 +25,7 @@ struct task {
     int id;
     void (*entry)(void);
     u8 *stack;
-    int wait_key;
+    int wait_key, mouse_on;
     u64 wake_at;
     volatile int kb[64];
     volatile int kh, kt;
@@ -37,6 +37,15 @@ struct task {
     struct scrawl_state *ed;
     struct calc_state *calc;
 };
+
+struct mev { int x, y, down, dz; };
+void mouse_init(void);
+int mouse_event(struct mev *e);
+void mouse_flush(void);
+void mouse_move(int x, int y);
+void mouse_redraw(void);
+int tab_at(int x);
+extern int mouse_found, mouse_shown, mouse_cx, mouse_cy;
 
 extern struct task *current;
 extern struct task tabs[NTABS];

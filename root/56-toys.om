@@ -92,3 +92,25 @@
   ] while
   wipe "omega" title
 ] :stars
+
+[ "  Left draws, right erases. 1 to 9 pick a colour, c clears, q leaves." 0 23 8 text ] :scribble-hint
+
+[ "scribble" title wipe nocursor
+  mouse? not [ "  No mouse was found." say wipe "omega" title ] when
+  mouse? [
+    scribble-hint 10 { col } 0 { stop }
+    [ stop not ] [
+      key? { k }
+      k 113 = [ 1 ->stop ] when
+      k 99 = [ wipe scribble-hint ] when
+      k 49 >= k 57 <= and [ k 47 - ->col ] when
+      mouse { x y b }
+      y 0 >= y 22 <= and [
+        b 1 & 1 = [ 219 x y col put ] when
+        b 2 & 2 = [ 32 x y col put ] when
+      ] when
+      1 sleep
+    ] while
+    wipe "omega" title
+  ] when
+] :scribble

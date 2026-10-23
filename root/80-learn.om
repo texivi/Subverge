@@ -89,6 +89,27 @@
   [ "Counting past infinity"
     "  count walks from 0 past every finite number, through omega and\n  epsilon0, up to omega1. The other demos in apps do pairing,\n  Cantor's diagonal and a supertask. For the ideas behind\n  them, watch Vsauce's How To Count Past Infinity on YouTube."
     "omega omega * 1 +  epsilon0 1 +" ]
+  [ "Same size"
+    "  Two sets have the same size when their members pair off one to\n  one. pair turns two numbers into one number and unpair takes it\n  apart again. No two pairs get the same number, and no number is\n  skipped."
+    "3 4 pair  32 unpair" ]
+  [ "The hotel"
+    "  A hotel with rooms 1, 2, 3 and so on is full. A new guest gets\n  room 1 when every guest moves up one room. hotel shows that, and\n  then seats infinitely many buses of infinitely many guests with\n  pair."
+    "hotel" ]
+  [ "Fractions"
+    "  n rational leaves the n-th positive fraction as ( p q ). The\n  list holds every fraction once, so the fractions can be counted\n  even though there are fractions between any two of them."
+    "7 rational  100 rational" ]
+  [ "Too many reals"
+    "  A list of infinite digit strings always misses one string:\n  change digit k of row k. So the real numbers can't be listed,\n  and 2 aleph0 ^ is larger than aleph0. diagonal draws the\n  argument."
+    "aleph0 2 aleph0 ^ <" ]
+  [ "Alephs"
+    "  n aleph is the n-th infinite size. Adding or multiplying two\n  infinite sizes gives the larger one, and a power of two gives a\n  larger size. Whether aleph1 equals continuum can't be settled in\n  ZFC, so that comparison fails."
+    "3 aleph  aleph0 aleph0 *" ]
+  [ "Hailstones"
+    "  n collatz counts the steps a number takes to reach 1 when even\n  numbers are halved and odd numbers become 3n+1. Nobody has found a\n  start that doesn't reach 1, and nobody has proved there is none.\n  The count is a while loop with one quote for the test and one for\n  the body."
+    "27 collatz  0 8 range [ collatz ] map" ]
+  [ "Bit parity"
+    "  n thue is 1 when n has an odd number of 1 bits in binary, and 0\n  otherwise. In order the values are 0 1 1 0 1 0 0 1, and no block\n  of them ever occurs three times in a row. thue is a while loop on\n  & and >>."
+    "0 16 range [ thue ] map" ]
   [ "Machine access"
     "  Everything runs in ring 0 with no protection. peek and poke use\n  bytes, peekd and poked use 32 bits, peekq and pokeq use 64. in and\n  out use I/O ports. alloc and free manage the heap. 0 poke works."
     "0xB8000 peek  ticks 100 /" ]

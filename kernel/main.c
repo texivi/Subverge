@@ -52,6 +52,8 @@ void kmain(u32 magic, u64 mbaddr) {
     register_words(jit_words);
     register_words(dis_words);
     register_words(help_words);
+    register_words(doc_words);
+    register_words(mouse_words);
     ord_init();
     root_boot();
 
@@ -59,6 +61,7 @@ void kmain(u32 magic, u64 mbaddr) {
     switch_tab(0);
     timer_init(HZ);
     kbd_init();
+    mouse_init();
 
     __asm__ volatile("sti");
     for (;;) __asm__ volatile("hlt");

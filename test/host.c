@@ -100,6 +100,8 @@ int main(void) {
     register_words(jit_words);
     register_words(dis_words);
     register_words(help_words);
+    register_words(doc_words);
+    register_words(mouse_words);
     register_words(persist_words);
     ord_init();
     root_boot();

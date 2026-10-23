@@ -25,6 +25,7 @@
   [ "rain" "A screensaver." ]
   [ "bounce" "Bouncing balls." ]
   [ "stars" "A starfield." ]
+  [ "scribble" "Draw with the mouse." ]
   [ "mandel" "Mandelbrot zoom." ]
   [ "sieve" "Primes by sieving." ]
   [ "sorting" "Bubble sort as bars." ]
@@ -33,6 +34,9 @@
   [ "diagonal" "Cantor's diagonal." ]
   [ "supertask" "Halve a line forever." ]
   [ "pairing" "Naturals and evens." ]
+  [ "hotel" "A full hotel." ]
+  [ "rationals" "Every fraction." ]
+  [ "ulam" "Primes on a spiral." ]
   [ "fortune" "A short fact." ]
 ] ] :app-list
 

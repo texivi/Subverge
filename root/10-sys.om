@@ -27,9 +27,9 @@
 ] ] :logo-haelide
 
 [ "user" ] :user
-[ "Subverge 0.9.3" ] :os
+[ "Subverge 0.9.4" ] :os
 [ "subverge" ] :host
-[ "ordinal 1.0.2 x86_64" ] :kernel-name
+[ "ordinal 1.0.4 x86_64" ] :kernel-name
 
 [ heap drop kernel drop + { used }
   used kb " / " cat kernel nip mb cat
@@ -56,7 +56,7 @@
     i 1 = [ "os" os stat ] when
     i 2 = [ "kernel" kernel-name stat ] when
     i 3 = [ "uptime" uptime stat ] when
-    i 4 = [ "shell" "omega 1.0.2" stat ] when
+    i 4 = [ "shell" "omega 1.0.4" stat ] when
     i 5 = [ "cpu" cpu stat ] when
     i 6 = [ "memory" memline stat ] when
     i 8 = [ [ 8 15 3 13 9 14 10 12 ] [ color 7 emit " " write ] each ] when
@@ -76,6 +76,7 @@
   14 color "  Type apps to see the programs you can run." say 7 color
   "  Type help to see every command." say
   "  F1 to F4 switch tabs, and Ctrl-C stops code that is running." say
+  14 color "  Type docs to read the help pages." say 7 color
   "  Type root to see the utilities, and 'name open to edit one." say
   "  Type themes to change the colours, for example 'raw theme." say
   "  Type logos to change the logo, and 'user open to change the name." say

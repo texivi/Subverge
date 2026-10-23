@@ -198,7 +198,7 @@ static const struct doc docs[] = {
     { "screen", "gfx-off", "--", "Back to the text screen.", "gfx-off" },
     { "screen", "dot", "x y col --", "Sets one pixel in graphics mode.", "320 240 14 dot" },
     { "screen", "box", "x y w h col --", "Fills a rectangle in graphics mode.", "20 20 100 60 5 box" },
-    { "screen", "window", "x y w h title --", "Draws a titled window frame in graphics mode.", "40 40 300 160 \"first\" window" },
+    { "screen", "window", "x y w h s --", "Draws a titled window frame in graphics mode.", "40 40 300 160 \"first\" window" },
     { "screen", "title", "s --", "Names this tab in the tab bar.", "\"build\" title" },
     { "screen", "tab", "n -- l", "About tab n: [ title state active ].", "2 tab" },
     { "screen", "mytab", "-- n", "Which tab you are in, 1 to 4.", "mytab" },
@@ -243,8 +243,20 @@ static const struct doc docs[] = {
     { "demos", "ord-demo", "--", "Ordinal and cardinal arithmetic, live.", "ord-demo" },
     { "demos", "powerset", "l -- list", "Every subset of a list.", "[ 1 2 ] powerset" },
     { "demos", "pairing", "--", "The naturals and the evens match up.", "pairing" },
+    { "demos", "hotel", "--", "A full hotel takes guests, then infinite buses.", "hotel" },
+    { "demos", "rationals", "--", "Every positive fraction gets a number.", "rationals" },
+    { "demos", "pair", "a b -- n", "Cantor pairing: two numbers into one number.", "3 4 pair" },
+    { "demos", "unpair", "n -- a b", "Undoes pair.", "32 unpair" },
+    { "demos", "fusc", "n -- f", "Stern's diatomic sequence.", "5 fusc" },
+    { "demos", "rational", "n -- p q", "The n-th positive fraction in Calkin-Wilf order.", "7 rational" },
+    { "demos", "collatz", "n -- steps", "Steps for n to reach 1 by halving or 3n+1.", "27 collatz" },
+    { "demos", "thue", "n -- bit", "Parity of the 1 bits of n.", "0 16 range [ thue ] map" },
+    { "demos", "prime?", "n -- flag", "1 when n is prime.", "97 prime?" },
+    { "demos", "ulam", "--", "Primes laid out on a square spiral.", "ulam" },
     { "demos", "diagonal", "--", "Cantor's proof the reals can't be listed.", "diagonal" },
     { "demos", "supertask", "--", "Halve a line forever, in finite time.", "supertask" },
+    { "games", "scribble", "--", "Draws with the mouse. Q leaves.", "scribble" },
+    { "helpers", "scribble-hint", "--", "Prints the keys line of scribble.", "" },
     { "demos", "mandel", "--", "The Mandelbrot set, zooming in. Any key goes on.", "mandel" },
     { "demos", "mandel-at", "ox oy sc mx --", "Draws one view of the set. 65536 means 1.0.", "-32768 0 2816 40 mandel-at" },
 
@@ -340,6 +352,10 @@ static const struct doc docs[] = {
     { "screen", "logo", "'x --", "Sets the logo sys draws, and remembers it.", "'haelide logo" },
     { "screen", "logos", "--", "Lists the logos.", "logos" },
     { "screen", "logo@", "-- s", "The name of the current logo.", "logo@ say" },
+    { "screen", "mouse", "-- x y buttons", "Where the pointer is, and 1 left, 2 right, 4 middle.", "mouse" },
+    { "screen", "mouse?", "-- 1|0", "1 when a mouse was found.", "mouse?" },
+    { "screen", "doc", "s --", "Opens a help page. Q leaves.", "\"prompt\" doc" },
+    { "screen", "docs", "--", "Opens the index of help pages.", "docs" },
     { "screen", "rgb", "n r g b --", "Sets colour n to red, green, blue 0 to 255.", "14 255 0 0 rgb" },
     { "text", "lower", "s -- str", "Turns capitals into small letters.", "\"Hi\" lower   gives \"hi\"" },
     { "text", "trim", "s -- str", "Drops spaces and newlines at both ends.", "\" hi \" trim   gives \"hi\"" },
@@ -520,7 +536,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words };
+    const struct builtin *sets[] = { core_words, hw_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {
@@ -547,3 +563,10 @@ int help_check(void) {
     return bad;
 }
 #endif
+
+int help_ngroups(void) { return NGROUPS; }
+int help_ndocs(void) { return NDOCS; }
+void help_group(int i, const char **name, const char **text) { *name = groups[i].name; *text = groups[i].text; }
+void help_doc(int i, const char **group, const char **name, const char **effect, const char **text, const char **example) {
+    *group = docs[i].group; *name = docs[i].name; *effect = docs[i].effect; *text = docs[i].text; *example = docs[i].example;
+}

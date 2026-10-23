@@ -7,7 +7,7 @@ CFLAGS  := -m64 -std=gnu11 -O2 -Wall -Wextra -ffreestanding -fno-pie -fno-stack-
 LDFLAGS := -m elf_x86_64 -T linker.ld -nostdlib -z max-page-size=0x1000
 
 SRC  := $(wildcard kernel/*.c)
-OBJ  := build/boot.o build/rootfs.o build/bootbins.o $(SRC:kernel/%.c=build/%.o)
+OBJ  := build/boot.o build/rootfs.o build/docfs.o build/bootbins.o $(SRC:kernel/%.c=build/%.o)
 ELF  := build/ordinal.elf
 IMG  := build/subverge.elf
 
@@ -25,6 +25,13 @@ build/rootfs.bin: $(sort $(wildcard root/*.om)) | build
 	cat $^ > $@
 
 build/rootfs.o: build/rootfs.bin
+	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
+
+# help pages
+build/docfs.bin: $(sort $(wildcard doc/*.md)) | build
+	@for f in $^; do printf '#>> %s\n' "$$(basename $$f .md)"; cat $$f; printf '\n'; done > $@
+
+build/docfs.o: build/docfs.bin
 	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
 
 # installer blobs
@@ -67,12 +74,12 @@ clean:
 
 # linux harness
 HOSTSRC := kernel/lib.c kernel/big.c kernel/omega.c kernel/words.c kernel/ord.c kernel/root.c kernel/hw.c \
-           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c
-host: build/rootfs.o $(HOSTSRC) test/host.c kernel/*.h
-	gcc -DHOST -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/host $(HOSTSRC) test/host.c build/rootfs.o
+           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c kernel/doc.c kernel/mouse.c
+host: build/rootfs.o build/docfs.o $(HOSTSRC) test/host.c kernel/*.h
+	gcc -DHOST -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/host $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o
 
 stress: build/rootfs.o $(HOSTSRC) test/host.c kernel/*.h
-	gcc -DHOST -DGC_STRESS -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/stress $(HOSTSRC) test/host.c build/rootfs.o
+	gcc -DHOST -DGC_STRESS -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/stress $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o
 
 qdrive: build/qdrive
 build/qdrive: test/qdrive.c
@@ -81,7 +88,10 @@ build/qdrive: test/qdrive.c
 jit-test: build/subverge.elf build/qdrive
 	build/qdrive test/jit.qd -- qemu-system-x86_64 -kernel build/subverge.elf -m 256 -no-reboot
 
-.PHONY: host stress qdrive jit-test
+doccheck:
+	python3 test/doclinks.py
+
+.PHONY: host stress qdrive jit-test doccheck
 
 build/iso/boot/grub/grub.cfg:
 	mkdir -p build/iso/boot/grub

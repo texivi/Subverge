@@ -44,6 +44,7 @@ static void on_key(void) {
     case 0x49: push(K_PGUP); return;
     case 0x51: push(K_PGDN); return;
     case 0x53: push(K_DEL); return;
+    case 0x0F: if (shift) { push(K_BTAB); return; } break;
     }
     if (e && sc == 0x1C) { push('\n'); return; }
     if (sc >= sizeof normal - 1) return;

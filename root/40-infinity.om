@@ -104,3 +104,68 @@
   "Infinitely many steps, in finite time." 2 9 11 text
   "Press any key." 2 11 8 text key drop wipe "omega" title
 ] :supertask
+
+# cantor pairing
+[ { a b } a b + { s } s s 1 + * 2 / b + ] :pair
+[ { n } 0 { s }
+  [ s 1 + s 2 + * 2 / n <= ] [ s 1 + ->s ] while
+  n s s 1 + * 2 / - { b } s b - b
+] :unpair
+
+# calkin wilf
+[ { n } 1 { a } 0 { b }
+  [ n 0 > ] [ n 2 mod 1 = [ b a + ->b ] [ a b + ->a ] if n 2 / ->n ] while
+  b
+] :fusc
+[ { n } n fusc n 1 + fusc ] :rational
+
+# hilbert hotel
+[ "hotel" title nl
+  8 color "  Every room is taken. A guest arrives, and everyone moves up one room." say 7 color nl
+  8 color "  guest          before          after" say 7 color
+  1 6 [ { n } "  " write n str 12 fmt write n str 16 fmt write n 1 + str 14 fmt write nl ] for
+  8 color "  Room 1 is free, and nobody was sent away." say 7 color nl
+  "  Infinitely many buses arrive, each with infinitely many guests." say nl
+  8 color "  bus  seat      room" say 7 color
+  0 3 [ { b } 0 3 [ { s } "  " write b str 5 fmt write s str 8 fmt write b s pair str 8 fmt write nl ] for ] for
+  8 color "  pair repeats no room and skips none, so the size is still " write 11 color aleph0 . 7 color
+  "omega" title
+] :hotel
+
+# every fraction
+[ "rationals" title nl
+  8 color "  n    n-th fraction" say 7 color
+  1 16 [ { n } "  " write n str 5 fmt write n rational { p q } p str write "/" write q str say ] for
+  8 color "  Every positive fraction appears once, so there are " write 11 color aleph0 . 7 color
+  "omega" title
+] :rationals
+
+# collatz, thue
+[ { n } 0 { k }
+  [ n 1 > ] [ n 2 mod 0 = [ n 2 / ->n ] [ n 3 * 1 + ->n ] if k 1 + ->k ] while
+  k
+] :collatz
+[ { n } 0 { p }
+  [ n 0 > ] [ p n 1 & xor ->p n 1 >> ->n ] while
+  p
+] :thue
+[ { n } 2 { d } n 1 > { ok }
+  [ d d * n <= ok and ] [ n d mod 0 = [ 0 ->ok ] when d 1 + ->d ] while
+  ok
+] :prime?
+
+# ulam spiral
+[ "ulam" title wipe nocursor
+  "Primes on a square spiral. Any key leaves." 2 0 14 text
+  [ 1 0 -1 0 ] ->dxs [ 0 -1 0 1 ] ->dys
+  40 ->x 12 ->y 1 ->n 1 ->len 0 ->dir
+  [ n 480 <= ] [
+    0 len [ drop
+      n prime? [ 219 x y 11 put ] when
+      x dxs dir at + ->x  y dys dir at + ->y  n 1 + ->n
+    ] for
+    dir 1 + 4 mod ->dir
+    dir 2 mod 0 = [ len 1 + ->len ] when
+  ] while
+  key drop wipe "omega" title
+] :ulam

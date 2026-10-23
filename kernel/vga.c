@@ -120,7 +120,7 @@ void vga_put(int x, int y, char c, u8 a) {
     u16 v = (u16)(u8)c | (u16)a << 8;
     T->buf[y * VW + x] = v;
     if (!is_active()) T->activity = 1;
-    else if (!gfx_on) HW[(y + 1) * VW + x] = v;
+    else if (!gfx_on) { HW[(y + 1) * VW + x] = v; if (mouse_shown && x == mouse_cx && y + 1 == mouse_cy) mouse_redraw(); }
     irq_restore(f);
 }
 
@@ -156,7 +156,7 @@ static void scroll(void) {
     u64 f = irq_save();
     memmove(T->buf, T->buf + VW, VW * (VH - 1) * 2);
     for (int x = 0; x < VW; x++) T->buf[(VH - 1) * VW + x] = ' ' | (u16)ATTR(C_TEXT, C_BG) << 8;
-    if (is_active() && !gfx_on) for (int i = 0; i < VW * VH; i++) HW[VW + i] = T->buf[i];
+    if (is_active() && !gfx_on) { for (int i = 0; i < VW * VH; i++) HW[VW + i] = T->buf[i]; mouse_redraw(); }
     irq_restore(f);
     T->cy = VH - 1;
 }
@@ -189,6 +189,24 @@ void kprintf(const char *f, ...) {
 
 static u8 cmos(u8 r) { outb(0x70, r); return inb(0x71); }
 
+static void tab_text(int i, char *t, int cap) {
+    struct task *k = &tabs[i];
+    snfmt(t, (size_t)cap, " %d %s%s ", i + 1, k->title, i != active_tab && k->term.activity ? "*" : "");
+}
+
+/* which tab title is at column x of the top line, or -1 */
+int tab_at(int x) {
+    int c = 1;
+    for (int i = 0; i < NTABS; i++) {
+        char t[32];
+        tab_text(i, t, sizeof t);
+        int n = (int)strlen(t);
+        if (x >= c && x < c + n) return i;
+        c += n + 1;
+    }
+    return -1;
+}
+
 void draw_tabbar(void) {
     u64 f = irq_save();
     u8 bar = ATTR(C_DIM, C_BAR);
@@ -196,9 +214,8 @@ void draw_tabbar(void) {
     int x = 1;
     for (int i = 0; i < NTABS; i++) {
         char t[32];
-        struct task *k = &tabs[i];
         int on = i == active_tab;
-        snfmt(t, sizeof t, " %d %s%s ", i + 1, k->title, !on && k->term.activity ? "*" : "");
+        tab_text(i, t, sizeof t);
         for (const char *s = t; *s; s++) hw_put(x++, 0, *s, on ? ATTR(C_BG, C_MOON) : bar);
         x++;
     }
@@ -207,6 +224,7 @@ void draw_tabbar(void) {
     char t[8];
     snfmt(t, sizeof t, "%02u:%02u", h, m);
     for (int i = 0; t[i]; i++) hw_put(VW - 6 + i, 0, t[i], ATTR(C_TEXT, C_BAR));
+    if (mouse_cy == 0) mouse_redraw();
     irq_restore(f);
 }
 
@@ -220,10 +238,38 @@ void switch_tab(int n) {
     for (int i = 0; i < VW * VH; i++) HW[VW + i] = t->buf[i];
     hw_cursor(t->curx, t->cury + 1);
     draw_tabbar();
+    if (mouse_cy != 0) mouse_redraw();
     irq_restore(f);
 }
 
 void set_title(const char *s) {
     scopy(current->title, s, sizeof current->title);
     draw_tabbar();
+}
+
+/* the pointer: one cell with its colours swapped */
+
+static void swap_cell(int x, int y) {
+    u16 v = HW[y * VW + x], a = v >> 8;
+    HW[y * VW + x] = (u16)((v & 0xFF) | (u16)(((a << 4) | (a >> 4)) & 0xFF) << 8);
+}
+
+void mouse_redraw(void) {
+    if (mouse_shown && !gfx_on) swap_cell(mouse_cx, mouse_cy);
+}
+
+void mouse_move(int x, int y) {
+    u64 f = irq_save();
+    if (mouse_shown && !gfx_on) {
+        int ox = mouse_cx, oy = mouse_cy;
+        mouse_shown = 0;
+        if (oy > 0) HW[oy * VW + ox] = tabs[active_tab].term.buf[(oy - 1) * VW + ox];
+        else draw_tabbar();
+        mouse_shown = 1;
+    }
+    mouse_cx = x;
+    mouse_cy = y;
+    mouse_shown = 1;
+    mouse_redraw();
+    irq_restore(f);
 }

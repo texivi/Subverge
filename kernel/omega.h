@@ -109,6 +109,6 @@ int jit_run(quote *q);
 void jit_forget(quote *q);
 void jit_release_one(bind *b);
 void jit_sweep(void);
-extern const struct builtin jit_words[], dis_words[], help_words[];
+extern const struct builtin jit_words[], dis_words[], help_words[], doc_words[], mouse_words[];
 void exec_word(str *name);
 void exec_item(V *item);
