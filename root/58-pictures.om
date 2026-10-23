@@ -17,21 +17,45 @@
   gfx-off
 ] :gallery
 
-[ gfx 0 0 640 480 0 box
-  "texivi" picture { b }
-  b 40 130 bmp-show
-  b bmp-free
-  [
+[ { name rows } 0 0 640 480 0 box
+  name picture { b } b 40 130 bmp-show b bmp-free
+  0 rows len [ { i } rows i at { r } r 0 at 310 108 i 18 * + r 1 at text ] for
+  rows 0 at 0 at 311 108 rows 0 at 1 at text
+] :credit-page
+
+[ gfx
+  "texivi" [
     [ "texivi" 14 ]
     [ "creator of Subverge" 7 ]
     [ "" 7 ]
-    [ "The haelide theme is from HaliadeSYS" 7 ]
-    [ "by gretagen." 7 ]
-    [ "https://github.com/gretagen/HaliadeSYS" 11 ]
-    [ "" 7 ]
-    [ "Any key leaves." 8 ]
-  ] { rows }
-  0 rows len [ { i } rows i at { r } r 0 at 310 108 i 18 * + r 1 at text ] for
-  "texivi" 311 108 14 text
-  key drop gfx-off
+    [ "Space for the next page, q leaves." 8 ]
+  ] credit-page
+  key quit-key? not [
+    "gretagen" [
+      [ "gretagen" 14 ]
+      [ "creator of HaliadeSYS" 7 ]
+      [ "" 7 ]
+      [ "The haelide theme and its logo come" 7 ]
+      [ "from HaliadeSYS, also known as Zerene OS." 7 ]
+      [ "https://github.com/gretagen/HaliadeSYS" 11 ]
+      [ "" 7 ]
+      [ "Space for the next page, q leaves." 8 ]
+    ] credit-page
+    key quit-key? not [
+      "vsauce" [
+        [ "Vsauce" 14 ]
+        [ "the inspiration for Subverge" 7 ]
+        [ "" 7 ]
+        [ "His video How To Count Past Infinity" 7 ]
+        [ "is why omega has ordinals and cardinals," 7 ]
+        [ "and why the kernel and the shell are" 7 ]
+        [ "named after them." 7 ]
+        [ "youtube.com/watch?v=SrU9YDoXE88" 11 ]
+        [ "" 7 ]
+        [ "Any key leaves." 8 ]
+      ] credit-page
+      key drop
+    ] when
+  ] when
+  gfx-off
 ] :credits

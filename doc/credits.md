@@ -18,11 +18,11 @@ The text is drawn with the 8 by 16 VGA font that the video card provides, with a
 
 ## The haelide theme
 
-See [HaliadeSYS](haliadesys).
+The `haelide` theme and its logo are inspired by HaliadeSYS, made by gretagen: https://github.com/gretagen/HaliadeSYS. See [themes](themes) and [logos](logos).
 
 ## Pictures
 
-`credits` shows this page with the author's picture. The built-in [pictures](pictures) are, with their licences:
+`credits` shows the people on three pages, texivi, gretagen and Vsauce, with a picture for each. The built-in [pictures](pictures) are, with their licences:
 
 | Picture | Made by | Licence |
 |---|---|---|

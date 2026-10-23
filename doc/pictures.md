@@ -1,6 +1,6 @@
 # Pictures
 
-Subverge can draw full-colour pictures on the [graphics screen](screen). There are two parts: bitmaps, which are pixel grids that a program fills in and draws, and the pictures built into the system, which decode into bitmaps. `gallery` shows the built-in pictures, and `credits` shows one of them next to the [credits](credits).
+Subverge can draw full-colour pictures on the [graphics screen](screen). There are two parts: bitmaps, which are pixel grids that a program fills in and draws, and the pictures built into the system, which decode into bitmaps. `gallery` shows the built-in pictures, and `credits` shows three of them next to the [credits](credits).
 
 All of it needs graphics mode, which needs QEMU's default `-vga std` display. See [screen](screen).
 
@@ -63,11 +63,13 @@ Locals such as `b` last for one line, so a longer program is a word, and a bitma
 | `dusk-ridge` | layered ridges at dusk |
 | `fjord-mist` | a snowy mountain over a lake |
 | `golden-coast` | a cliffed coast with surf |
+| `gretagen` | a portrait, on the credits screen |
 | `misty-meadow` | a tree in morning fog |
 | `mountain-lake` | a mountain reflected in a lake |
 | `phosphor-horizon` | a green grid and a sun |
-| `texivi` | the author's picture |
+| `texivi` | a portrait, on the credits screen |
 | `tulip-rows` | a field of tulips |
+| `vsauce` | a portrait, on the credits screen |
 
 The photographs and the people who made them are in [credits](credits). The three drawn ones were made with a small generator and are not photographs.
 
