@@ -50,6 +50,7 @@ static void on_mouse(void) {
     pk[np++] = b;
     if (np < (wheel ? 4 : 3)) return;
     np = 0;
+    if (pk[0] & 0xC0) return; /* overflow */
     int dx = pk[1], dy = pk[2], dz = 0;
     if (pk[0] & 0x10) dx -= 256;
     if (pk[0] & 0x20) dy -= 256;
