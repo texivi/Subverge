@@ -22,9 +22,8 @@
   b 40 130 bmp-show
   b bmp-free
   [
-    [ "Credits" 14 ]
-    [ "" 7 ]
-    [ "Subverge, ordinal and omega by texivi." 7 ]
+    [ "texivi" 14 ]
+    [ "creator of Subverge" 7 ]
     [ "" 7 ]
     [ "The haelide theme is from HaliadeSYS" 7 ]
     [ "by gretagen." 7 ]
@@ -33,5 +32,6 @@
     [ "Any key leaves." 8 ]
   ] { rows }
   0 rows len [ { i } rows i at { r } r 0 at 310 108 i 18 * + r 1 at text ] for
+  "texivi" 311 108 14 text
   key drop gfx-off
 ] :credits
