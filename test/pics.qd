@@ -1,0 +1,17 @@
+# gallery and credits
+wait 6000
+cmd gallery  ~14000
+shot build/pics-gallery1.png
+key right
+wait 3000
+key right
+wait 3000
+shot build/pics-gallery3.png
+key q
+wait 1500
+cmd credits  ~14000
+shot build/pics-credits.png
+key a
+wait 1500
+cmd gfx 20 20 100 60 5 box 140 20 200 120 "first" window "text" 10 160 14 text  ~800
+shot build/pics-gfx.png

@@ -195,6 +195,19 @@ static const struct doc docs[] = {
     { "screen", "where", "-- x y", "Where the cursor is.", "where" },
     { "screen", "size", "-- w h", "The screen size: 80 by 24.", "size" },
     { "screen", "gfx", "--", "Starts 640 by 480 graphics. A tab key leaves it.", "gfx" },
+    { "screen", "bitmap", "w h -- id", "A new black bitmap, w by h pixels.", "320 200 bitmap" },
+    { "screen", "bmp-set", "id x y rgb --", "Sets one pixel of a bitmap.", "0 10 10 0xFF0000 bmp-set" },
+    { "screen", "bmp-get", "id x y -- rgb", "The colour of one pixel of a bitmap.", "0 10 10 bmp-get" },
+    { "screen", "bmp-fill", "id rgb --", "Fills a bitmap with one colour.", "0 0x203040 bmp-fill" },
+    { "screen", "bmp-box", "id x y w h c --", "Fills a rectangle of a bitmap.", "0 5 5 20 10 0xFFFF00 bmp-box" },
+    { "screen", "bmp-size", "id -- w h", "The width and height of a bitmap.", "0 bmp-size" },
+    { "screen", "bmp-free", "id --", "Frees a bitmap. There is room for 16.", "0 bmp-free" },
+    { "screen", "bmp-show", "id x y --", "Draws a bitmap in graphics mode.", "gfx 0 20 20 bmp-show" },
+    { "screen", "pack-rgb", "r g b -- n", "Joins red, green, blue 0 to 255 into one colour.", "255 128 0 pack-rgb" },
+    { "screen", "picture", "s -- id", "Decodes a built-in picture into a bitmap.", "\"mountain-lake\" picture" },
+    { "screen", "pictures", "-- l", "The names of the built-in pictures.", "pictures" },
+    { "screen", "gallery", "--", "Shows the built-in pictures. Arrows, q leaves.", "gallery" },
+    { "screen", "credits", "--", "Who made what, with the author's picture.", "credits" },
     { "screen", "gfx-off", "--", "Back to the text screen.", "gfx-off" },
     { "screen", "dot", "x y col --", "Sets one pixel in graphics mode.", "320 240 14 dot" },
     { "screen", "box", "x y w h col --", "Fills a rectangle in graphics mode.", "20 20 100 60 5 box" },
@@ -536,7 +549,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words };
+    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {

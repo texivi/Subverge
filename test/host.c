@@ -95,6 +95,8 @@ int main(void) {
     omega_init_world();
     register_words(core_words);
     register_words(hw_words);
+    register_words(gfx_words);
+    register_words(img_words);
     register_words(ord_words);
     register_words(root_words);
     register_words(jit_words);

@@ -33,30 +33,42 @@ start:
 
     mov eax, [kernel_lba]
     mov [dap_lba], eax
-    mov ecx, [kernel_sectors]
+    mov eax, [kernel_sectors]
+    mov [remain], eax
+    mov eax, [load_addr]
+    mov [dst], eax
     mov word [dap_seg], LOW_BUF >> 4
 .read:
-    test ecx, ecx
+    mov eax, [remain]
+    test eax, eax
     jz .read_done
-    mov eax, ecx
     cmp eax, 64
     jbe .n
     mov eax, 64
 .n:
     mov [dap_count], ax
-    push ecx
-    push eax
+    mov [chunk], eax
     mov si, dap
     mov ah, 0x42
     mov dl, [drive]
     int 0x13
-    pop eax
-    pop ecx
     jc fail
-    sub ecx, eax
+    mov eax, [chunk]
+    sub [remain], eax
     add [dap_lba], eax
-    shl eax, 5
-    add [dap_seg], ax
+    call unreal
+    mov esi, LOW_BUF
+    mov edi, [dst]
+    mov ecx, [chunk]
+    shl ecx, 7
+.cp:
+    mov eax, [fs:esi]
+    mov [fs:edi], eax
+    add esi, 4
+    add edi, 4
+    dec ecx
+    jnz .cp
+    mov [dst], edi
     jmp .read
 .read_done:
 
@@ -120,6 +132,28 @@ start:
     mov cr0, eax
     jmp 0x08:pmode
 
+; real mode with a 4 GiB fs, to copy each chunk above 1 MiB
+unreal:
+    cli
+    lgdt [gdt_ptr]
+    mov eax, cr0
+    or eax, 1
+    mov cr0, eax
+    jmp short .p
+.p:
+    mov ax, 0x10
+    mov fs, ax
+    mov eax, cr0
+    and eax, 0xFFFFFFFE
+    mov cr0, eax
+    jmp 0:.back
+.back:
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    sti
+    ret
+
 fail:
     mov si, msg
 .print:
@@ -143,12 +177,8 @@ pmode:
     mov gs, ax
     mov esp, 0x7C00
 
-    mov esi, LOW_BUF
-    mov edi, [load_addr]
-    mov ecx, [kernel_sectors]
-    shl ecx, 9
+    mov edi, [dst]
     cld
-    rep movsb
     mov ecx, [bss_end]
     sub ecx, edi
     xor eax, eax
@@ -168,6 +198,10 @@ gdt_ptr:
     dd gdt
 
 drive: db 0
+align 4
+remain: dd 0
+dst: dd 0
+chunk: dd 0
 mb_mem_upper: dd 0
 mb_mmap_len: dw 0
 msg: db "subverge: can't read the kernel", 0

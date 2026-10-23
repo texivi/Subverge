@@ -26,6 +26,8 @@
   [ "bounce" "Bouncing balls." ]
   [ "stars" "A starfield." ]
   [ "scribble" "Draw with the mouse." ]
+  [ "gallery" "Pictures, full screen." ]
+  [ "credits" "Who made what." ]
   [ "mandel" "Mandelbrot zoom." ]
   [ "sieve" "Primes by sieving." ]
   [ "sorting" "Bubble sort as bars." ]

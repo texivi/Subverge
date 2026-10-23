@@ -89,7 +89,7 @@ void body(sbuf *o, quote *q);
 void register_words(const struct builtin *w);
 
 /* modules */
-extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[];
+extern const struct builtin core_words[], hw_words[], gfx_words[], img_words[], ord_words[], root_words[], persist_words[];
 void ord_init(void);
 int ord_arith(char op, V a, V b, V *out);
 int ord_compare(V a, V b, int *out);

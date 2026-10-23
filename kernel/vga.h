@@ -28,6 +28,11 @@ void kprintf(const char *f, ...);
 void hw_put(int x, int y, char c, u8 a);
 extern int gfx_on;
 void gfx_leave(void);
+void gfx_text(i64 x, i64 y, i64 c, const char *s, u32 len);
+u32 pci_read(u32 bus, u32 dev, u32 fn, u32 off);
+#define GW 640
+#define GH 480
+extern volatile u32 *gfx_lfb;
 void vga_save(void);
 void vga_restore(void);
 

@@ -73,3 +73,4 @@ A world or root that grows past its slot is not saved, without a message ([savin
 | memory map entries | 32 |
 | JIT code per quote | 64 KiB |
 | help description | 52 characters |
+| bitmaps at a time | 16, each up to 2048 by 2048 |

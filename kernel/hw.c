@@ -63,7 +63,7 @@ static void b_cr(void) {
     push(I((i64)v));
 }
 
-static u32 pci_read(u32 bus, u32 dev, u32 fn, u32 off) {
+u32 pci_read(u32 bus, u32 dev, u32 fn, u32 off) {
     outl(0xCF8, 0x80000000u | bus << 16 | dev << 11 | fn << 8 | (off & 0xFC));
     return inl(0xCFC);
 }
@@ -88,113 +88,6 @@ static void b_pciread(void) {
     i64 b, d, f, o;
     if (pop_int("pci@", &o) && pop_int("pci@", &f) && pop_int("pci@", &d) && pop_int("pci@", &b))
         push(I(pci_read((u32)b, (u32)d, (u32)f, (u32)o)));
-}
-
-/* graphics: 640 by 480, 16 colours, Bochs VBE */
-
-#define GW 640
-#define GH 480
-static volatile u8 *lfb;
-static u8 saved_font[FONT_BYTES];
-
-static void outw(u16 p, u16 v) { __asm__ volatile("outw %0, %1" : : "a"(v), "Nd"(p)); }
-static u16 inw(u16 p) { u16 v; __asm__ volatile("inw %1, %0" : "=a"(v) : "Nd"(p)); return v; }
-static void vbe(u16 i, u16 v) { outw(0x1CE, i); outw(0x1CF, v); }
-
-static u64 find_lfb(void) {
-    for (u32 dev = 0; dev < 32; dev++)
-        if (pci_read(0, dev, 0, 0) == 0x11111234u) return pci_read(0, dev, 0, 0x10) & ~0xFu;
-    return 0;
-}
-
-void gfx_leave(void) {
-    if (!gfx_on) return;
-    vbe(4, 0);
-    font_restore(saved_font);
-    vga_restore();
-    vga_theme(vga_current_theme());
-    gfx_on = 0;
-}
-
-static void b_gfx(void) {
-    if (gfx_on) return;
-    u64 fb = find_lfb();
-    outw(0x1CE, 0);
-    if (!fb || fb >= 1ull << 32 || (inw(0x1CF) & 0xFFF0) != 0xB0C0) {
-        fail("no Bochs display here, start QEMU with -vga std%s", "");
-        return;
-    }
-    lfb = (volatile u8 *)fb;
-    vga_save();
-    font_save(saved_font);
-    gfx_on = 1;
-    vbe(4, 0);
-    vbe(1, GW); vbe(2, GH); vbe(3, 8);
-    vbe(4, 0x41);
-    const u32 *rgb = themes[vga_current_theme()].rgb;
-    for (int i = 0; i < 16; i++) {
-        outb(0x3C8, (u8)i);
-        outb(0x3C9, (u8)((rgb[i] >> 18) & 0x3F));
-        outb(0x3C9, (u8)((rgb[i] >> 10) & 0x3F));
-        outb(0x3C9, (u8)((rgb[i] >> 2) & 0x3F));
-    }
-}
-
-static void b_gfxoff(void) {
-    if (!gfx_on) return;
-    gfx_leave();
-    switch_tab(active_tab);
-}
-
-static void b_dot(void) {
-    i64 x, y, c;
-    if (!pop_int("dot", &c) || !pop_int("dot", &y) || !pop_int("dot", &x)) return;
-    if (!gfx_on) { fail("graphics mode is off, run gfx first%s", ""); return; }
-    if (c < 0 || c > 15) { fail("dot takes a colour from 0 to 15%s", ""); return; }
-    if (x >= 0 && x < GW && y >= 0 && y < GH) lfb[y * GW + x] = (u8)c;
-}
-
-static void b_box(void) {
-    i64 x, y, w, h, c;
-    if (!pop_int("box", &c) || !pop_int("box", &h) || !pop_int("box", &w) || !pop_int("box", &y) || !pop_int("box", &x)) return;
-    if (!gfx_on) { fail("graphics mode is off, run gfx first%s", ""); return; }
-    if (c < 0 || c > 15) { fail("box takes a colour from 0 to 15%s", ""); return; }
-    i64 x1 = x + w, y1 = y + h;
-    if (x < 0) x = 0;
-    if (y < 0) y = 0;
-    if (x1 > GW) x1 = GW;
-    if (y1 > GH) y1 = GH;
-    for (i64 j = y; j < y1; j++)
-        for (i64 i = x; i < x1; i++) lfb[j * GW + i] = (u8)c;
-}
-
-static void glyph(int x, int y, u8 ch, u8 c) {
-    const u8 *g = saved_font + ch * 32;
-    for (int r = 0; r < 16; r++)
-        for (int b = 0; b < 8; b++)
-            if (g[r] & (0x80 >> b) && x + b >= 0 && x + b < GW && y + r >= 0 && y + r < GH) lfb[(y + r) * GW + x + b] = c;
-}
-
-static void gtext(i64 x, i64 y, i64 c, str *s) {
-    for (u32 k = 0; k < s->len; k++) glyph((int)x + 8 * (int)k, (int)y, (u8)s->s[k], (u8)c);
-}
-
-static void rect(i64 x, i64 y, i64 w, i64 h, u8 c) {
-    for (i64 j = y; j < y + h; j++)
-        for (i64 i = x; i < x + w; i++)
-            if (i >= 0 && i < GW && j >= 0 && j < GH) lfb[j * GW + i] = c;
-}
-
-static void b_window(void) {
-    i64 x, y, w, h;
-    str *t;
-    if (!pop_str("window", &t) || !pop_int("window", &h) || !pop_int("window", &w) || !pop_int("window", &y) || !pop_int("window", &x)) return;
-    if (!gfx_on) { fail("graphics mode is off, run gfx first%s", ""); return; }
-    if (w < 16 || h < 24) { fail("window needs at least 16 by 24%s", ""); return; }
-    rect(x, y, w, h, 7);
-    rect(x + 1, y + 1, w - 2, 18, 1);
-    rect(x + 2, y + 20, w - 4, h - 22, 0);
-    for (u32 i = 0; i < t->len && 8 * (i64)i + 12 < w; i++) glyph((int)x + 6 + 8 * (int)i, (int)y + 2, (u8)t->s[i], 15);
 }
 
 static void b_memmap(void) {
@@ -293,7 +186,7 @@ static void b_text(void) {
     i64 x, y, col;
     str *s;
     if (pop_int("text", &col) && pop_int("text", &y) && pop_int("text", &x) && pop_str("text", &s)) {
-        if (gfx_on) { gtext(x, y, col & 15, s); return; }
+        if (gfx_on) { gfx_text(x, y, col & 15, s->s, s->len); return; }
         vga_puts_at((int)x, (int)y, s->s, (u8)col);
     }
 }
@@ -443,7 +336,6 @@ const struct builtin hw_words[] = {
     { "put", b_put }, { "text", b_text }, { "screen@", b_getch }, { "wipe", b_wipe },
     { "cursor", b_cursor }, { "nocursor", b_nocursor }, { "where", b_where }, { "size", b_width },
     { "key", b_key }, { "key?", b_keyq }, { "waitkey", b_waitkey },
-    { "gfx", b_gfx }, { "gfx-off", b_gfxoff }, { "dot", b_dot }, { "box", b_box }, { "window", b_window },
     { "theme", b_theme }, { "themes", b_themes }, { "theme@", b_themename }, { "rgb", b_rgb },
     { "logo", b_logo }, { "logos", b_logos }, { "logo@", b_logoname },
     { "sys-c", b_sysc }, { "reboot", b_reboot }, { "halt", b_halt },

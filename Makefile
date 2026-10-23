@@ -8,7 +8,7 @@ CFLAGS  := -m64 -std=gnu11 -O2 -Wall -Wextra -ffreestanding -fno-pie -fno-stack-
 LDFLAGS := -m elf_x86_64 -T linker.ld -nostdlib -z max-page-size=0x1000
 
 SRC  := $(wildcard kernel/*.c)
-OBJ  := build/boot.o build/rootfs.o build/docfs.o build/bootbins.o $(SRC:kernel/%.c=build/%.o)
+OBJ  := build/boot.o build/rootfs.o build/docfs.o build/pics.o build/bootbins.o $(SRC:kernel/%.c=build/%.o)
 ELF  := build/ordinal.elf
 IMG  := build/subverge.elf
 
@@ -34,6 +34,14 @@ build/docfs.bin: $(sort $(wildcard doc/*.md)) | build
 	@for f in $^; do printf '#>> %s\n' "$$(basename $$f .md)"; cat $$f; printf '\n'; done > $@
 
 build/docfs.o: build/docfs.bin
+	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
+	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
+
+# pictures
+build/pics.bin: $(sort $(wildcard art/*.jpg)) | build
+	@for f in $^; do printf '#>> %s %s\n' "$$(basename $$f .jpg)" "$$(stat -c %s $$f)"; cat $$f; done > $@
+
+build/pics.o: build/pics.bin
 	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
 	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
 
@@ -78,12 +86,12 @@ clean:
 
 # linux harness
 HOSTSRC := kernel/lib.c kernel/big.c kernel/omega.c kernel/words.c kernel/ord.c kernel/root.c kernel/hw.c \
-           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c kernel/doc.c kernel/mouse.c
-host: build/rootfs.o build/docfs.o $(HOSTSRC) test/host.c kernel/*.h
-	gcc -DHOST -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/host $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o
+           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c kernel/doc.c kernel/mouse.c kernel/gfx.c kernel/img.c
+host: build/rootfs.o build/docfs.o build/pics.o $(HOSTSRC) test/host.c kernel/*.h
+	gcc -DHOST -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/host $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o build/pics.o
 
-stress: build/rootfs.o $(HOSTSRC) test/host.c kernel/*.h
-	gcc -DHOST -DGC_STRESS -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/stress $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o
+stress: build/rootfs.o build/docfs.o build/pics.o $(HOSTSRC) test/host.c kernel/*.h
+	gcc -DHOST -DGC_STRESS -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/stress $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o build/pics.o
 
 qdrive: build/qdrive
 build/qdrive: test/qdrive.c

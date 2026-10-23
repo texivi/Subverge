@@ -6,7 +6,7 @@
 - Exact integers. A result that overflows 64 bits becomes a bignum, up to 2^65536, in interpreted and compiled code alike ([bignums](bignums)).
 - Infinity as a value. `omega` and `aleph0` add, multiply and compare like other numbers ([ordinals](ordinals), [cardinals](cardinals), [infinity](infinity)).
 - Ring 0 at all times. `peek`, `poke`, `in`, `out`, `cpuid` and `pci` reach memory, ports and the PCI bus ([smarties](smarties)).
-- An 80 by 25 text screen, with an optional 640 by 480 graphics mode for drawing ([screen](screen)).
+- An 80 by 25 text screen, with an optional 640 by 480 graphics mode for drawing ([screen](screen)), full-colour bitmaps, and a JPEG decoder for the built-in pictures ([pictures](pictures)).
 - A PS/2 mouse on the text screen, shown as an inverted cell. It switches tabs from the top bar and follows links in the viewer ([mouse](?mouse)).
 - A help system built into the kernel: hyperlinked pages that `docs` and `"name" doc` open in a pager, lines you can select and run, and a page for every word ([help](help)).
 - Four shells under a preemptive scheduler, each with its own stack and definitions, switched with F1 to F4 ([tabs](tabs), [scheduler](scheduler)).

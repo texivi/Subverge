@@ -96,6 +96,21 @@ The comparison depends on the continuum hypothesis, which is independent of ZFC 
 **`graphics mode is off, run gfx first`**
 `dot` or `box` was used before `gfx` ([screen](screen)).
 
+**`graphics mode is off, run gfx first (window)`**
+The same, for `window`.
+
+**`no room for another bitmap, free one with bmp-free`**
+Sixteen bitmaps exist already. `bmp-free` gives one back ([pictures](pictures)).
+
+**`bmp-set needs the number of a bitmap`**
+The number wasn't one that `bitmap` or `picture` returned, or the bitmap was freed. This is also reported for `bmp-get`, `bmp-fill`, `bmp-box`, `bmp-size`, `bmp-free` and `bmp-show`.
+
+**`no picture named foo, pictures lists them`**
+`"foo" picture` named a picture that isn't built in ([pictures](pictures)).
+
+**`that picture could not be read: damaged`**
+The JPEG data is cut off or wrong. The reasons are `damaged`, `unsupported`, `not baseline` and `out of memory`.
+
 **`no Bochs display here, start QEMU with -vga std`**
 `gfx` was used on a display that doesn't have the Bochs registers ([screen](screen)).
 

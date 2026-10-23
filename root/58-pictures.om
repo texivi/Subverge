@@ -1,0 +1,44 @@
+#>> pictures
+# the picture viewer and the credits
+
+[ gfx pictures { l } l len { n } 0 { i } 1 { going }
+  [ going ] [
+    0 0 640 480 0 box
+    l i at picture { b }
+    b bmp-size { w h }
+    b 640 w - 2 / 480 h - 2 / bmp-show
+    b bmp-free
+    l i at "  " cat i 1 + str cat "/" cat n str cat "   arrows, q leaves" cat 8 464 7 text
+    key { k }
+    k quit-key? [ 0 ->going ] when
+    k 259 = k 32 = or k 110 = or [ i 1 + n mod ->i ] when
+    k 258 = k 112 = or [ i n + 1 - n mod ->i ] when
+  ] while
+  gfx-off
+] :gallery
+
+[ gfx 0 0 640 480 0 box
+  "texivi" picture { b }
+  b 40 130 bmp-show
+  b bmp-free
+  [
+    [ "Credits" 14 ]
+    [ "" 7 ]
+    [ "Subverge, ordinal and omega by texivi." 7 ]
+    [ "" 7 ]
+    [ "The haelide theme is from HaliadeSYS" 7 ]
+    [ "by gretagen." 7 ]
+    [ "https://github.com/gretagen/HaliadeSYS" 11 ]
+    [ "" 7 ]
+    [ "Pictures" 14 ]
+    [ "Sergei Gussev, CC BY 4.0" 7 ]
+    [ "Michal Klajban, CC BY-SA 4.0" 7 ]
+    [ "Inti Runa Viajero, CC BY 2.0" 7 ]
+    [ "Tobias Tullius and Filio, CC0" 7 ]
+    [ "Three are generated with mkwall." 7 ]
+    [ "" 7 ]
+    [ "Any key leaves." 8 ]
+  ] { rows }
+  0 rows len [ { i } rows i at { r } r 0 at 310 108 i 18 * + r 1 at text ] for
+  key drop gfx-off
+] :credits

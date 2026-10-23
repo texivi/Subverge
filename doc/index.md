@@ -63,6 +63,7 @@ Tab selects the next link and Enter follows it. Backspace goes back, `q` leaves,
 - [Startup](startup)
 - [Keyboard](keyboard)
 - [Screen](screen)
+- [Pictures](pictures)
 - [Scrawl](scrawl)
 - [Root](root)
 - [Units](units)

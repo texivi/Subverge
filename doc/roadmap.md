@@ -1,10 +1,22 @@
 # Roadmap
 
+## Subverge 0.9.5
+
+- [x] [Pictures](pictures.md): `bitmap` and the `bmp-` words, `picture` and `pictures`, a JPEG decoder in the kernel
+- [x] `gallery`, which shows the built-in pictures, and `credits`
+- [x] Graphics mode in 24-bit colour
+- [x] The kernel loads past 576 KiB from an installed disk
+
 ## Subverge 0.9.4
 
 - [x] The help pages inside the system, read with `docs` and `doc`
 - [x] A PS/2 mouse on the text screen, with `mouse` and `mouse?`
 - [x] Words for the infinity pages: `pair`, `unpair`, `fusc`, `rational`, `hotel`, `rationals`, `collatz`, `thue`, `prime?` and `ulam`
+
+## Subverge 0.9.3
+
+- [x] `text` draws in [graphics mode](screen.md)
+- [x] `window` draws a titled window frame
 
 ## Subverge 0.9.2
 
