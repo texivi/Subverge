@@ -30,13 +30,6 @@
     [ "by gretagen." 7 ]
     [ "https://github.com/gretagen/HaliadeSYS" 11 ]
     [ "" 7 ]
-    [ "Pictures" 14 ]
-    [ "Sergei Gussev, CC BY 4.0" 7 ]
-    [ "Michal Klajban, CC BY-SA 4.0" 7 ]
-    [ "Inti Runa Viajero, CC BY 2.0" 7 ]
-    [ "Tobias Tullius and Filio, CC0" 7 ]
-    [ "Three are generated with mkwall." 7 ]
-    [ "" 7 ]
     [ "Any key leaves." 8 ]
   ] { rows }
   0 rows len [ { i } rows i at { r } r 0 at 310 108 i 18 * + r 1 at text ] for
