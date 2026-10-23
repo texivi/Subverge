@@ -4,13 +4,13 @@
 
 Tab selects the next link and Enter follows it. Backspace goes back, `q` leaves, and Space pages down. A selected line of code runs at the prompt when Enter is pressed. With a mouse, a click follows a link, the wheel scrolls and the right button goes back. See [help](help) and [keys](keys).
 
-[Welcome](welcome)   [About Subverge](about)   [Command Line](cmdline)   [Take the tour](tour)   [Quick start](quick-start)
+[Credits](credits)   [Welcome](welcome)   [About Subverge](about)   [Command Line](cmdline)   [Take the tour](tour)   [Quick start](quick-start)
 
 [Demo Index](demo-index)   [Key Map](keys)   [Menu](menu)   [Mouse](mouse)   [Why not more?](why-not-more)
 
 [Features](features)   [Design](design)   [Decisions](decisions)   [Expectations](expectations)   [Debugging](debugging)
 
-[F.A.Q.](faq)   [Tips](tips)   [Quirks](quirks)   [Troubleshooting](troubleshooting)   [History](history)   [Credits](credits)
+[F.A.Q.](faq)   [Tips](tips)   [Quirks](quirks)   [Troubleshooting](troubleshooting)   [History](history)
 
 ## User Help
 
