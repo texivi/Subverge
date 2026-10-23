@@ -1,6 +1,7 @@
 CC      := gcc
 LD      := ld
 AS      := nasm
+OBJCOPY := objcopy
 CFLAGS  := -m64 -std=gnu11 -O2 -Wall -Wextra -ffreestanding -fno-pie -fno-stack-protector \
            -fno-asynchronous-unwind-tables -fcf-protection=none -mgeneral-regs-only -mno-red-zone \
            -nostdlib -Ikernel
@@ -26,6 +27,7 @@ build/rootfs.bin: $(sort $(wildcard root/*.om)) | build
 
 build/rootfs.o: build/rootfs.bin
 	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
+	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
 
 # help pages
 build/docfs.bin: $(sort $(wildcard doc/*.md)) | build
@@ -33,6 +35,7 @@ build/docfs.bin: $(sort $(wildcard doc/*.md)) | build
 
 build/docfs.o: build/docfs.bin
 	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ $<
+	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
 
 # installer blobs
 build/mbr.bin: boot/mbr.asm | build
@@ -43,6 +46,7 @@ build/stage2.bin: boot/stage2.asm | build
 
 build/bootbins.o: build/mbr.bin build/stage2.bin
 	$(LD) -m elf_x86_64 -r -b binary -z noexecstack -o $@ build/mbr.bin build/stage2.bin
+	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
 
 build/boot.o: boot/boot.asm | build
 	$(AS) -f elf64 $< -o $@
