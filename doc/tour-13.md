@@ -1,6 +1,6 @@
-# Part 13: The prompt like Emacs
+# Part 13: Line editing
 
-The prompt edits a line with the keys of Emacs. A key is written as Emacs writes it: C- is Control and M- is Alt, so C-a is Ctrl-A and M-f is Alt-F. DEL is Backspace, RET is Enter and TAB is Tab ([keys](keys)).
+The prompt edits a line with Control and Alt keys. C- is Control and M- is Alt, so C-a is Ctrl-A and M-f is Alt-F. DEL is Backspace, RET is Enter and TAB is Tab ([keys](keys)).
 
 Type this line at the prompt, without pressing RET:
 

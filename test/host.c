@@ -39,7 +39,6 @@ const struct builtin persist_words[] = { { "home", b_home }, { "drives", b_nothi
 u32 omega_source(struct omega *om, char *buf, u32 cap);
 int dis1(const u8 *p, u64 addr, char *out, int cap);
 int help_check(void);
-int audio_render(const char *name, i16 *out, int cap);
 void *jit_alloc(u64 n) {
     u64 *p = mmap(NULL, n + 16, PROT_READ | PROT_WRITE | PROT_EXEC, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (p == MAP_FAILED) return NULL;
@@ -109,7 +108,6 @@ int main(void) {
     register_words(doc_words);
     register_words(mouse_words);
     register_words(key_words);
-    register_words(audio_words);
     register_words(phi_words);
     phi_init();
     register_words(persist_words);
@@ -131,17 +129,6 @@ int main(void) {
             W->lines.complete = 1;
             if (!setjmp(out_of_keys)) { int n = readline(out, &W->lines); printf("readline: %d \"%s\"\n", n, out); }
             else printf("readline: ran out of keys\n");
-            continue;
-        }
-        if (!strncmp(line, "@render ", 8)) {
-            static i16 pcm[44100 * 400];
-            int n = audio_render(line + 8, pcm, 44100 * 400);
-            char fn[80];
-            snprintf(fn, sizeof fn, "build/%s.raw", line + 8);
-            FILE *f = fopen(fn, "wb");
-            if (f && n > 0) fwrite(pcm, 2, (size_t)n, f);
-            if (f) fclose(f);
-            printf("rendered %d samples\n", n);
             continue;
         }
         if (!strncmp(line, "@docs", 5)) { printf("%d problems\n", help_check()); continue; }

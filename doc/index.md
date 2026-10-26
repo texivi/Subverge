@@ -4,7 +4,7 @@
 
 Tab selects the next link and Enter follows it. Backspace goes back, `q` leaves, and Space pages down. A selected line of code runs at the prompt when Enter is pressed. With a mouse, a click follows a link, the wheel scrolls and the right button goes back. See [help](help) and [keys](keys).
 
-[Gallery](>gallery)   [Credits](>credits)   [Welcome](welcome)   [About Subverge](about)   [Command Line](cmdline)   [Take the tour](tour)   [Quick start](quick-start)
+[Welcome](welcome)   [About Subverge](about)   [Command Line](cmdline)   [Take the tour](tour)   [Quick start](quick-start)
 
 [Demo Index](demo-index)   [Key Map](keys)   [Menu](menu)   [Mouse](mouse)   [Why not more?](why-not-more)
 
@@ -28,7 +28,6 @@ Tab selects the next link and Enter follows it. Backspace goes back, `q` leaves,
 - [Learn](learn)
 - [Saving](saving)
 - [Phi](phi)
-- [Sound](sound)
 - [Credits and licences](credits)
 - [Roadmap](roadmap)
 

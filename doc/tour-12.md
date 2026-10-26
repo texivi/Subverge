@@ -13,6 +13,6 @@ On the live ISO everything is lost when the machine stops. An installed system s
 
 An installed disk skips the first-boot questions and remembers the theme you chose.
 
-The next parts are about working in the system: the keys of the prompt, windows, phi and sound.
+The next parts are about working in the system: the keys of the prompt, windows and phi.
 
 [Next: Part 13](tour-13)   [Back: Part 11](tour-11)   [The tours](tour)

@@ -62,10 +62,6 @@ Many of them work on both. `len`, `at`, `cat`, `reverse` and `each` treat a stri
 
 `bind unbind bindings describe-key line@ line! point@ point! insert`. Keys you bind run a quote at the prompt, and the last five work on the line being edited. See [keys](keys.md).
 
-## sound
-
-`play stop songs playing? sound?`. See [sound](sound.md).
-
 ## phi
 
 `phi members phi-names phi-read phi-write phi-set phi-delete phi-move phi-edit phi? dired dired-at`. See [phi](phi.md).

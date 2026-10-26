@@ -1,6 +1,6 @@
 # Key Map
 
-Keys are written the way Emacs writes them. C- is Control and M- is Alt, so C-k is Ctrl-K and M-f is Alt-F. DEL is Backspace, RET is Enter, SPC is Space and TAB is Tab. A key sequence such as C-x o is two keys typed one after the other.
+C- is Control and M- is Alt, so C-k is Ctrl-K and M-f is Alt-F. DEL is Backspace, RET is Enter, SPC is Space and TAB is Tab. A key sequence such as C-x o is two keys typed one after the other.
 
 ## Everywhere
 
@@ -20,7 +20,7 @@ The keys are handled in the keyboard interrupt, so they work while every tab is 
 
 ## At the prompt
 
-The prompt edits a line the way Emacs edits text. The kill ring remembers the last eight killed pieces of text, and keys that kill twice in a row add to the same piece.
+The kill ring remembers the last eight killed pieces of text, and keys that kill twice in a row add to the same piece.
 
 | Key | Action |
 |---|---|
@@ -70,7 +70,7 @@ C-h waits for a second key.
 
 ## In the pages
 
-`docs` opens the index and `"name" doc` opens a page. The keys follow Emacs Info where there is a match.
+`docs` opens the index and `"name" doc` opens a page.
 
 | Key | Action |
 |---|---|
@@ -97,7 +97,7 @@ C-s and C-r ask for text on the bottom row. An empty answer repeats the last sea
 
 ## In the editor
 
-[scrawl](scrawl) uses Emacs keys for moving, killing and searching. The list is on its page.
+[scrawl](scrawl) uses the same keys for moving, killing and searching. The list is on its page.
 
 ## Your own keys
 
@@ -136,14 +136,11 @@ A binding is a definition named `key:` and the key, such as `key:C-t`, so it is 
 
     "C-t" unbind
 
-## Differences from Emacs
+## Limits
 
-The keys have the same names and meanings where there is a match. A few things are different:
-
-- The prompt has no mark and no region. C-w kills the word before the cursor, and C-u kills to the start of the line, where Emacs takes a numeric argument. [scrawl](scrawl) has a mark and a region, and C-w kills the region there.
-- C-x and C-h are the only prefix keys. There are no numeric arguments.
+- The prompt has no mark and no region. C-w kills the word before the cursor, and C-u kills to the start of the line. [scrawl](scrawl) has a mark and a region, and C-w kills the region there.
+- C-x and C-h are the only prefix keys, and keys take no numeric argument.
 - ESC doesn't work as the Meta key. Use Alt.
-- M-x runs a word by name, and the words are the only commands, so what it completes from is the list of words.
 - The search at the prompt is incremental. The searches in the pager and in the editor ask for the whole text first and then jump to the match.
 - C-x C-s and C-x C-c belong to the editor. C-x o, C-x 0, C-x 1, C-x 2 and C-x 3 work everywhere.
 

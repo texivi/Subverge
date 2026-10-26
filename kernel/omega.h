@@ -113,10 +113,8 @@ extern const struct builtin jit_words[], dis_words[], help_words[], doc_words[],
 void exec_word(str *name);
 str *key_bound(const int *ks, int n);
 int key_run(str *w);
-extern const struct builtin key_words[], audio_words[];
-void audio_init(void);
+extern const struct builtin key_words[];
 u32 phi_dump(char *buf, u32 cap);
 void phi_init(void);
 extern const struct builtin phi_words[];
-int audio_playing(void);
 void exec_item(V *item);

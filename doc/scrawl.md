@@ -1,6 +1,6 @@
 # scrawl
 
-scrawl is the text editor in Subverge. It is used for anything longer than one line: definitions, [root units](units.md) and new programs. It has no modes, so typing always inserts text, and the commands are Ctrl and Alt keys with the same meanings as in Emacs ([keys](keys.md) explains how keys are written).
+scrawl is the text editor in Subverge. It is used for anything longer than one line: definitions, [root units](units.md) and new programs. It has no modes, so typing always inserts text, and the commands are Ctrl and Alt keys, the same ones as at the prompt ([keys](keys.md) explains how keys are written).
 
 ## Opening it
 

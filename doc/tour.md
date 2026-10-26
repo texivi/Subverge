@@ -26,7 +26,7 @@ Each part is a page. Select a line of code and press Enter to run it, or type it
 
 [Part 12: Keeping your work](tour-12)
 
-[Part 13: The prompt like Emacs](tour-13)
+[Part 13: Line editing](tour-13)
 
 [Part 14: Asking the system](tour-14)
 
@@ -38,6 +38,6 @@ Each part is a page. Select a line of code and press Enter to run it, or type it
 
 [Part 18: phi](tour-18)
 
-[Part 19: Sound and pictures](tour-19)
+[Part 19: Pictures](tour-19)
 
 [Done](index)

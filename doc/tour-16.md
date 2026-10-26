@@ -2,7 +2,7 @@
 
 ## The page viewer
 
-The pages you are reading are in the page viewer, and its keys follow Emacs Info. SPC, C-v and Page Down scroll a screen, and M-v and Page Up scroll back. C-n and C-p move a line. TAB and n select the next link, BTAB and p the one before, and RET follows it. `l` or DEL goes back, `t` goes to the index and `g` asks for a page by name.
+The pages you are reading are in the page viewer,. SPC, C-v and Page Down scroll a screen, and M-v and Page Up scroll back. C-n and C-p move a line. TAB and n select the next link, BTAB and p the one before, and RET follows it. `l` or DEL goes back, `t` goes to the index and `g` asks for a page by name.
 
 C-s asks for text and jumps to the next line that has it, and C-r searches backward. An empty answer repeats the last search. M-x runs a word and closes the viewer, `c` shows the credits and `G` the gallery, and `q` leaves.
 

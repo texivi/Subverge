@@ -138,7 +138,7 @@
     "  A root unit is a source file linked into the image, loaded in file\n  name order. unit ( s -- ) creates a new one at the end and opens it.\n  Its words are shared by every tab and saved on installed disks.\n  In the editor, type [ \"hi\" say ] :greet, then C-x C-s and C-x C-c."
     "\"mine\" unit" ]
   [ "Key names"
-    "  Keys are written the way Emacs writes them. C- is Control and M-\n  is Alt, so C-k is Ctrl-K and M-f is Alt-F. DEL is Backspace, RET\n  is Enter and SPC is Space. C-x o is two keys, one after the\n  other. describe-key waits for a key and says what it does."
+    "  C- is Control and M-\n  is Alt, so C-k is Ctrl-K and M-f is Alt-F. DEL is Backspace, RET\n  is Enter and SPC is Space. C-x o is two keys, one after the\n  other. describe-key waits for a key and says what it does."
     "describe-key" ]
   [ "Moving along a line"
     "  C-a goes to the start of the line and C-e to the end. C-b and\n  C-f move one character, M-b and M-f one word. Home, End and the\n  arrows do the same. Type the line below and try the keys on it\n  before you press RET."
@@ -189,13 +189,13 @@
     "  A key name can be a sequence that starts with C-x, such as C-x\n  C-t. After C-x the top bar shows C-x - and waits for the next\n  key, and C-g cancels. The editor and the window keys use the\n  same prefix."
     "\"C-x C-t\" [ \"1 2 +\" insert ] bind" ]
   [ "The page viewer"
-    "  docs opens the help pages in a viewer with keys from Emacs Info.\n  SPC and M-v scroll, C-n and C-p move a line, l goes back, t goes\n  to the index, g asks for a page by name and q leaves. TAB\n  selects a link and RET follows it."
+    "  docs opens the help pages in a viewer.\n  SPC and M-v scroll, C-n and C-p move a line, l goes back, t goes\n  to the index, g asks for a page by name and q leaves. TAB\n  selects a link and RET follows it."
     "\"keys\" doc" ]
   [ "Searching a page"
     "  C-s in the viewer asks for text and jumps to the next line that\n  has it, and C-r searches backward. An empty answer repeats the\n  last search. M-x runs a word and closes the viewer, c shows the\n  credits and G the gallery."
     "\"help\" doc" ]
   [ "Moving in the editor"
-    "  scrawl moves like Emacs: C-f, C-b, C-n, C-p, C-a, C-e, M-f, M-b,\n  M-< and M->, C-v and M-v for a screen, and C-l to put the cursor\n  line in the middle. The arrows work as well. C-x C-c leaves."
+    "  scrawl moves with C-f, C-b, C-n, C-p, C-a, C-e, M-f, M-b,\n  M-< and M->, C-v and M-v for a screen, and C-l to put the cursor\n  line in the middle. The arrows work as well. C-x C-c leaves."
     "'square edit" ]
   [ "Killing in the editor"
     "  C-k kills to the end of the line, and on an empty line it takes\n  the line break, so C-k twice takes a whole line. M-d and M-DEL\n  kill words and C-y yanks. Kills in a row add up, and the kill\n  buffer stays between sessions."
@@ -245,15 +245,6 @@
   [ "phi and the disk"
     "  On an installed disk phi is written after every change, in a\n  slot of its own, so it is there after a reboot. On the live ISO\n  it starts with only /doc and /pictures. phi is not part of the\n  world of the tab, so back does not undo a write to it."
     "" ]
-  [ "Songs"
-    "  The kernel has a Sound Blaster 16 driver, a synthesizer and six\n  songs. songs lists them and sound? says whether a card was\n  found."
-    "songs  sound?" ]
-  [ "Playing a song"
-    "  play takes the name of a song, or the start of one, and returns\n  at once. The song goes on while you do anything else in any tab,\n  and the top bar shows play. stop ends it and playing? says\n  whether one is going."
-    "\"canon\" play" ]
-  [ "One song at a time"
-    "  A second play replaces the song that is playing. The music is\n  mixed in the interrupt of the sound card, so a busy tab can't\n  make it stutter. Without a sound card, play fails with no sound\n  card."
-    "\"ode\" play  playing?  stop" ]
   [ "Pictures"
     "  gallery shows the built-in pictures: photographs, drawings and\n  screenshots of Subverge. The arrows, SPC and n go forward, p\n  goes back and q leaves. pictures lists the names."
     "pictures" ]

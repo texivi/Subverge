@@ -19,7 +19,6 @@ static const struct grp groups[] = {
     { "text", "strings" },
     { "io", "printing and keys" },
     { "keys", "key bindings and line editing" },
-    { "sound", "playing songs" },
     { "phi", "the phi store of named values" },
     { "names", "definitions" },
     { "world", "history, saving and root" },
@@ -149,11 +148,6 @@ static const struct doc docs[] = {
     { "phi", "phi?", "path -- n", "0 if nothing is there, 1 for a set, 2 for a value.", "\"/doc\" phi? ." },
     { "phi", "dired", "--", "Browses phi: open, make, rename and delete.", "dired" },
     { "phi", "dired-at", "path --", "Browses phi starting at a set.", "\"/notes\" dired-at" },
-    { "sound", "play", "s --", "Plays a song in the background, by name.", "\"canon\" play" },
-    { "sound", "stop", "--", "Stops the song.", "stop" },
-    { "sound", "songs", "--", "Lists the built-in songs.", "songs" },
-    { "sound", "playing?", "-- n", "1 while a song is playing.", "playing? ." },
-    { "sound", "sound?", "-- n", "1 when a Sound Blaster 16 was found.", "sound? ." },
     { "demos", "golden", "--", "Golden ratio drawings and digits.", "golden" },
     { "helpers", "sin10", "a -- n", "Sine of a, in tenths of a degree, times 1000.", "900 sin10   gives 1000" },
     { "helpers", "cos10", "a -- n", "Cosine of a, in tenths of a degree, times 1000.", "0 cos10   gives 1000" },
@@ -587,7 +581,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words, audio_words, phi_words };
+    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words, phi_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {

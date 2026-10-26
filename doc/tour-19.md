@@ -1,20 +1,4 @@
-# Part 19: Sound and pictures
-
-## Songs
-
-The kernel has a Sound Blaster 16 driver, a synthesizer and six songs ([sound](sound)):
-
-    songs
-    sound? .
-
-`sound?` is 1 when a card was found. `play` starts a song and returns at once:
-
-    "canon" play
-
-The song goes on while you do anything else, in any tab, and the top bar shows `play`. `playing?` says whether a song is going and `stop` ends it:
-
-    playing? .
-    stop
+# Part 19: Pictures
 
 ## Pictures
 

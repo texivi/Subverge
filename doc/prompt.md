@@ -14,7 +14,7 @@ The stack shown is the committed one. While a line is running, nothing is printe
 
 ## Editing keys
 
-The prompt edits a line with the keys of Emacs. The full table is on the [keys](keys.md) page. The ones used most:
+The prompt edits a line with Control and Alt keys. The full table is on the [keys](keys.md) page. The ones used most:
 
 | Key | Action |
 |---|---|
@@ -32,7 +32,7 @@ The prompt edits a line with the keys of Emacs. The full table is on the [keys](
 | C-c, C-g | throws the line away and starts a new one |
 | F1 to F4, Alt-1 to Alt-4 | switch [tab](tabs.md) |
 
-The arrow keys, Home, End and Delete do what their Emacs equivalents do. Characters are inserted at the cursor, so a typo in the middle of a line can be fixed without retyping the rest.
+The arrow keys, Home, End and Delete move and delete as you would expect. Characters are inserted at the cursor, so a typo in the middle of a line can be fixed without retyping the rest.
 
 M-x asks for a word on a new line, with completion, runs it as if it had been typed, and brings the prompt back with the line you were editing. C-h starts the help keys, such as C-h k to see what a key does. You can bind keys of your own, see [keys](keys.md).
 

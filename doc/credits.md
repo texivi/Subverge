@@ -20,10 +20,6 @@ The text is drawn with the 8 by 16 VGA font that the video card provides, with a
 
 The `haelide` theme and its logo are inspired by HaliadeSYS, made by gretagen: https://github.com/gretagen/HaliadeSYS. See [themes](themes) and [logos](logos).
 
-## Music
-
-The songs of [sound](sound) are arrangements of compositions that are in the public domain: Ode to Joy and Fur Elise by Ludwig van Beethoven, the Prelude in C major of the first book of The Well-Tempered Clavier by Johann Sebastian Bach, the first Gymnopedie by Erik Satie, the Canon in D by Johann Pachelbel and the traditional Greensleeves. The notes were written out for Subverge.
-
 ## Pictures
 
 `credits` shows the people on four pages with a picture for each: texivi, Terry A. Davis, gretagen and Vsauce. The built-in [pictures](pictures) are, with their licences:

@@ -8,7 +8,7 @@ All of it needs graphics mode, which needs QEMU's default `-vga std` display. Se
 
     gallery
 
-draws the pictures one at a time, each at its own size on the 640 by 480 screen. The first are photographs and drawings, and the ones after them are screenshots of Subverge, each 640 by 480 with the text screens at the top and the rest in the colour of the background. The right and down arrows, Space and `n` go to the next one, the left and up arrows and `p` to the one before, and `q`, Esc or Ctrl-C leave. The name and the position are printed at the bottom. Decoding takes a moment, so a picture appears shortly after the key. `pictures` lists the names:
+draws the pictures one at a time, each at its own size on the 640 by 480 screen. The first are photographs and drawings, and the ones after them are screenshots of Subverge, each 640 by 480. The right and down arrows, Space and `n` go to the next one, the left and up arrows and `p` to the one before, and `q`, Esc or Ctrl-C leave. The name and the position are printed at the bottom. Decoding takes a moment, so a picture appears shortly after the key. `pictures` lists the names:
 
     pictures
 

@@ -10,9 +10,8 @@
 - A PS/2 mouse on the text screen, shown as an inverted cell. It switches tabs from the top bar and follows links in the viewer ([mouse](?mouse)).
 - A help system built into the kernel: hyperlinked pages that `docs` and `"name" doc` open in a pager, lines you can select and run, and a page for every word ([help](help)).
 - Four shells under a preemptive scheduler, each with its own stack and definitions, switched with F1 to F4 or shown side by side in windows ([tabs](tabs), [scheduler](scheduler)).
-- Emacs keys at the prompt, in the pager and in the editor, with M-x, help keys and bindings that you write in omega ([keys](keys)).
+- Line editing keys at the prompt, in the pager and in the editor, with M-x, help keys and bindings that you write in omega ([keys](keys)).
 - phi, a tree of sets that holds named values, with a directory editor, `dired` ([phi](phi)).
-- A Sound Blaster 16 driver and a synthesizer, with six songs that play in the background ([sound](sound)).
 - An editor, `scrawl`, for the programs in root. An edit only takes effect if it builds, so a broken edit can't break the running system ([scrawl](scrawl), [root](root)).
 - Saved after every line. An installed disk keeps each shell's world and your edits to root as omega source ([saving](saving)).
 - Its own boot loader for installed disks. GRUB is used only on the ISO ([boot](boot)).

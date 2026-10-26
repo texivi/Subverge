@@ -1,6 +1,6 @@
 # Part 14: Asking the system
 
-Emacs describes itself, and Subverge does the same with the C-h keys. C-h waits for a second key.
+The C-h keys ask the system about itself. C-h waits for a second key.
 
 ## What does this key do?
 

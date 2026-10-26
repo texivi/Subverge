@@ -33,55 +33,53 @@ The whole tutorial runs as a single line, so all the definitions you made in it 
 
 | | Lesson | | Lesson |
 |---|---|---|---|
-| 1 | Operand stack | 46 | Key names |
-| 2 | Postfix evaluation | 47 | Moving along a line |
-| 3 | Stack words | 48 | Deleting text |
-| 4 | Integers | 49 | The kill ring |
-| 5 | Big numbers | 50 | Case and swaps |
-| 6 | Truth | 51 | Undo in the line |
-| 7 | Strings | 52 | History |
-| 8 | Quotes | 53 | Searching the history |
-| 9 | Definitions | 54 | Completion |
-| 10 | Reflection | 55 | Running a word by name |
-| 11 | Locals | 56 | Asking about a key |
-| 12 | Dynamic scope | 57 | Asking about a word |
-| 13 | Conditionals | 58 | The list of bindings |
-| 14 | Loops | 59 | Binding a key |
-| 15 | Recursion | 60 | Editing from a binding |
-| 16 | Tracing | 61 | Removing a binding |
-| 17 | Lists | 62 | Key sequences |
-| 18 | Transactions | 63 | The page viewer |
-| 19 | Undo | 64 | Searching a page |
-| 20 | Catching errors | 65 | Moving in the editor |
-| 21 | Tabs | 66 | Killing in the editor |
-| 22 | Help | 67 | The mark and the region |
-| 23 | Time | 68 | Searching the editor |
-| 24 | Keys | 69 | Saving in the editor |
-| 25 | Drawing | 70 | Windows |
-| 26 | Themes | 71 | Where a window goes |
-| 27 | Ordinals | 72 | The size of a window |
-| 28 | Cardinals | 73 | Tabs and windows |
-| 29 | Counting past infinity | 74 | What phi is |
-| 30 | Same size | 75 | Writing a value |
-| 31 | The hotel | 76 | Looking at a set |
-| 32 | Fractions | 77 | Moving and deleting |
-| 33 | Too many reals | 78 | Read only sets |
-| 34 | Alephs | 79 | dired |
-| 35 | Hailstones | 80 | Editing a value |
-| 36 | Bit parity | 81 | phi and the disk |
-| 37 | Machine access | 82 | Songs |
-| 38 | JIT | 83 | Playing a song |
-| 39 | Programs | 84 | One song at a time |
-| 40 | Small tools | 85 | Pictures |
-| 41 | Editing a word | 86 | Credits |
-| 42 | Writing a program | 87 | The golden ratio |
-| 43 | Registering it in apps | 88 | Persistence |
-| 44 | Checking the entry | 89 | Where next |
-| 45 | Root units |  |  |
+| 1 | Operand stack | 44 | Checking the entry |
+| 2 | Postfix evaluation | 45 | Root units |
+| 3 | Stack words | 46 | Key names |
+| 4 | Integers | 47 | Moving along a line |
+| 5 | Big numbers | 48 | Deleting text |
+| 6 | Truth | 49 | The kill ring |
+| 7 | Strings | 50 | Case and swaps |
+| 8 | Quotes | 51 | Undo in the line |
+| 9 | Definitions | 52 | History |
+| 10 | Reflection | 53 | Searching the history |
+| 11 | Locals | 54 | Completion |
+| 12 | Dynamic scope | 55 | Running a word by name |
+| 13 | Conditionals | 56 | Asking about a key |
+| 14 | Loops | 57 | Asking about a word |
+| 15 | Recursion | 58 | The list of bindings |
+| 16 | Tracing | 59 | Binding a key |
+| 17 | Lists | 60 | Editing from a binding |
+| 18 | Transactions | 61 | Removing a binding |
+| 19 | Undo | 62 | Key sequences |
+| 20 | Catching errors | 63 | The page viewer |
+| 21 | Tabs | 64 | Searching a page |
+| 22 | Help | 65 | Moving in the editor |
+| 23 | Time | 66 | Killing in the editor |
+| 24 | Keys | 67 | The mark and the region |
+| 25 | Drawing | 68 | Searching the editor |
+| 26 | Themes | 69 | Saving in the editor |
+| 27 | Ordinals | 70 | Windows |
+| 28 | Cardinals | 71 | Where a window goes |
+| 29 | Counting past infinity | 72 | The size of a window |
+| 30 | Same size | 73 | Tabs and windows |
+| 31 | The hotel | 74 | What phi is |
+| 32 | Fractions | 75 | Writing a value |
+| 33 | Too many reals | 76 | Looking at a set |
+| 34 | Alephs | 77 | Moving and deleting |
+| 35 | Hailstones | 78 | Read only sets |
+| 36 | Bit parity | 79 | dired |
+| 37 | Machine access | 80 | Editing a value |
+| 38 | JIT | 81 | phi and the disk |
+| 39 | Programs | 82 | Pictures |
+| 40 | Small tools | 83 | Credits |
+| 41 | Editing a word | 84 | The golden ratio |
+| 42 | Writing a program | 85 | Persistence |
+| 43 | Registering it in apps | 86 | Where next |
 
 The first part is the language: the stack, values, definitions, locals and their dynamic scope, control flow and lists. The middle covers what makes Subverge different, namely [transactions](transactions.md), [back](back.md), `try`, [tabs](tabs.md), [themes](themes.md), and the ordinals and cardinals. Then the lessons walk through writing a small program, adding it to [apps](apps.md) and putting it in a [root unit](units.md) so it is saved.
 
-Lessons 46 to 87 are about working in the system. They teach the Emacs keys of the prompt, the kill ring, the history search, completion, M-x and the help keys ([keys](keys.md)), making your own key bindings, the page viewer and the editor, windows ([tabs](tabs.md)), phi and `dired` ([phi](phi.md)), songs ([sound](sound.md)), the gallery and the credits, and `golden`. Some of them show keys that act on the prompt itself, such as M-x and C-h, which are switched off at the prompt of a lesson, so they ask you to try them after you leave.
+Lessons 46 to 84 are about working in the system. They teach the keys of the prompt, the kill ring, the history search, completion, M-x and the help keys ([keys](keys.md)), making your own key bindings, the page viewer and the editor, windows ([tabs](tabs.md)), phi and `dired` ([phi](phi.md)), the gallery and the credits, and `golden`. Some of them show keys that act on the prompt itself, such as M-x and C-h, which are switched off at the prompt of a lesson, so they ask you to try them after you leave.
 
 
 ## Changing the lessons

@@ -86,7 +86,7 @@ clean:
 
 # linux harness
 HOSTSRC := kernel/lib.c kernel/big.c kernel/omega.c kernel/words.c kernel/ord.c kernel/root.c kernel/hw.c \
-           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c kernel/doc.c kernel/mouse.c kernel/gfx.c kernel/img.c kernel/keys.c kernel/audio.c kernel/songs.c kernel/phi.c
+           kernel/line.c kernel/scrawl.c kernel/calc.c kernel/sysinfo.c kernel/mem.c kernel/vga.c kernel/sched.c kernel/jit.c kernel/dis.c kernel/help.c kernel/doc.c kernel/mouse.c kernel/gfx.c kernel/img.c kernel/keys.c kernel/phi.c
 host: build/rootfs.o build/docfs.o build/pics.o $(HOSTSRC) test/host.c kernel/*.h
 	gcc -DHOST -g -O1 -fno-builtin -no-pie -w -Ikernel -o build/host $(HOSTSRC) test/host.c build/rootfs.o build/docfs.o build/pics.o
 

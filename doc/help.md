@@ -43,7 +43,6 @@ The groups are:
 | `tools` | ready-made utilities |
 | `demos` | math demos |
 | `games` | games and toys |
-| `sound` | playing songs |
 | `phi` | the phi store of named values |
 | `util` | small helpers |
 | `helpers` | words the utilities use inside |

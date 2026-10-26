@@ -139,7 +139,7 @@ Definitions made at a prompt stay in their tab. Root words, such as `sq`, `apps`
 
 ## Editing a line
 
-The prompt edits a line with the keys of Emacs. C-a and C-e go to the start and the end of the line, M-b and M-f move over words, C-k kills the rest of the line and C-y puts it back, and C-_ undoes. C-r searches the lines you typed before, and TAB completes a name. M-x runs a word by name, and C-h k tells what a key does. The whole list is on the [key map](keys.md), and the lessons of `learn` from number 46 on teach it a key at a time.
+The prompt edits a line with Control and Alt keys. C-a and C-e go to the start and the end of the line, M-b and M-f move over words, C-k kills the rest of the line and C-y puts it back, and C-_ undoes. C-r searches the lines you typed before, and TAB completes a name. M-x runs a word by name, and C-h k tells what a key does. The whole list is on the [key map](keys.md), and the lessons of `learn` from number 46 on teach it a key at a time.
 
 ## Programs
 

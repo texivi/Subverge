@@ -25,7 +25,7 @@ The screen can show up to four tabs at once, each in its own window. Every windo
 
 A click in a window moves to it. F1 to F4 and Alt-1 to Alt-4 show that tab in the window that has the keyboard, or move to it when it already has a window.
 
-Super-Enter splits the window that has the keyboard in half and gives the new window to the lowest-numbered tab that is not on the screen, preferring the one that was in front last. The split goes side by side when the window is wider than it is tall as drawn, which counts a character as twice as tall as it is wide, and stacked otherwise. A new window is therefore beside the first one, and the next ones go below and then beside again, as in the dwindle layout of a tiling window manager. The new window gets the keyboard.
+Super-Enter splits the window that has the keyboard in half and gives the new window to the lowest-numbered tab that is not on the screen, preferring the one that was in front last. The split goes side by side when the window is wider than it is tall as drawn, which counts a character as twice as tall as it is wide, and stacked otherwise. A new window is therefore beside the first one, and the next ones go below and then beside again. The new window gets the keyboard.
 
 Closing a window hides its tab and gives the space to its neighbour. The tab keeps running and keeps its screen. With four windows open there is no tab left to show, so Super-Enter does nothing.
 
