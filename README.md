@@ -23,7 +23,7 @@ The ISO is attached to each release on the [releases page](https://github.com/te
     $ make iso
     $ qemu-system-x86_64 -cdrom build/subverge.iso -m 256M
 
-The ISO is a live CD, so nothing you do on it is saved. Type `learn` once it has booted.
+The ISO is a live CD, so nothing you do on it is saved. Type `learn` once it has booted. To hear the songs of `play`, add `-audiodev pa,id=snd0 -device sb16,audiodev=snd0` to the QEMU command line.
 
 ## Installing
 

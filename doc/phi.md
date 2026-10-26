@@ -11,7 +11,7 @@ phi is shared by all four tabs. A value written in one tab can be read in the ot
 
 `phi` prints the sets and values you made, indented by depth, and then the two sets that come with the system:
 
-      /doc  104 read only
+      /doc  106 read only
       /pictures  23 read only
     notes                            1 member
       todo                           8 bytes
