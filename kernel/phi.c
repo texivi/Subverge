@@ -222,7 +222,7 @@ static void load_text(const char *s, u32 len) {
 }
 
 void phi_init(void) {
-    struct node *d = make(&root, "doc", 1), *a = make(&root, "art", 1);
+    struct node *d = make(&root, "doc", 1), *a = make(&root, "pictures", 1);
     d->ro = a->ro = 1;
     for (int i = 0; i < doc_pages(); i++) {
         const char *name, *src;
