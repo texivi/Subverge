@@ -19,4 +19,4 @@ void keys_edit(char *b, int *len, int *pos, int room);
 void keys_describe(int k1, int k2);
 void keys_each(const char *ctx, void (*f)(const char *key, const char *doc, void *u), void *u);
 void doc_show(const char *name);
-int minibuf(const char *label, char *out, int complete);
+int minibuf(const char *label, char *out, int cap, int complete);

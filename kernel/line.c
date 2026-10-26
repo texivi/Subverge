@@ -111,7 +111,8 @@ static int ask(const char *label, char *out) {
 }
 
 /* last-row prompt */
-int minibuf(const char *label, char *out, int complete) {
+int minibuf(const char *label, char *out, int cap, int complete) {
+    char tmp[LINE_MAX + 1];
     int id = current->id < 0 ? 0 : current->id;
     struct history *h = &mbh[id];
     h->complete = complete;
@@ -121,9 +122,10 @@ int minibuf(const char *label, char *out, int complete) {
     kputs(label);
     vga_color(C_TEXT);
     mbdepth[id]++;
-    int n = readline(out, h);
+    int n = readline(tmp, h);
     mbdepth[id]--;
-    return n;
+    scopy(out, n < 0 ? "" : tmp, (size_t)cap);
+    return n < 0 ? n : MIN(n, cap - 1);
 }
 
 /* back to the prompt */

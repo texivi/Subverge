@@ -901,21 +901,21 @@ static void open_page(const char *name) {
         case 't': push_hist(); if (!load("index")) nhist--; break;
         case 'g': {
             char in[48];
-            if (minibuf("Go to page: ", in, 0) <= 0) break;
+            if (minibuf("Go to page: ", in, sizeof in, 0) <= 0) break;
             push_hist();
             if (!load(in)) { nhist--; snfmt(msg, sizeof msg, "no page called %s", in); }
             break;
         }
         case CTRL('s'): case CTRL('r'): {
             char in[40];
-            int n = minibuf(k == CTRL('s') ? "Search: " : "Search back: ", in, 0);
+            int n = minibuf(k == CTRL('s') ? "Search: " : "Search back: ", in, sizeof in, 0);
             if (n < 0) break;
             if (n) scopy(lastq, in, sizeof lastq);
             if (!search(lastq, k == CTRL('s') ? 1 : -1)) snfmt(msg, sizeof msg, "not found: %s", lastq);
             break;
         }
         case META('x'): {
-            if (minibuf("M-x ", doc_run, 1) > 0) done = 1;
+            if (minibuf("M-x ", doc_run, sizeof doc_run, 1) > 0) done = 1;
             else doc_run[0] = 0;
             break;
         }
