@@ -20,7 +20,7 @@ Sectors are 512 bytes.
 
 About 7.5 MiB in all. `install` refuses any drive smaller than 8M. Anything past the end is ignored.
 
-The kernel gets the sectors from 64 up to 4095, which is just under 2 MiB. If a kernel you've built doesn't fit, `install` fails with `the kernel doesn't fit in its slot`. The current one is under a megabyte.
+The kernel gets the sectors from 64 up to 4095, which is just under 2 MiB. If a kernel you've built doesn't fit, `install` fails with `the kernel doesn't fit in its slot`. The current one is 1.8 MB, most of it the help pages and the pictures.
 
 ## The kernel copy
 
