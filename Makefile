@@ -38,7 +38,7 @@ build/docfs.o: build/docfs.bin
 	$(OBJCOPY) --rename-section .data=.rodata.blob,alloc,load,readonly,data,contents $@
 
 # pictures
-build/pics.bin: $(sort $(wildcard art/*.jpg)) | build
+build/pics.bin: $(sort $(wildcard art/*.jpg shots/*.jpg)) | build
 	@for f in $^; do printf '#>> %s %s\n' "$$(basename $$f .jpg)" "$$(stat -c %s $$f)"; cat $$f; done > $@
 
 build/pics.o: build/pics.bin
