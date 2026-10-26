@@ -16,7 +16,7 @@ The name comes from *subvert* and *diverge*. See [history](history.md).
 
 ### Can I use it every day?
 
-No. It runs in QEMU, has no network, no files and no protection between programs, and a bad `poke` can take the whole machine down. It is a system to explore and program in. Read the [expectations](expectations.md).
+No. It runs in QEMU, has no network and no protection between programs, and a bad `poke` can take the whole machine down. It is a system to explore and program in. Read the [expectations](expectations.md).
 
 ### Is there a roadmap?
 
@@ -26,7 +26,7 @@ Yes, see the [roadmap](roadmap.md).
 
 ### Where are my files?
 
-Subverge has no files. Your definitions are kept in your tab's [world](world.md), programs are kept in [root](root.md), and an installed disk [saves](saving.md) both.
+Subverge keeps what you write in three places. Your definitions are in your tab's [world](world.md), programs are in [root](root.md), and named values such as notes are in [phi](phi.md). An installed disk [saves](saving.md) all three.
 
 ### Why was my work lost after a reboot?
 
@@ -58,7 +58,7 @@ QEMU gives the mouse to the guest after the first click in its window, and Ctrl-
 
 ### Is it POSIX-compliant?
 
-No, and it never will be. Subverge has no processes, files, file descriptors or system calls for POSIX to describe. Programs are omega words, and memory, I/O ports and PCI devices are reached with words such as `peek`, `in` and `pci@`. See [omega for smarties](smarties.md).
+No, and it never will be. POSIX describes processes, files, file descriptors and system calls, and Subverge is built from other parts. Programs are omega words, and memory, I/O ports and PCI devices are reached with words such as `peek`, `in` and `pci@`. See [omega for smarties](smarties.md).
 
 ### Does it have its own bootloader?
 

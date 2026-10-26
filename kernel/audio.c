@@ -381,7 +381,7 @@ static int load_song(const struct song *sg, struct nev **out, int *n) {
 static void b_play(void) {
     str *s;
     if (!pop_str("play", &s)) return;
-    if (!have) { fail("no sound card: start QEMU with -device sb16%s", ""); return; }
+    if (!have) { fail("no sound card%s", ""); return; }
     const struct song *sg = NULL;
     int hits = 0;
     for (int i = 0; i < nsongs; i++) {

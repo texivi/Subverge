@@ -14,9 +14,9 @@ The prompt reaches all memory, every I/O port and every disk, and a call into th
 
 A line works on a copy of the world. If every word succeeds the copy becomes the new world and the old one goes into the history, and if a word fails the copy is thrown away. The same history gives `back` and `redo`, 64 worlds deep ([transactions](transactions), [back](back)). Printed text, the screen, the machine and root edits that already built are outside it.
 
-## The disk has no files
+## Named values live in phi
 
-An installed drive has no partitions and no filesystem. The kernel, root and each shell's world are written at fixed sectors, as omega source, so an image can be read with a hex editor ([disk layout](disk-layout)). Nothing is allocated and nothing has a path.
+An installed drive has no partitions and no allocation table. The kernel, root, each shell's world and phi are written at fixed sectors, as text, so an image can be read with a hex editor ([disk layout](disk-layout)). Named values that are not definitions are kept in phi, a tree of sets in memory that is written to its own slot after every change ([phi](phi)).
 
 ## The JIT compiles on the second run
 

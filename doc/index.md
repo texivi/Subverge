@@ -27,6 +27,8 @@ Tab selects the next link and Enter follows it. Backspace goes back, `q` leaves,
 - [Demos of infinity](demos)
 - [Learn](learn)
 - [Saving](saving)
+- [Phi](phi)
+- [Sound](sound)
 - [Roadmap](roadmap)
 
 ## omega

@@ -6,7 +6,7 @@ Subverge is a hobby operating system written by one person. It targets QEMU, the
 
 ## It is its own system
 
-Subverge has its own kernel, shell and programs, and an installed disk holds fixed slots instead of files ([disk layout](disk-layout.md)). It has no processes, users, permissions or file paths. Everything you write is an omega word, kept in a tab or in [root](root.md), and saved as omega source.
+Subverge has its own kernel, shell and programs, and an installed disk holds fixed slots ([disk layout](disk-layout.md)). It has no processes, users or permissions. Everything you write is an omega word, kept in a tab or in [root](root.md), and saved as omega source, and named values are kept in [phi](phi.md).
 
 ## You need to know how to program
 

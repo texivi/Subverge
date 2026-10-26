@@ -11,16 +11,17 @@ On an installed disk, these are saved straight away:
 - **A line that changed a tab's world.** Only that tab's slot is written. A line that leaves the stack and definitions as they were, such as `words` or `"hi" say`, writes nothing.
 - **A `back`**, since it changes the world back.
 - **A root edit that builds.** The whole of root is written to its slot. An edit that fails to build writes nothing ([root](root.md)).
+- **A change to phi.** The whole of phi is written to its slot.
 - **A theme or logo change**, which rewrites only the header sector ([themes](themes.md), [logos](logos.md)).
-- **`install`**, which writes root, all four tabs, the current theme and the current logo to the new drive.
+- **`install`**, which writes root, all four tabs, phi, the current theme and the current logo to the new drive.
 
-`save` writes root and all four tabs at once. It is rarely needed, since everything is already saved, but it is harmless.
+`save` writes root, phi and all four tabs at once. It is rarely needed, since everything is already saved, but it is harmless.
 
 `home` returns the number of the drive Subverge is installed on and saves to.
 
 ## Slots
 
-The saved state lives in five slots of 1 MiB at fixed positions on the drive: slot 0 holds root and slots 1 to 4 hold the four tabs. A small header in front of them records each slot's length and checksum and a counter of saves. See [disk layout](disk-layout.md) for the exact positions.
+The saved state lives in five slots of 1 MiB at fixed positions on the drive: slot 0 holds root and slots 1 to 4 hold the four tabs. A sixth slot of 512 KiB holds [phi](phi.md). A small header in front of them records each slot's length and checksum and a counter of saves. See [disk layout](disk-layout.md) for the exact positions.
 
 Saving a tab rewrites only that tab's slot and the header. The other slots aren't touched.
 

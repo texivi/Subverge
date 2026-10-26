@@ -30,6 +30,7 @@ The groups are:
 | `lists` | lists, which are also quotes |
 | `text` | strings |
 | `io` | printing and keys |
+| `keys` | key bindings and line editing |
 | `names` | definitions |
 | `world` | history, saving, root, `apropos` |
 | `infinity` | ordinals and cardinals |
@@ -42,6 +43,8 @@ The groups are:
 | `tools` | ready-made utilities |
 | `demos` | math demos |
 | `games` | games and toys |
+| `sound` | playing songs |
+| `phi` | the phi store of named values |
 | `util` | small helpers |
 | `helpers` | words the utilities use inside |
 

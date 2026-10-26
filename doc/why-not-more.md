@@ -36,7 +36,7 @@ The system uses one core. The scheduler, the heap and the interrupt handlers ass
 
 ## Files
 
-The disk holds fixed slots and not files, so there is no file manager and no paths ([disk layout](disk-layout)). Programs and definitions are omega words, and an installed disk saves them as omega source. There is nothing on the roadmap for files.
+The disk holds fixed slots, and the values with names are in [phi](phi), which is a tree of sets in memory with its own slot. Programs and definitions are omega words, and an installed disk saves them as omega source. phi has no directories of files on the disk, no permissions and no links ([disk layout](disk-layout)).
 
 ## Protection
 

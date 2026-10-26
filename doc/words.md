@@ -58,6 +58,18 @@ Many of them work on both. `len`, `at`, `cat`, `reverse` and `each` treat a stri
 
 `put text screen@ wipe cursor nocursor where size title tab mytab`, `gfx gfx-off dot box window` for graphics mode, `bitmap bmp-set bmp-get bmp-fill bmp-box bmp-size bmp-show bmp-free pack-rgb picture pictures gallery credits` for pictures, `mouse mouse?` for the pointer, `theme themes theme@ rgb` for colours, and `logo logos logo@` for the `sys` logo. See [screen](screen.md), [pictures](pictures.md), [themes](themes.md) and [logos](logos.md).
 
+## keys
+
+`bind unbind bindings describe-key line@ line! point@ point! insert`. Keys you bind run a quote at the prompt, and the last five work on the line being edited. See [keys](keys.md).
+
+## sound
+
+`play stop songs playing? sound?`. See [sound](sound.md).
+
+## phi
+
+`phi members phi-read phi-write phi-set phi-delete phi-move phi-edit phi? dired dired-at`. See [phi](phi.md).
+
 ## tools, demos and games
 
 The programs in root, described in [tools](tools.md), [demos](demos.md) and [games](games.md).

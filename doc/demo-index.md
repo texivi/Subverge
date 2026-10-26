@@ -36,6 +36,7 @@ These are arranged in increasing order of difficulty, more or less, and can be u
 - [sorting](>sorting)
 - [sieve](>sieve)
 - [mandel](>mandel), which zooms into the Mandelbrot set and shows what the JIT does for a tight loop
+- [golden](>golden), the golden ratio as a spiral, a sunflower and digits
 - [fortune](>fortune)
 
 ## Infinity

@@ -1,5 +1,14 @@
 # Roadmap
 
+## Subverge 0.9.6
+
+- [x] Emacs keys at the prompt, in the pager and in [scrawl](scrawl.md), with `bind`, `unbind`, `bindings` and `describe-key` ([keys](keys.md))
+- [x] M-x and the C-h help keys
+- [x] [Windows](tabs.md): up to four tabs on the screen at once, opened with Super-Enter or C-x 3 and C-x 2
+- [x] [phi](phi.md), a tree of sets for named values, and `dired`
+- [x] [Sound](sound.md): a Sound Blaster 16 driver, a synthesizer and six songs that play in the background
+- [x] `golden`, and screenshots in the `gallery`
+
 ## Subverge 0.9.5
 
 - [x] [Pictures](pictures.md): `bitmap` and the `bmp-` words, `picture` and `pictures`, a JPEG decoder in the kernel

@@ -22,6 +22,18 @@ The last part is about the continuum hypothesis. Whether ℵ₁ is the size of t
 Every value it shows is computed by ordinary arithmetic, such as `w w * show` and `w w w ^ ^ show`.
 
 
+## golden
+
+    golden
+
+draws the golden ratio in three ways. Space moves to the next one and `q` leaves.
+
+1. **spiral** draws golden rectangles built from squares with sides 1, 1, 2, 3, 5, 8, 13 and 21, each labelled with its side, and the quarter circles that join into a spiral through them. Every circle has the side of its square for a radius and its centre at a corner of it.
+2. **sunflower** puts 700 seeds in a disc. Seed n is at an angle of n times 137.5078 degrees and at a distance proportional to the square root of n, which is the golden angle, so the seeds line up in spirals that count in Fibonacci numbers.
+3. **digits** prints φ to 60 digits, worked out as (1 + √5) / 2 with the exact integer square root of `sqrt`, and under it the ratio of Fibonacci numbers F(k+1) / F(k) for nine values of k. The digits that already agree with φ are green, and the number on the right counts them.
+
+The angles in the first two views come from `sin10` and `cos10`, which approximate the sine and cosine with integers and are good to about two parts in a thousand. `'golden open` shows the source.
+
 ## ord-demo
 
     ord-demo

@@ -19,7 +19,7 @@ Each tab has an 80 by 24 buffer of its own, in memory. Everything a tab prints o
 | `cursor` | `x y --` | move the cursor |
 | `nocursor` | `--` | hide it |
 | `where` | `-- x y` | where it is |
-| `size` | `-- w h` | `80 24` |
+| `size` | `-- w h` | the width and height of the tab's window, `80 24` when it has the whole screen |
 | `title` | `s --` | rename the tab |
 
 Coordinates start at `0 0`, the top-left of the tab's area, under the tab bar. `cursor` moves the cursor without showing it, and anything printed afterwards starts there. Despite the name, it isn't the opposite of `nocursor`.

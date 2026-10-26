@@ -16,9 +16,9 @@ Mistakes that stay inside omega, such as an error in a word or a wrong stack, ar
 
 A line either completes or has no effect. This is what makes ring 0 comfortable at a prompt: a typo, a division by zero or an interrupted loop leaves the stack and the definitions as they were. Undo is built on the same mechanism. The world, which is the stack and the definitions of a shell, is a value that the kernel keeps copies of, 64 deep ([world](world), [transactions](transactions)).
 
-## No files
+## Words and sets
 
-Subverge has no processes, users, permissions or file paths. Everything you write is an omega word, kept in a shell or in root, and an installed disk stores those words as omega source in fixed slots. Because the saved form is source, a saved world is something you can read, and loading one is running it.
+Subverge has no processes, users or permissions. Everything you write is an omega word, kept in a shell or in root, and an installed disk stores those words as omega source in fixed slots. Because the saved form is source, a saved world is something you can read, and loading one is running it. Values that need a name and a place, such as notes, go in [phi](phi), a tree of sets that is saved in a slot of its own.
 
 ## The system edits itself
 
