@@ -193,6 +193,7 @@ static void b_install_to(void) {
     home = (int)n;
     persist_save_root();
     for (int i = 0; i < NTABS; i++) persist_save_tab(i);
+    persist_save_phi();
     vga_color(C_LGREEN);
     kputs("  installed\n");
     vga_color(C_TEXT);
@@ -202,6 +203,7 @@ static void b_save(void) {
     if (home < 0) { fail("you haven't installed yet, run install%s", ""); return; }
     persist_save_root();
     for (int i = 0; i < NTABS; i++) persist_save_tab(i);
+    persist_save_phi();
     step("saved to the drive");
 }
 
