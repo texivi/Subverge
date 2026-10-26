@@ -39,7 +39,7 @@ void font_init(void) {
     plane2_close();
 }
 
-/* graphics mode overwrites the font */
+/* gfx clobbers font */
 void font_save(u8 *buf) {
     plane2_open();
     for (int i = 0; i < FONT_BYTES; i++) buf[i] = ((volatile u8 *)0xA0000)[i];

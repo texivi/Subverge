@@ -4,7 +4,7 @@
 #include "task.h"
 #include "vga.h"
 
-/* graphics: 640 by 480, 32 bits, Bochs VBE */
+/* Bochs VBE */
 
 volatile u32 *gfx_lfb;
 static u32 pal[16];

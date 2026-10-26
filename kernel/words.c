@@ -126,7 +126,7 @@ IMATH(b_bxor, "xor", a ^ b)
 IMATH(b_shl, "<<", (i64)((u64)a << (b & 63)))
 IMATH(b_shr, ">>", (i64)((u64)a >> (b & 63)))
 
-/* bignums are never 0 */
+/* never zero */
 static int flag(V c, const char *w, int *out) {
     if (c.t == T_BIG) { *out = 1; return 1; }
     if (!want(c, T_INT, w)) return 0;

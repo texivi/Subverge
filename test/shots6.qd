@@ -1,4 +1,4 @@
-# interactive learn, root units, tools, apps
+# learn shots
 wait 5000
 cmd apps  ~800
 shot build/43-apps.png

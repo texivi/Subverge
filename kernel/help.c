@@ -18,6 +18,7 @@ static const struct grp groups[] = {
     { "lists", "lists, which are also quotes" },
     { "text", "strings" },
     { "io", "printing and keys" },
+    { "keys", "key bindings and line editing" },
     { "names", "definitions" },
     { "world", "history, saving and root" },
     { "infinity", "ordinals and cardinals" },
@@ -133,6 +134,16 @@ static const struct doc docs[] = {
     { "names", "see", "'x --", "Shows how a name is defined.", "'sq see" },
     { "names", "words", "--", "Lists everything defined in this tab.", "words" },
     { "names", "edit", "'x --", "Opens a name in the editor. Saving redefines it.", "'sq edit" },
+
+    { "keys", "bind", "key q --", "Runs a quote when the key is pressed at the prompt.", "\"C-t\" [ \"hi\" insert ] bind" },
+    { "keys", "unbind", "key --", "Removes a binding you made.", "\"C-t\" unbind" },
+    { "keys", "bindings", "--", "Lists every key binding.", "bindings" },
+    { "keys", "describe-key", "--", "Waits for a key and says what it does.", "describe-key" },
+    { "keys", "line@", "-- s", "The line being edited. Only works inside a binding.", "\"C-t\" [ line@ reverse line! ] bind" },
+    { "keys", "line!", "s --", "Replaces the line being edited.", "\"C-t\" [ \"\" line! ] bind" },
+    { "keys", "point@", "-- n", "The cursor position in the line, counted from 0.", "\"C-t\" [ point@ . ] bind" },
+    { "keys", "point!", "n --", "Moves the cursor in the line.", "\"C-t\" [ 0 point! ] bind" },
+    { "keys", "insert", "s --", "Types a string into the line at the cursor.", "\"C-t\" [ \"dup \" insert ] bind" },
 
     { "world", "help", "'x --", "Explains a word or a group. Alone, lists all.", "'dup help   or just   help" },
     { "world", "back", "--", "Undoes the last line, up to 64 lines.", "back" },
@@ -550,7 +561,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words };
+    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {

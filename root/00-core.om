@@ -10,10 +10,10 @@
 [ { n } n 1024 / str "K" cat ] :kb
 [ { n } n 1048576 / str "M" cat ] :mb
 
-# ch x y n c
+# row fill
 [ { ch x y n c } 0 n [ { i } ch x i + y c put ] for ] :fill
 
-# x y w pct c
+# progress bar
 [ { x y w pct c }
   91 x y 8 put
   0 w [ { i }

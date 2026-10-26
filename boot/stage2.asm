@@ -132,7 +132,7 @@ start:
     mov cr0, eax
     jmp 0x08:pmode
 
-; real mode with a 4 GiB fs, to copy each chunk above 1 MiB
+; unreal mode copy
 unreal:
     cli
     lgdt [gdt_ptr]

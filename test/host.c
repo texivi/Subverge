@@ -60,6 +60,7 @@ int kbd_get(void) {
     if (k < 0) longjmp(out_of_keys, 1);
     return k;
 }
+volatile int kbd_xpend;
 void kbd_init(void) {}
 
 static void key(int k) { struct task *t = current; t->kb[t->kh] = k; t->kh = (t->kh + 1) % 64; }
@@ -104,6 +105,7 @@ int main(void) {
     register_words(help_words);
     register_words(doc_words);
     register_words(mouse_words);
+    register_words(key_words);
     register_words(persist_words);
     ord_init();
     root_boot();

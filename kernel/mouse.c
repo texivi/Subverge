@@ -6,7 +6,7 @@
 #include "task.h"
 #include "vga.h"
 
-/* PS/2 mouse: the pointer is one inverted cell */
+/* PS/2 mouse */
 
 #define PW (VW * 8)
 #define PH ((VH + 1) * 16)
@@ -78,7 +78,7 @@ void mouse_init(void) {
     if (!wait_in()) return;
     outb(0x60, st);
     if (write_mouse(0xF6) != 0xFA) return;
-    /* the sample rates 200, 100, 80 ask for a wheel */
+    /* wheel probe */
     static const u8 seq[] = { 200, 100, 80 };
     for (int i = 0; i < 3; i++) { write_mouse(0xF3); write_mouse(seq[i]); }
     write_mouse(0xF2);

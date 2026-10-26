@@ -557,6 +557,25 @@ static void report(u8 color, const char *fmt, const char *a) {
     vga_color(C_TEXT);
 }
 
+/* run a key word */
+int key_run(str *w) {
+    bind *b;
+    W->sp = (int)W->cur.stack->n;
+    memcpy(W->stk, W->cur.stack->v, (u64)W->sp * sizeof(V));
+    W->dict = W->cur.dict;
+    W->err = W->nback = W->nredo = W->depth = W->nloc = W->tracing = W->nkeep = W->shadowy = 0;
+    kbreak = 0;
+    if (!(b = lookup(w))) return 0;
+    call(b->v);
+    W->dict = W->cur.dict;
+    if (W->err) {
+        kputc('\n');
+        report(C_LRED, "! %s", W->errmsg);
+        return 0;
+    }
+    return 1;
+}
+
 extern char doc_run[200];
 
 void eval_line(const char *line) {
@@ -651,8 +670,9 @@ void omega_init_world(void) {
 
 void omega_main(void) {
     char line[LINE_MAX + 1];
+    line_redraw = prompt;
     set_title(SHELL_NAME);
-    if (W) W->lines.complete = 1;
+    if (W) W->lines.complete = W->lines.shell = 1;
     if (!W) {
         omega_init_world();
         u32 len;
@@ -664,7 +684,7 @@ void omega_main(void) {
             W->nhist = 0;
             kfree(saved);
         }
-        W->lines.complete = 1;
+        W->lines.complete = W->lines.shell = 1;
         if (current->id == 0) {
             if (root_boot_error()) {
                 sysinfo();

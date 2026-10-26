@@ -1,4 +1,4 @@
-# learn, apps, programs, editing apps
+# learn shots
 wait 5000
 cmd learn  ~1200
 shot build/34-learn-1.png

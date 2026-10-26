@@ -1,4 +1,5 @@
 #include "cpu.h"
+#include "kbd.h"
 #include "sv.h"
 #include "task.h"
 #include "vga.h"
@@ -12,7 +13,7 @@ static volatile u16 *const HW = host_screen;
 static volatile u16 *const HW = (volatile u16 *)0xB8000;
 #endif
 
-/* bg bar green teal red mauve peach text dim blue lgreen sky lred pink moon cat */
+/* colour names */
 const struct theme themes[] = {
     { "dusk", {
         0x1e1e2e, 0x313244, 0xa6e3a1, 0x94e2d5, 0xf38ba8, 0xcba6f7, 0xfab387, 0xcdd6f4,
@@ -67,7 +68,7 @@ void hw_cursor(int x, int y) {
     outb(0x3D4, 0x0E); outb(0x3D5, (u8)(p >> 8));
 }
 
-/* text mode registers, which VBE changes */
+/* text registers */
 
 static struct { u8 misc, sr[5], cr[25], gr[9], ar[21]; } rs;
 static u8 rd(u16 idx, u8 i) { outb(idx, i); return inb((u16)(idx + 1)); }
@@ -99,7 +100,7 @@ void vga_restore(void) {
 
 void vga_init(void) {
     vga_theme(0);
-    /* bright backgrounds, no blink */
+    /* no blink */
     inb(0x3DA);
     outb(0x3C0, 0x30);
     u8 mode = inb(0x3C1);
@@ -194,7 +195,7 @@ static void tab_text(int i, char *t, int cap) {
     snfmt(t, (size_t)cap, " %d %s%s ", i + 1, k->title, i != active_tab && k->term.activity ? "*" : "");
 }
 
-/* which tab title is at column x of the top line, or -1 */
+/* tab at x */
 int tab_at(int x) {
     int c = 1;
     for (int i = 0; i < NTABS; i++) {
@@ -221,6 +222,7 @@ void draw_tabbar(void) {
     }
     u8 h = cmos(4), m = cmos(2), b = cmos(0x0B);
     if (!(b & 0x04)) { h = (u8)((h & 0x0F) + ((h >> 4) & 7) * 10); m = (u8)((m & 0x0F) + (m >> 4) * 10); }
+    if (kbd_xpend) for (int i = 0; "C-x -"[i]; i++) hw_put(VW - 14 + i, 0, "C-x -"[i], ATTR(C_MOON, C_BAR));
     char t[8];
     snfmt(t, sizeof t, "%02u:%02u", h, m);
     for (int i = 0; t[i]; i++) hw_put(VW - 6 + i, 0, t[i], ATTR(C_TEXT, C_BAR));
@@ -247,7 +249,7 @@ void set_title(const char *s) {
     draw_tabbar();
 }
 
-/* the pointer: one cell with its colours swapped */
+/* pointer cell */
 
 static void swap_cell(int x, int y) {
     u16 v = HW[y * VW + x], a = v >> 8;

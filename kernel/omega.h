@@ -111,4 +111,7 @@ void jit_release_one(bind *b);
 void jit_sweep(void);
 extern const struct builtin jit_words[], dis_words[], help_words[], doc_words[], mouse_words[];
 void exec_word(str *name);
+str *key_bound(const int *ks, int n);
+int key_run(str *w);
+extern const struct builtin key_words[];
 void exec_item(V *item);

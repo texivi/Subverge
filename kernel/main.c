@@ -56,6 +56,7 @@ void kmain(u32 magic, u64 mbaddr) {
     register_words(help_words);
     register_words(doc_words);
     register_words(mouse_words);
+    register_words(key_words);
     ord_init();
     root_boot();
 

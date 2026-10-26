@@ -236,7 +236,7 @@ static void b_theme(void) {
     if (!want(v, T_SYM, "theme")) return;
     for (int i = 0; themes[i].name; i++)
         if (!strcmp(themes[i].name, name_of(v))) {
-            /* a theme brings its own logo, if one is defined */
+            /* theme logo */
             if (has_logo(themes[i].name)) scopy(logo_name, themes[i].name, sizeof logo_name);
             else if (!strcmp(logo_name, themes[vga_current_theme()].name)) scopy(logo_name, "subverge", sizeof logo_name);
             vga_theme(i);

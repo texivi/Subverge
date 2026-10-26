@@ -1,5 +1,5 @@
 #>> pictures
-# the picture viewer and the credits
+# picture viewer
 
 [ gfx pictures { l } l len { n } 0 { i } 1 { going }
   [ going ] [

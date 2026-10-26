@@ -1,6 +1,7 @@
-/* help pages: a small markdown dialect laid out on the text screen */
+/* help pager */
 
 #include "kbd.h"
+#include "line.h"
 #include "mem.h"
 #include "omega.h"
 #include "sv.h"
@@ -131,6 +132,24 @@ static void gen_atoz(void) {
     kfree(v);
 }
 
+static void bind_row(const char *key, const char *doc, void *u) {
+    (void)u;
+    gput("| `"); gput(key); gput("` | "); gput(doc); gput(" |\n");
+}
+
+static void gen_bindings(void) {
+    static const struct { const char *ctx, *head; } c[] = {
+        { "prompt", "At the prompt" }, { "global", "Everywhere" }, { "pager", "In the pager" }, { "editor", "In the editor" }, { "yours", "Yours" },
+    };
+    gstart();
+    gput("# Key bindings\n\nC- is Control and M- is Alt. See [keys](keys.md) for how to bind your own.\n\n");
+    for (int i = 0; i < 5; i++) {
+        gput("## "); gput(c[i].head); gput("\n\n| Key | Effect |\n|---|---|\n");
+        keys_each(c[i].ctx, bind_row, NULL);
+        gput("\n");
+    }
+}
+
 static int gen_word(const char *n) {
     int nd = help_ndocs();
     for (int i = 0; i < nd; i++) {
@@ -158,7 +177,7 @@ static int gen_group(const char *n) {
     return 0;
 }
 
-/* the page being shown */
+/* current page */
 
 static struct dline *L;
 static int nl, capl;
@@ -173,6 +192,7 @@ static char cur[48];
 static int top, sel;
 static struct pos hist[16];
 static int nhist;
+static char msg[48], lastq[40];
 
 static struct dline *new_line(void) {
     if (nl == capl) {
@@ -206,7 +226,7 @@ static u8 link_attr(int id) {
     return p >= 0 && seen[p] ? ATTR(C_MAUVE, C_BG) : ATTR(C_LRED, C_BG);
 }
 
-/* inline markup into atoms */
+/* inline markup */
 
 static void atom(char ch, u8 attr, int brk, int lk) {
     if (na < MAXATOMS) A[na++] = (struct atom){ (u8)ch, attr, (u8)brk, (u16)lk };
@@ -266,7 +286,7 @@ static void inline_text(const char *s, int n, u8 base) {
     }
 }
 
-/* wrap atoms [a,b) to a width, returning the end of the first line */
+/* wrap atoms */
 
 static int wrap_end(int a, int b, int width) {
     if (b - a <= width) return b;
@@ -283,7 +303,7 @@ static void put_atoms(struct dline *d, int x, int a, int b) {
     }
 }
 
-/* lays out the atoms as lines at an indent; first is drawn before the first line */
+/* lay out */
 static void flow(int indent, const char *first, u8 firstattr, int width) {
     int a = 0;
     while (a < na && A[a].ch == ' ' && A[a].brk) a++;
@@ -313,7 +333,7 @@ static void add_anchor(const char *s, int n) {
     anchors[nanch++].line = nl;
 }
 
-/* a code line is a link when every word in it exists */
+/* code links */
 static int runnable(const char *s, int n) {
     int i = 0, any = 0;
     while (i < n) {
@@ -653,7 +673,7 @@ static void layout(const char *src, int len) {
     if (!nl) blank();
 }
 
-/* UTF-8 to the single bytes of the screen font */
+/* UTF-8 fold */
 
 static int cp_of(u32 c) {
     switch (c) {
@@ -712,6 +732,7 @@ static int load(const char *name) {
         src = gb.b; len = gb.len;
     } else if (!strcmp(name, "word-index")) { gen_words(NULL); src = gb.b; len = gb.len; }
     else if (!strcmp(name, "a-to-z")) { gen_atoz(); src = gb.b; len = gb.len; }
+    else if (!strcmp(name, "bindings")) { gen_bindings(); src = gb.b; len = gb.len; }
     else {
         scopy(alt, name, sizeof alt);
         pg = page_find(alt);
@@ -753,7 +774,8 @@ static void draw(void) {
         const char *t = links[sel].tgt;
         vga_puts_at(1, VH - 1, links[sel].kind == LK_RUN ? "run:" : links[sel].kind == LK_WORD ? "word:" : "page:", ATTR(C_SKY, C_BAR));
         vga_puts_at(links[sel].kind == LK_WORD ? 7 : 6, VH - 1, t, bar);
-    } else vga_puts_at(1, VH - 1, "tab link  enter follow  space next page", ATTR(C_DIM, C_BAR));
+    } else if (msg[0]) vga_puts_at(1, VH - 1, msg, ATTR(C_MOON, C_BAR));
+    else vga_puts_at(1, VH - 1, "tab link  enter follow  C-s search  M-x run  g goto", ATTR(C_DIM, C_BAR));
     char pc[8];
     int pct = nl <= VIEW ? 100 : MIN(100, (top + VIEW) * 100 / nl);
     snfmt(pc, sizeof pc, "%d%%", pct);
@@ -783,7 +805,7 @@ static void goto_anchor(const char *a) {
     for (int i = 0; i < nanch; i++) if (!strcmp(anchors[i].name, a)) { top = anchors[i].line; clamp(); return; }
 }
 
-/* 1 when the viewer should close */
+/* close flag */
 static int follow(int id) {
     struct link *k = &links[id];
     if (k->kind == LK_RUN) { scopy(doc_run, k->tgt, sizeof doc_run); return 1; }
@@ -815,7 +837,7 @@ static void step(int dir) {
     if (!nlinks) return;
     int start = sel;
     if (sel < 0) {
-        /* first link on screen, or any link after it */
+        /* next link */
         sel = dir > 0 ? -1 : nlinks;
         for (int i = 0; i < nlinks; i++) if (links[i].line >= top) { sel = dir > 0 ? i - 1 : i; break; }
         if (dir < 0 && sel == nlinks) sel = 0;
@@ -825,6 +847,27 @@ static void step(int dir) {
     if (sel >= nlinks) sel = 0;
     if (sel < 0) sel = nlinks - 1;
     show_sel();
+}
+
+/* search text */
+static void line_text(int y, char *o) {
+    int n = 0;
+    for (int x = 0; x < VW; x++) { char c = (char)(L[y].c[x] & 0xFF); o[n++] = c >= 'A' && c <= 'Z' ? c + 32 : c; }
+    o[n] = 0;
+}
+
+static int search(const char *q, int dir) {
+    char l[VW + 1], t[40];
+    int n = 0;
+    for (; q[n] && n < 39; n++) t[n] = q[n] >= 'A' && q[n] <= 'Z' ? q[n] + 32 : q[n];
+    t[n] = 0;
+    if (!n) return 0;
+    for (int i = 1; i <= nl; i++) {
+        int y = ((top + dir * i) % nl + nl) % nl;
+        line_text(y, l);
+        if (strstr(l, t)) { top = MAX(0, y - 2); sel = -1; return 1; }
+    }
+    return 0;
 }
 
 static void open_page(const char *name) {
@@ -840,19 +883,44 @@ static void open_page(const char *name) {
     while (!done) {
         draw();
         int k = kbd_get();
+        msg[0] = 0;
         switch (k) {
         case 'q': case K_ESC: done = 1; break;
-        case K_UP: top--; break;
-        case K_DOWN: top++; break;
-        case K_PGUP: top -= VIEW - 1; break;
-        case K_PGDN: case ' ': top += VIEW - 1; break;
-        case K_HOME: top = 0; sel = -1; break;
-        case K_END: top = nl; break;
-        case '\t': step(1); break;
-        case K_BTAB: step(-1); break;
+        case K_UP: case CTRL('p'): top--; break;
+        case K_DOWN: case CTRL('n'): top++; break;
+        case K_PGUP: case META('v'): top -= VIEW - 1; break;
+        case K_PGDN: case ' ': case CTRL('v'): top += VIEW - 1; break;
+        case K_HOME: case '<': case META('<'): top = 0; sel = -1; break;
+        case K_END: case '>': case META('>'): top = nl; break;
+        case '\t': case 'n': step(1); break;
+        case K_BTAB: case 'p': step(-1); break;
         case K_RIGHT: case K_LEFT: if (nlinks) { if (sel < 0) step(1); else step(k == K_RIGHT ? 1 : -1); } break;
         case '\n': if (sel >= 0) done = follow(sel); break;
-        case '\b': back(); break;
+        case '\b': case 'l': back(); break;
+        case CTRL('g'): sel = -1; break;
+        case 't': push_hist(); if (!load("index")) nhist--; break;
+        case 'g': {
+            char in[48];
+            if (minibuf("Go to page: ", in, 0) <= 0) break;
+            push_hist();
+            if (!load(in)) { nhist--; snfmt(msg, sizeof msg, "no page called %s", in); }
+            break;
+        }
+        case CTRL('s'): case CTRL('r'): {
+            char in[40];
+            int n = minibuf(k == CTRL('s') ? "Search: " : "Search back: ", in, 0);
+            if (n < 0) break;
+            if (n) scopy(lastq, in, sizeof lastq);
+            if (!search(lastq, k == CTRL('s') ? 1 : -1)) snfmt(msg, sizeof msg, "not found: %s", lastq);
+            break;
+        }
+        case META('x'): {
+            if (minibuf("M-x ", doc_run, 1) > 0) done = 1;
+            else doc_run[0] = 0;
+            break;
+        }
+        case CTRL('x'): if (kbd_get() == CTRL('c')) done = 1; break;
+        case K_CH: if (kbd_get() == 'b') { push_hist(); if (!load("bindings")) nhist--; } break;
         case K_MOUSE: {
             struct mev e;
             while (mouse_event(&e)) {
@@ -881,6 +949,12 @@ static void b_doc(void) {
     if (!pop_str("doc", &s)) return;
     set_title("docs");
     open_page(s->s);
+    set_title(SHELL_NAME);
+}
+
+void doc_show(const char *name) {
+    set_title("docs");
+    open_page(name);
     set_title(SHELL_NAME);
 }
 

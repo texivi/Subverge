@@ -4,7 +4,7 @@
 #include "task.h"
 #include "vga.h"
 
-/* bitmaps, and a baseline JPEG decoder for the pictures in art/ */
+/* JPEG decoder */
 
 extern const char _binary_build_pics_bin_start[], _binary_build_pics_bin_end[];
 
@@ -171,7 +171,7 @@ static void restart(struct jpeg *j) {
     for (int i = 0; i < j->nc; i++) j->c[i].pred = 0;
 }
 
-/* decodes into a new w by h bitmap, returns its id or -1 with a reason */
+/* decode bitmap */
 static int bmp_new(u32 w, u32 h);
 
 static int decode(const u8 *d, u32 len, const char **why) {
@@ -370,7 +370,7 @@ static void b_pack(void) {
     push(I(r << 16 | g << 8 | b));
 }
 
-/* the blob: "#>> name length" lines, each followed by that many bytes */
+/* blob format */
 static const char *next_pic(const char *p, const char *end, const char **name, u32 *nlen, const u8 **data, u32 *dlen) {
     if (p + 4 > end || p[0] != '#') return NULL;
     const char *q = p + 4;
