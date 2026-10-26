@@ -30,6 +30,7 @@ void font_restore(const u8 *buf) { (void)buf; }
 char *persist_load(int slot, u32 *len) { (void)slot; (void)len; return NULL; }
 void persist_save_tab(int tab) { (void)tab; }
 void persist_save_root(void) {}
+void persist_save_phi(void) {}
 void persist_save_theme(void) {}
 int persist_home(void) { return -1; }
 static void b_home(void) { push(I(-1)); }
@@ -108,6 +109,8 @@ int main(void) {
     register_words(mouse_words);
     register_words(key_words);
     register_words(audio_words);
+    register_words(phi_words);
+    phi_init();
     register_words(persist_words);
     ord_init();
     root_boot();

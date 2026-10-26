@@ -20,6 +20,7 @@ static const struct grp groups[] = {
     { "io", "printing and keys" },
     { "keys", "key bindings and line editing" },
     { "sound", "playing songs" },
+    { "phi", "the phi store of named values" },
     { "names", "definitions" },
     { "world", "history, saving and root" },
     { "infinity", "ordinals and cardinals" },
@@ -136,6 +137,17 @@ static const struct doc docs[] = {
     { "names", "words", "--", "Lists everything defined in this tab.", "words" },
     { "names", "edit", "'x --", "Opens a name in the editor. Saving redefines it.", "'sq edit" },
 
+    { "phi", "phi", "--", "Shows what phi holds.", "phi" },
+    { "phi", "members", "path --", "Lists the members of a set.", "\"/\" members" },
+    { "phi", "phi-read", "path -- s", "The value stored at a path.", "\"/doc/about\" phi-read" },
+    { "phi", "phi-write", "s path --", "Stores a string at a path, making sets on the way.", "\"hi\" \"/notes/a\" phi-write" },
+    { "phi", "phi-set", "path --", "Makes an empty set.", "\"/notes\" phi-set" },
+    { "phi", "phi-delete", "path --", "Removes a value, or a set with all it holds.", "\"/notes\" phi-delete" },
+    { "phi", "phi-move", "from to --", "Renames or moves a value or a set.", "\"/a\" \"/b\" phi-move" },
+    { "phi", "phi-edit", "path --", "Edits a value in the editor.", "\"/notes/a\" phi-edit" },
+    { "phi", "phi?", "path -- n", "0 if nothing is there, 1 for a set, 2 for a value.", "\"/doc\" phi? ." },
+    { "phi", "dired", "--", "Browses phi: open, make, rename and delete.", "dired" },
+    { "phi", "dired-at", "path --", "Browses phi starting at a set.", "\"/notes\" dired-at" },
     { "sound", "play", "s --", "Plays a song in the background, by name.", "\"canon\" play" },
     { "sound", "stop", "--", "Stops the song.", "stop" },
     { "sound", "songs", "--", "Lists the built-in songs.", "songs" },
@@ -567,7 +579,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words, audio_words };
+    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words, audio_words, phi_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {

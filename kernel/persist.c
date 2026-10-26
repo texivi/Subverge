@@ -15,11 +15,16 @@ u32 omega_source(struct omega *om, char *buf, u32 cap);
 u32 root_source(char *buf, u32 cap);
 
 #define NSLOTS (1 + NTABS)
-struct state_header { char magic[8]; u32 len[NSLOTS]; u32 sum[NSLOTS]; u64 saves; u32 theme; char logo[24]; u8 pad[512 - 8 - 8 * NSLOTS - 8 - 4 - 24]; };
-_Static_assert(sizeof(struct state_header) == 512, "header is one sector");
-
+struct state_header { char magic[8]; u32 len[NSLOTS]; u32 sum[NSLOTS]; u64 saves; u32 theme; char logo[24]; u32 xlen, xsum; u8 pad[512 - 8 - 8 * NSLOTS - 8 - 4 - 24 - 8]; };
 static int home = -1;
 static struct state_header hdr;
+#define PHI_SLOT NSLOTS
+
+static u32 *lenp(int s) { return s < NSLOTS ? &hdr.len[s] : &hdr.xlen; }
+static u32 *sump(int s) { return s < NSLOTS ? &hdr.sum[s] : &hdr.xsum; }
+static u32 slot_cap(int s) { return (s < NSLOTS ? SLOT_SECTORS : PHI_SECTORS) * 512u - 1; }
+_Static_assert(sizeof(struct state_header) == 512, "header is one sector");
+
 static char snapshot[256 * 1024];
 static u64 snapshot_len;
 
@@ -66,15 +71,15 @@ void persist_save_theme(void) {
 }
 
 char *persist_load(int slot, u32 *len) {
-    if (home < 0 || !hdr.len[slot] || hdr.len[slot] > SLOT_SECTORS * 512u - 1) return NULL;
-    u32 sectors = (hdr.len[slot] + 511) / 512;
+    if (home < 0 || !*lenp(slot) || *lenp(slot) > slot_cap(slot)) return NULL;
+    u32 sectors = (*lenp(slot) + 511) / 512;
     char *buf = kmalloc((u64)sectors * 512 + 1);
-    if (disk_rw(home, LBA_STATE + 1 + (u64)slot * SLOT_SECTORS, sectors, buf, 0) || checksum(buf, hdr.len[slot]) != hdr.sum[slot]) {
+    if (disk_rw(home, LBA_STATE + 1 + (u64)slot * SLOT_SECTORS, sectors, buf, 0) || checksum(buf, *lenp(slot)) != *sump(slot)) {
         kfree(buf);
         return NULL;
     }
-    buf[hdr.len[slot]] = 0;
-    *len = hdr.len[slot];
+    buf[*lenp(slot)] = 0;
+    *len = *lenp(slot);
     return buf;
 }
 
@@ -84,8 +89,8 @@ static int save_slot(int slot, char *buf, u32 len) {
     memset(buf + len, 0, (u64)sectors * 512 - len);
     if (sectors && disk_rw(home, LBA_STATE + 1 + (u64)slot * SLOT_SECTORS, sectors, buf, 1)) return -1;
     u64 f = irq_save();
-    hdr.len[slot] = len;
-    hdr.sum[slot] = checksum(buf, len);
+    *lenp(slot) = len;
+    *sump(slot) = checksum(buf, len);
     hdr.saves++;
     struct state_header copy = hdr;
     irq_restore(f);
@@ -98,6 +103,15 @@ void persist_save_tab(int tab) {
     if (!buf) return;
     u32 len = omega_source(tabs[tab].om, buf, SLOT_SECTORS * 512 - 512);
     if (len) save_slot(1 + tab, buf, len);
+    kfree(buf);
+}
+
+void persist_save_phi(void) {
+    if (home < 0) return;
+    char *buf = kmalloc_try(PHI_SECTORS * 512);
+    if (!buf) return;
+    u32 len = phi_dump(buf, PHI_SECTORS * 512 - 512);
+    save_slot(PHI_SLOT, buf, len);
     kfree(buf);
 }
 

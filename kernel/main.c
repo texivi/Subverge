@@ -43,6 +43,7 @@ void kmain(u32 magic, u64 mbaddr) {
 
     sched_init();
     persist_init();
+    phi_init();
     omega_init_world();
     register_words(core_words);
     register_words(hw_words);
@@ -58,6 +59,7 @@ void kmain(u32 magic, u64 mbaddr) {
     register_words(mouse_words);
     register_words(key_words);
     register_words(audio_words);
+    register_words(phi_words);
     ord_init();
     root_boot();
 

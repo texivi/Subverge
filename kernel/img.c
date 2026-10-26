@@ -384,6 +384,12 @@ static const char *next_pic(const char *p, const char *end, const char **name, u
     return q + 1 + n;
 }
 
+int pic_at(int i, const char **name, u32 *nlen, const u8 **data, u32 *dlen) {
+    const char *p = _binary_build_pics_bin_start, *end = _binary_build_pics_bin_end;
+    while ((p = next_pic(p, end, name, nlen, data, dlen))) if (!i--) return 1;
+    return 0;
+}
+
 static void b_picture(void) {
     str *s;
     if (!pop_str("picture", &s)) return;

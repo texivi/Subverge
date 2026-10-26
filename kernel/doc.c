@@ -65,6 +65,9 @@ static int page_find(const char *n) {
     return -1;
 }
 
+int doc_pages(void) { index_pages(); return npages; }
+void doc_page_at(int i, const char **name, const char **src, int *len) { *name = pages[i].name; *src = pages[i].src; *len = pages[i].len; }
+
 /* generated pages */
 
 static struct { char *b; int cap, len; } gb;
