@@ -33,6 +33,7 @@ key ret
 type [ "hello" "Says hello." ]
 wait 300
 shot build/50-apps-editor.png
+key ctrl-x
 key ctrl-s
 wait 1500
 key ctrl-q
@@ -45,6 +46,7 @@ cmd "mine" unit  ~1500
 type [ "hi" say ] :greet
 wait 300
 shot build/52-new-unit.png
+key ctrl-x
 key ctrl-s
 wait 1500
 key ctrl-q

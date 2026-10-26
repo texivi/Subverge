@@ -27,9 +27,9 @@
 ] ] :logo-haelide
 
 [ "user" ] :user
-[ "Subverge 0.9.5" ] :os
+[ "Subverge 0.9.6" ] :os
 [ "subverge" ] :host
-[ "ordinal 1.0.5 x86_64" ] :kernel-name
+[ "ordinal 1.0.6 x86_64" ] :kernel-name
 
 [ heap drop kernel drop + { used }
   used kb " / " cat kernel nip mb cat
@@ -56,7 +56,7 @@
     i 1 = [ "os" os stat ] when
     i 2 = [ "kernel" kernel-name stat ] when
     i 3 = [ "uptime" uptime stat ] when
-    i 4 = [ "shell" "omega 1.0.5" stat ] when
+    i 4 = [ "shell" "omega 1.0.6" stat ] when
     i 5 = [ "cpu" cpu stat ] when
     i 6 = [ "memory" memline stat ] when
     i 8 = [ [ 8 15 3 13 9 14 10 12 ] [ color 7 emit " " write ] each ] when

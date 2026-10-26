@@ -36,7 +36,7 @@ The system uses one core. The scheduler, the heap and the interrupt handlers ass
 
 ## Files
 
-The disk holds fixed slots, and the values with names are in [phi](phi), which is a tree of sets in memory with its own slot. Programs and definitions are omega words, and an installed disk saves them as omega source. phi has no directories of files on the disk, no permissions and no links ([disk layout](disk-layout)).
+The disk holds fixed slots, and the values with names are in [phi](phi), which is a tree of sets in memory with its own slot. Programs and definitions are omega words, and an installed disk saves them as omega source. phi has no permissions and no links between values ([disk layout](disk-layout)).
 
 ## Protection
 

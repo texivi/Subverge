@@ -72,6 +72,7 @@ key ret
 type [ "hello" "Says hello." ]
 wait 300
 shot build/50-apps-editor.png
+key ctrl-x
 key ctrl-s
 wait 1500
 key ctrl-q

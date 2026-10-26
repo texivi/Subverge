@@ -29,10 +29,11 @@ All of Subverge was written for it, in C, assembly and omega. The only outside c
 
 ## Releases
 
-The current release is **Subverge 0.9.5**, with ordinal 1.0.5 and omega 1.0.5. See the [roadmap](roadmap.md) for what each release added.
+The current release is **Subverge 0.9.6**, with ordinal 1.0.6 and omega 1.0.6. See the [roadmap](roadmap.md) for what each release added.
 
 | Release | ordinal | omega |
 |---|---|---|
+| 0.9.6 | 1.0.6 | 1.0.6 |
 | 0.9.5 | 1.0.5 | 1.0.5 |
 | 0.9.4 | 1.0.4 | 1.0.4 |
 | 0.9.3 | 1.0.3 | 1.0.3 |
