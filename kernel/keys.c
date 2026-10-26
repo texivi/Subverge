@@ -136,7 +136,7 @@ static const struct { const char *ctx, *key, *doc; } screens[] = {
     { "pager", "C-s  C-r", "Search for text, forward or back." },
     { "pager", "l", "Go back to the previous page." },
     { "pager", "t", "Go to the index." },
-    { "pager", "c", "Go to the credits page." },
+    { "pager", "c", "Close the pager and show the credits." },
     { "pager", "G", "Close the pager and show the gallery." },
     { "pager", "g", "Go to a page by name." },
     { "pager", "M-x", "Close the pager and run a word." },

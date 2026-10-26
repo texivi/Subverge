@@ -1,6 +1,6 @@
 # Menu
 
-[Help & Index](index)   [Tour](tour)   [Keys](keys)   [Credits](credits)
+[Help & Index](index)   [Tour](tour)   [Keys](keys)   [Credits](>credits)
 
 ## Games
 

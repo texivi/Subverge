@@ -9,18 +9,18 @@ Sectors are 512 bytes.
     LBA 0           MBR
     LBA 1-16        stage 2
     LBA 64          the kernel, as many sectors as it needs
-    LBA 4096        the state header, "SVSTATE1"
-    LBA 4097        slot 0, root, 2048 sectors
-    LBA 6145        slot 1, tab 1
-    LBA 8193        slot 2, tab 2
-    LBA 10241       slot 3, tab 3
-    LBA 12289       slot 4, tab 4
-    LBA 14337       slot 5, phi, 1024 sectors
-    LBA 15361       the end of everything Subverge uses
+    LBA 8192        the state header, "SVSTATE1"
+    LBA 8193        slot 0, root, 2048 sectors
+    LBA 10241       slot 1, tab 1
+    LBA 12289       slot 2, tab 2
+    LBA 14337       slot 3, tab 3
+    LBA 16385       slot 4, tab 4
+    LBA 18433       slot 5, phi, 1024 sectors
+    LBA 19457       the end of everything Subverge uses
 
-About 7.5 MiB in all. `install` refuses any drive smaller than 8M. Anything past the end is ignored.
+About 9.5 MiB in all. `install` refuses any drive smaller than 10M. Anything past the end is ignored.
 
-The kernel gets the sectors from 64 up to 4095, which is just under 2 MiB. If a kernel you've built doesn't fit, `install` fails with `the kernel doesn't fit in its slot`. The current one is 1.8 MB, most of it the help pages and the pictures.
+The kernel gets the sectors from 64 up to 8191, which is just under 4 MiB. If a kernel you've built doesn't fit, `install` fails with `the kernel doesn't fit in its slot`. The current one is about 1.9 MB, most of it the help pages and the pictures.
 
 ## The kernel copy
 
@@ -28,7 +28,7 @@ The kernel gets the sectors from 64 up to 4095, which is just under 2 MiB. If a 
 
 ## The state header
 
-The sector at LBA 4096 holds the marker `SVSTATE1`, the length and a checksum of each slot, the number of saves so far, the [theme](themes), the name of the [logo](logos) and the length and checksum of the phi slot, which come after the logo name. If the marker is wrong, the header is treated as empty and every slot as unused. Disks installed before 0.9.0 have `dusk` as their theme, disks installed before 0.9.1 have no logo name, so `sys` draws the `subverge` logo, and disks installed before 0.9.6 have no phi slot, so phi starts empty. A slot's data is written first and the header second, so a save that is interrupted leaves the old header pointing at a slot whose checksum no longer matches, and that slot starts fresh.
+The sector at LBA 8192 holds the marker `SVSTATE1`, the length and a checksum of each slot, the number of saves so far, the [theme](themes), the name of the [logo](logos) and the length and checksum of the phi slot, which come after the logo name. If the marker is wrong, the header is treated as empty and every slot as unused. Disks installed before 0.9.0 have `dusk` as their theme, disks installed before 0.9.1 have no logo name, so `sys` draws the `subverge` logo, and disks installed before 0.9.6 have no phi slot, so phi starts empty. Disks installed before 0.9.6 keep their state header at LBA 4096 and are read only by the kernel they were installed with, so installing again moves a disk to this layout. A slot's data is written first and the header second, so a save that is interrupted leaves the old header pointing at a slot whose checksum no longer matches, and that slot starts fresh.
 
 ## The slots
 
@@ -44,7 +44,7 @@ At boot the kernel reads sector 1 of each of the four IDE drives, and the first 
 
 On the host, with the VM shut down:
 
-    $ dd if=disk.img bs=512 skip=4096 count=1 | xxd | head -4
-    $ dd if=disk.img bs=512 skip=6145 count=4 | strings
+    $ dd if=disk.img bs=512 skip=8192 count=1 | xxd | head -4
+    $ dd if=disk.img bs=512 skip=10241 count=4 | strings
 
 shows you the header and the start of tab 1's world. Don't write to the image while QEMU has it open.

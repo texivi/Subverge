@@ -85,7 +85,7 @@ C-h waits for a second key.
 | M->, >, End | the bottom |
 | l, DEL | back to the last page |
 | t | the index |
-| c | the credits page |
+| c | close the pager and show the credits |
 | G | close the pager and show the gallery |
 | g | go to a page by name |
 | C-s, C-r | search the page for text, forward or backward |

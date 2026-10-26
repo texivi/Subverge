@@ -1,6 +1,6 @@
 # Pictures
 
-Subverge can draw full-colour pictures on the [graphics screen](screen). There are two parts: bitmaps, which are pixel grids that a program fills in and draws, and the pictures built into the system, which decode into bitmaps. `gallery` shows the built-in pictures, and `credits` shows three of them next to the [credits](credits).
+Subverge can draw full-colour pictures on the [graphics screen](screen). There are two parts: bitmaps, which are pixel grids that a program fills in and draws, and the pictures built into the system, which decode into bitmaps. `gallery` shows the built-in pictures, and `credits` shows four of them next to the [credits](credits).
 
 All of it needs graphics mode, which needs QEMU's default `-vga std` display. See [screen](screen).
 

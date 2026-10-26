@@ -911,7 +911,7 @@ static void open_page(const char *name) {
         case '\b': case 'l': back(); break;
         case CTRL('g'): sel = -1; break;
         case 't': push_hist(); if (!load("index")) nhist--; break;
-        case 'c': push_hist(); if (!load("credits")) nhist--; break;
+        case 'c': scopy(doc_run, "credits", sizeof doc_run); done = 1; break;
         case 'G': scopy(doc_run, "gallery", sizeof doc_run); done = 1; break;
         case 'g': {
             char in[48];

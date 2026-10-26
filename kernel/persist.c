@@ -158,7 +158,7 @@ static void b_install_to(void) {
     i64 n;
     if (!pop_int("install-to", &n)) return;
     if (n < 0 || n > 3 || !drives[n].present) { fail("there is no such drive%s", ""); return; }
-    if (drives[n].sectors < MIN_SECTORS) { fail("that drive is too small, it needs at least 8M%s", ""); return; }
+    if (drives[n].sectors < MIN_SECTORS) { fail("that drive is too small, it needs at least 10M%s", ""); return; }
     if (!snapshot_len) { fail("the kernel's data couldn't be copied%s", ""); return; }
 
     u64 text = (u64)(_data_start - _kernel_start), total = text + snapshot_len;

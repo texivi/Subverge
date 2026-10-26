@@ -56,7 +56,7 @@ The limit on items in a quote applies to code as it is parsed. Lists built at ru
 | names listed per unit | 96 |
 | `'name edit` | 16 KiB of text |
 | a saved slot | 1 MiB, for root and for each tab |
-| an install target | 8 MiB |
+| an install target | 10 MiB |
 
 A world or root that grows past its slot is not saved, without a message ([saving](saving.md)).
 

@@ -27,7 +27,7 @@ static void save(void) { if (!loading) persist_save_phi(); }
 
 /* path to names */
 static int split(const char *path, char c[][NAMEMAX + 1]) {
-    int n = 0;
+    int n = 0, tot = 0;
     while (*path) {
         while (*path == '/') path++;
         if (!*path) break;
@@ -36,7 +36,8 @@ static int split(const char *path, char c[][NAMEMAX + 1]) {
         int l = (int)(e - path);
         if (l == 1 && path[0] == '.') { path = e; continue; }
         if (l == 2 && path[0] == '.' && path[1] == '.') { if (n) n--; path = e; continue; }
-        if (l > NAMEMAX || n == DEPTH_MAX) return -1;
+        tot += l + 1;
+        if (l > NAMEMAX || n == DEPTH_MAX || tot > 200) return -1;
         for (int i = 0; i < l; i++) if ((u8)path[i] < ' ' || (u8)path[i] > '~') return -1;
         memcpy(c[n], path, (size_t)l);
         c[n++][l] = 0;
@@ -84,7 +85,7 @@ static struct node *find_path(const char *path, struct node **parent) {
 static struct node *walk_create(const char *path, int set, const char **why) {
     char c[DEPTH_MAX][NAMEMAX + 1];
     int n = split(path, c);
-    if (n <= 0) { *why = n < 0 ? "that path has a bad name in it" : "that is the top set"; return NULL; }
+    if (n <= 0) { *why = n < 0 ? "that path is too long or has a bad name" : "that is the top set"; return NULL; }
     struct node *k = &root;
     for (int i = 0; i < n; i++) {
         struct node *x = child(k, c[i]);
@@ -149,7 +150,7 @@ int phi_move(const char *from, const char *to, const char **why) {
     if (n->ro || p->ro) { *why = "that is read only"; return 0; }
     char c[DEPTH_MAX][NAMEMAX + 1];
     int k = split(to, c);
-    if (k <= 0) { *why = "that path has a bad name in it"; return 0; }
+    if (k <= 0) { *why = "that path is too long or has a bad name"; return 0; }
     struct node *np = &root;
     for (int i = 0; i < k - 1; i++) {
         np = child(np, c[i]);
@@ -370,47 +371,44 @@ static void b_edit(void) {
 }
 
 /* dired */
-static char cwd[160] = "/";
-static struct node *list[256];
-static int nlist, selected, scroll;
-static char note[80];
+struct dd { char cwd[160], note[80]; struct node *list[256]; int nlist, selected, scroll; };
 
 static void join(char *out, size_t cap, const char *dir, const char *name) {
     snfmt(out, cap, "%s%s%s", dir, !strcmp(dir, "/") ? "" : "/", name);
 }
 
-static void refresh(void) {
-    struct node *d = find_path(cwd, NULL);
-    nlist = 0;
-    if (!d || !d->set) { scopy(cwd, "/", sizeof cwd); d = &root; }
+static void refresh(struct dd *d) {
+    struct node *n = find_path(d->cwd, NULL);
+    d->nlist = 0;
+    if (!n || !n->set) { scopy(d->cwd, "/", sizeof d->cwd); n = &root; }
     for (int pass = 0; pass < 2; pass++)
-        for (struct node *k = d->kid; k && nlist < 256; k = k->next) if ((int)k->set == (pass == 0)) list[nlist++] = k;
-    if (selected >= nlist) selected = nlist - 1;
-    if (selected < 0) selected = 0;
+        for (struct node *k = n->kid; k && d->nlist < 256; k = k->next) if ((int)k->set == (pass == 0)) d->list[d->nlist++] = k;
+    if (d->selected >= d->nlist) d->selected = d->nlist - 1;
+    if (d->selected < 0) d->selected = 0;
 }
 
-static void up_dir(void) {
-    char *s = cwd + strlen(cwd);
-    while (s > cwd && s[-1] != '/') s--;
-    if (s > cwd + 1) s--;
+static void up_dir(struct dd *d) {
+    char *s = d->cwd + strlen(d->cwd);
+    while (s > d->cwd && s[-1] != '/') s--;
+    if (s > d->cwd + 1) s--;
     *s = 0;
-    if (!cwd[0]) scopy(cwd, "/", sizeof cwd);
-    selected = scroll = 0;
+    if (!d->cwd[0]) scopy(d->cwd, "/", sizeof d->cwd);
+    d->selected = d->scroll = 0;
 }
 
-static void dired_draw(void) {
+static void dired_draw(struct dd *d) {
     u8 bar = ATTR(C_TEXT, C_BAR);
     vga_fill(0, 0, VW, ' ', bar);
     vga_puts_at(1, 0, "dired", ATTR(C_MOON, C_BAR));
-    vga_puts_at(7, 0, cwd, bar);
-    if (selected < scroll) scroll = selected;
-    if (selected >= scroll + term_h() - 2) scroll = selected - (term_h() - 2) + 1;
+    vga_puts_at(7, 0, d->cwd, bar);
+    if (d->selected < d->scroll) d->scroll = d->selected;
+    if (d->selected >= d->scroll + term_h() - 2) d->scroll = d->selected - (term_h() - 2) + 1;
     for (int r = 0; r < term_h() - 2; r++) {
-        int i = scroll + r;
+        int i = d->scroll + r;
         vga_fill(0, r + 1, VW, ' ', ATTR(C_TEXT, C_BG));
-        if (i >= nlist) continue;
-        struct node *k = list[i];
-        u8 a = i == selected ? ATTR(C_BG, C_PEACH) : ATTR(k->set ? C_BLUE : C_TEXT, C_BG);
+        if (i >= d->nlist) continue;
+        struct node *k = d->list[i];
+        u8 a = i == d->selected ? ATTR(C_BG, C_PEACH) : ATTR(k->set ? C_BLUE : C_TEXT, C_BG);
         vga_fill(0, r + 1, VW, ' ', a);
         char t[64];
         snfmt(t, sizeof t, "%s%s", k->name, k->set ? "/" : "");
@@ -418,67 +416,72 @@ static void dired_draw(void) {
         if (k->set) { int c = 0; for (struct node *x = k->kid; x; x = x->next) c++; snfmt(t, sizeof t, "%d", c); }
         else snfmt(t, sizeof t, "%u", k->len);
         vga_puts_at(MAX(14, term_w() - 36), r + 1, t, a);
-        if (k->ro) vga_puts_at(MAX(22, term_w() - 26), r + 1, "read only", i == selected ? a : ATTR(C_DIM, C_BG));
+        if (k->ro) vga_puts_at(MAX(22, term_w() - 26), r + 1, "read only", i == d->selected ? a : ATTR(C_DIM, C_BG));
     }
     vga_fill(0, term_h() - 1, VW, ' ', bar);
-    if (note[0]) vga_puts_at(1, term_h() - 1, note, ATTR(C_MOON, C_BAR));
+    if (d->note[0]) vga_puts_at(1, term_h() - 1, d->note, ATTR(C_MOON, C_BAR));
     else vga_puts_at(1, term_h() - 1, "RET open  ^ up  + new set  c new value  d delete  R rename  g refresh  q quit", ATTR(C_DIM, C_BAR));
     vga_cursor(0, term_h());
 }
 
 static void dired_run(const char *start) {
-    scopy(cwd, start, sizeof cwd);
-    selected = scroll = 0;
-    note[0] = 0;
+    struct dd *d = kzalloc(sizeof *d);
+    scopy(d->cwd, start, sizeof d->cwd);
     for (;;) {
-        refresh();
-        dired_draw();
+        refresh(d);
+        dired_draw(d);
         int k = kbd_get();
+        refresh(d);
         const char *why;
-        char in[LINE_MAX + 1], p[260];
-        struct node *cur = nlist ? list[selected] : NULL;
-        note[0] = 0;
+        char in[LINE_MAX + 1], p[260], q[260], name[NAMEMAX + 1];
+        int ro = 0, set = 0, have = d->nlist > 0;
+        if (have) {
+            scopy(name, d->list[d->selected]->name, sizeof name);
+            set = d->list[d->selected]->set;
+            ro = d->list[d->selected]->ro;
+        }
+        (void)ro;
+        d->note[0] = 0;
         switch (k) {
-        case 'q': case K_ESC: case CTRL('g'): vga_clear(); return;
-        case 'n': case CTRL('n'): case K_DOWN: if (selected < nlist - 1) selected++; break;
-        case 'p': case CTRL('p'): case K_UP: if (selected > 0) selected--; break;
-        case K_HOME: case META('<'): selected = 0; break;
-        case K_END: case META('>'): selected = nlist - 1; break;
-        case '^': case '\b': case 'u': up_dir(); break;
+        case 'q': case K_ESC: case CTRL('g'): vga_clear(); kfree(d); return;
+        case 'n': case CTRL('n'): case K_DOWN: if (d->selected < d->nlist - 1) d->selected++; break;
+        case 'p': case CTRL('p'): case K_UP: if (d->selected > 0) d->selected--; break;
+        case K_HOME: case META('<'): d->selected = 0; break;
+        case K_END: case META('>'): d->selected = d->nlist - 1; break;
+        case '^': case '\b': case 'u': up_dir(d); break;
         case 'g': break;
         case '\n': case 'f': case 'e':
-            if (!cur) break;
-            join(p, sizeof p, cwd, cur->name);
-            if (cur->set) { scopy(cwd, p, sizeof cwd); selected = scroll = 0; }
+            if (!have) break;
+            join(p, sizeof p, d->cwd, name);
+            if (set) { scopy(d->cwd, p, sizeof d->cwd); d->selected = d->scroll = 0; }
             else edit_value(p);
             break;
         case '+':
             if (minibuf("New set: ", in, sizeof in, 0) <= 0) break;
-            join(p, sizeof p, cwd, in);
-            if (!phi_mkset(p, &why)) snfmt(note, sizeof note, "%s", why);
+            join(p, sizeof p, d->cwd, in);
+            if (!phi_mkset(p, &why)) snfmt(d->note, sizeof d->note, "%s", why);
             break;
         case 'c':
             if (minibuf("New value: ", in, sizeof in, 0) <= 0) break;
-            join(p, sizeof p, cwd, in);
-            if (find_path(p, NULL)) { snfmt(note, sizeof note, "that name is already taken"); break; }
-            if (!phi_write(p, "", 0, &why)) { snfmt(note, sizeof note, "%s", why); break; }
+            join(p, sizeof p, d->cwd, in);
+            if (find_path(p, NULL)) { snfmt(d->note, sizeof d->note, "that name is already taken"); break; }
+            if (!phi_write(p, "", 0, &why)) { snfmt(d->note, sizeof d->note, "%s", why); break; }
             edit_value(p);
             break;
         case 'd': case 'D':
-            if (!cur) break;
-            snfmt(p, sizeof p, "Delete %s? (y or n) ", cur->name);
+            if (!have) break;
+            snfmt(p, sizeof p, "Delete %s? (y or n) ", name);
             if (minibuf(p, in, sizeof in, 0) > 0 && (in[0] == 'y' || in[0] == 'Y')) {
-                join(p, sizeof p, cwd, cur->name);
-                if (!phi_delete(p, &why)) snfmt(note, sizeof note, "%s", why);
+                join(p, sizeof p, d->cwd, name);
+                if (!phi_delete(p, &why)) snfmt(d->note, sizeof d->note, "%s", why);
             }
             break;
         case 'R': case 'r':
-            if (!cur) break;
+            if (!have) break;
             if (minibuf("Rename to: ", in, sizeof in, 0) <= 0) break;
-            join(p, sizeof p, cwd, cur->name);
-            char q[260];
-            join(q, sizeof q, cwd, in);
-            if (!phi_move(p, q, &why)) snfmt(note, sizeof note, "%s", why);
+            join(p, sizeof p, d->cwd, name);
+            join(q, sizeof q, d->cwd, in);
+            if (!phi_move(p, q, &why)) snfmt(d->note, sizeof d->note, "%s", why);
             break;
         }
     }

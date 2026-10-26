@@ -69,8 +69,7 @@
   live
     [ "  You are running Subverge from a live ISO, so nothing you do is saved." say
       "  Type install to put it on a drive and keep your work." say ]
-    [ "  You are running Subverge, installed on drive " write home str write "." say
-      "  Your tabs and your edits to root are saved after every line." say ] if
+    [ "  You are running Subverge, installed on drive " write home str write "." say ] if
   nl
   14 color "  Type learn for a guided tour of the language." say 7 color
   14 color "  Type apps to see the programs you can run." say 7 color

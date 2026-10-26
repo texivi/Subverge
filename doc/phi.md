@@ -51,7 +51,7 @@ Writing to a path that already holds a value replaces it. Writing to a path whos
 
 ## Paths
 
-A path is names separated by `/`. A leading `/` is optional, `.` stays where it is and `..` goes up one set. A name has at most 31 characters, all printable ASCII, and no `/`. Paths go at most 16 sets deep. Names are compared exactly, with case.
+A path is names separated by `/`. A leading `/` is optional, `.` stays where it is and `..` goes up one set. A name has at most 31 characters, all printable ASCII, and no `/`. Paths go at most 16 sets deep and are at most 200 characters long. Names are compared exactly, with case.
 
 ## dired
 

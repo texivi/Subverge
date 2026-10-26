@@ -14,7 +14,7 @@ int disk_rw(int n, u64 lba, u32 count, void *buf, int write);
 
 #define LBA_STAGE2   1
 #define LBA_KERNEL   64
-#define LBA_STATE    4096
+#define LBA_STATE    8192
 #define SLOT_SECTORS 2048
 #define PHI_SECTORS  1024
 #define MIN_SECTORS  (LBA_STATE + 1 + SLOT_SECTORS * 5 + PHI_SECTORS)

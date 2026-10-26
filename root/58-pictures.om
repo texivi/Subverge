@@ -31,30 +31,45 @@
     [ "Space for the next page, q leaves." 8 ]
   ] credit-page
   key quit-key? not [
-    "gretagen" [
-      [ "gretagen" 14 ]
-      [ "creator of HaliadeSYS" 7 ]
+    "terry" [
+      [ "Terry A. Davis" 14 ]
+      [ "creator of TempleOS" 7 ]
       [ "" 7 ]
-      [ "The haelide theme and its logo come" 7 ]
-      [ "from HaliadeSYS, also known as Zerene OS." 7 ]
-      [ "https://github.com/gretagen/HaliadeSYS" 11 ]
+      [ "TempleOS is an operating system whose" 7 ]
+      [ "shell is also its compiler, and whose" 7 ]
+      [ "programs all run in ring 0. Subverge" 7 ]
+      [ "started from that idea and uses none" 7 ]
+      [ "of its code." 7 ]
+      [ "https://templeos.org" 11 ]
       [ "" 7 ]
       [ "Space for the next page, q leaves." 8 ]
     ] credit-page
     key quit-key? not [
-      "vsauce" [
-        [ "Vsauce" 14 ]
-        [ "the inspiration for Subverge" 7 ]
+      "gretagen" [
+        [ "gretagen" 14 ]
+        [ "creator of HaliadeSYS" 7 ]
         [ "" 7 ]
-        [ "His video How To Count Past Infinity" 7 ]
-        [ "is why omega has ordinals and cardinals," 7 ]
-        [ "and why the kernel and the shell are" 7 ]
-        [ "named after them." 7 ]
-        [ "youtube.com/watch?v=SrU9YDoXE88" 11 ]
+        [ "The haelide theme and its logo come" 7 ]
+        [ "from HaliadeSYS, also known as Zerene OS." 7 ]
+        [ "https://github.com/gretagen/HaliadeSYS" 11 ]
         [ "" 7 ]
-        [ "Any key leaves." 8 ]
+        [ "Space for the next page, q leaves." 8 ]
       ] credit-page
-      key drop
+      key quit-key? not [
+        "vsauce" [
+          [ "Vsauce" 14 ]
+          [ "the inspiration for Subverge" 7 ]
+          [ "" 7 ]
+          [ "His video How To Count Past Infinity" 7 ]
+          [ "is why omega has ordinals and cardinals," 7 ]
+          [ "and why the kernel and the shell are" 7 ]
+          [ "named after them." 7 ]
+          [ "youtube.com/watch?v=SrU9YDoXE88" 11 ]
+          [ "" 7 ]
+          [ "Any key leaves." 8 ]
+        ] credit-page
+        key drop
+      ] when
     ] when
   ] when
   gfx-off
