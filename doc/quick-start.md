@@ -27,4 +27,4 @@ Press F2 for the second tab. It has its own stack and doesn't know `sq`. Press F
 
 ## Go on
 
-The [tour](tour) is twelve short parts that type what they show. [First steps](first-steps) is the same session in prose. [Tips](tips) lists things worth knowing early and [key map](keys) lists every key. The [demo index](demo-index) lists every program.
+The [tour](tour) is nineteen short parts that type what they show. [First steps](first-steps) is the same session in prose. [Tips](tips) lists things worth knowing early and [key map](keys) lists every key. The [demo index](demo-index) lists every program.

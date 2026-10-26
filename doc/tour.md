@@ -26,4 +26,18 @@ Each part is a page. Select a line of code and press Enter to run it, or type it
 
 [Part 12: Keeping your work](tour-12)
 
+[Part 13: The prompt like Emacs](tour-13)
+
+[Part 14: Asking the system](tour-14)
+
+[Part 15: Your own keys](tour-15)
+
+[Part 16: The viewer and the editor](tour-16)
+
+[Part 17: Windows](tour-17)
+
+[Part 18: phi](tour-18)
+
+[Part 19: Sound and pictures](tour-19)
+
 [Done](index)

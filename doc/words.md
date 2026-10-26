@@ -68,7 +68,7 @@ Many of them work on both. `len`, `at`, `cat`, `reverse` and `each` treat a stri
 
 ## phi
 
-`phi members phi-read phi-write phi-set phi-delete phi-move phi-edit phi? dired dired-at`. See [phi](phi.md).
+`phi members phi-names phi-read phi-write phi-set phi-delete phi-move phi-edit phi? dired dired-at`. See [phi](phi.md).
 
 ## tools, demos and games
 

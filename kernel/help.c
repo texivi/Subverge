@@ -139,6 +139,7 @@ static const struct doc docs[] = {
 
     { "phi", "phi", "--", "Shows what phi holds.", "phi" },
     { "phi", "members", "path --", "Lists the members of a set.", "\"/\" members" },
+    { "phi", "phi-names", "path -- l", "The names of the members of a set, as a list.", "\"/\" phi-names" },
     { "phi", "phi-read", "path -- s", "The value stored at a path.", "\"/doc/about\" phi-read" },
     { "phi", "phi-write", "s path --", "Stores a string at a path, making sets on the way.", "\"hi\" \"/notes/a\" phi-write" },
     { "phi", "phi-set", "path --", "Makes an empty set.", "\"/notes\" phi-set" },

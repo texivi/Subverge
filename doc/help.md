@@ -48,6 +48,10 @@ The groups are:
 | `util` | small helpers |
 | `helpers` | words the utilities use inside |
 
+## Help from the keyboard
+
+C-h k, C-h f, C-h a, C-h b and C-h i ask about a key, a word, a text, the bindings and the help pages from the prompt, and `describe-key`, `apropos` and `bindings` are the words behind them ([keys](keys)).
+
 ## A word
 
 A word page shows the description, the stack effect spelled out, an example and the group it belongs to:

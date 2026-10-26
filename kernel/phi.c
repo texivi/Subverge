@@ -317,6 +317,17 @@ static void line_for(struct node *k) {
     vga_color(C_TEXT);
 }
 
+static void b_names(void) {
+    str *p;
+    if (!pop_path("phi-names", &p)) return;
+    struct node *n = find_path(p->s, NULL);
+    if (!n || !n->set) { why_fail("phi-names", n ? "that is a value" : "there is nothing there"); return; }
+    V v[256];
+    u32 k = 0;
+    for (struct node *x = n->kid; x && k < 256; x = x->next) v[k++] = S(str_new(x->name, (u32)strlen(x->name)));
+    push(Q(quote_new(v, k)));
+}
+
 static void b_members(void) {
     str *p;
     if (!pop_path("members", &p)) return;
@@ -502,7 +513,7 @@ static void b_dired_at(void) {
 }
 
 const struct builtin phi_words[] = {
-    { "phi", b_phi }, { "members", b_members }, { "phi-read", b_read }, { "phi-write", b_write }, { "phi-set", b_set },
+    { "phi", b_phi }, { "members", b_members }, { "phi-names", b_names }, { "phi-read", b_read }, { "phi-write", b_write }, { "phi-set", b_set },
     { "phi-delete", b_delete }, { "phi-move", b_move }, { "phi-edit", b_edit }, { "phi?", b_has },
     { "dired", b_dired }, { "dired-at", b_dired_at }, { NULL, NULL }
 };

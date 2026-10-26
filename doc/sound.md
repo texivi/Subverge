@@ -38,6 +38,11 @@ All of them are in the public domain. They are short arrangements written for th
 
 `play` returns at once and the song goes on while you do other things. It doesn't belong to a tab, so it keeps playing when you switch tabs, open a window, start a long job or edit text. The top bar shows `play` next to the clock for as long as a song is playing. When the song has finished and the echo has faded, the word goes away.
 
+A program can wait for the end of a song by asking `playing?` until it says 0:
+
+    "ode" play
+    [ playing? ] [ 100 sleep ] while
+
 The music is mixed in the interrupt of the sound card, 11 times a second, so a tab that is busy doesn't make it stutter. A tab that stops running with an error doesn't stop it either.
 
 ## The synthesizer

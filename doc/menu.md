@@ -8,7 +8,15 @@
 
 ## Animations
 
-[Mandel](>mandel)   [Stars](>stars)   [Rain](>rain)   [Bounce](>bounce)   [Sorting](>sorting)   [Sieve](>sieve)
+[Mandel](>mandel)   [Golden](>golden)   [Stars](>stars)   [Rain](>rain)   [Bounce](>bounce)   [Sorting](>sorting)   [Sieve](>sieve)
+
+## Sound
+
+[Songs](>songs)   [Ode](>"ode"~play)   [Elise](>"elise"~play)   [Prelude](>"prelude"~play)   [Gymnopedie](>"gymnopedie"~play)   [Canon](>"canon"~play)   [Greensleeves](>"greensleeves"~play)   [Stop](>stop)
+
+## Pictures and phi
+
+[Gallery](>gallery)   [Credits](>credits)   [phi](>phi)   [dired](>dired)
 
 ## Infinity
 

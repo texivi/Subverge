@@ -24,6 +24,7 @@ phi is shared by all four tabs. A value written in one tab can be read in the ot
 |---|---|
 | `phi` | `--`, shows what phi holds |
 | `members` | `path --`, lists the members of a set, sets first |
+| `phi-names` | `path -- l`, the names of the members of a set, as a list |
 | `phi-read` | `path -- s`, the value at a path |
 | `phi-write` | `s path --`, stores a string, making the sets on the way |
 | `phi-set` | `path --`, makes an empty set |
@@ -70,6 +71,28 @@ A path is names separated by `/`. A leading `/` is optional, `.` stays where it 
 | q, ESC | leave |
 
 The questions are asked on the bottom row. Editing a read only value works, but nothing is kept when the editor quits.
+
+## phi and the world
+
+phi is shared by the four tabs and is not part of the world of a tab. A line that writes to phi and then fails keeps the write, since only the stack and the definitions are undone, and `back` does not undo a write. Values that belong with the definitions of a tab are better kept in the world, and values that every tab should see are better kept in phi.
+
+## Using phi from a program
+
+A value is a string, so other values go in as text and come back with a word that reads them. A number goes through `str` and `>num`:
+
+    42 str "/notes/n" phi-write
+    "/notes/n" phi-read >num 1 + .
+
+prints 43. A list goes the same way, since `str` writes it as source and `eval` reads it back:
+
+    [ 1 2 3 ] str "/notes/l" phi-write
+    "/notes/l" phi-read eval len .
+
+prints 3.
+
+`phi?` tells a program whether a path exists before it reads or writes, and `phi-names` leaves the names of the members of a set as a list of strings:
+
+    "/notes" phi-names .
 
 ## Size
 

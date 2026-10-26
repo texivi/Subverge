@@ -36,6 +36,30 @@ The arrow keys, Home, End and Delete do what their Emacs equivalents do. Charact
 
 M-x asks for a word on a new line, with completion, runs it as if it had been typed, and brings the prompt back with the line you were editing. C-h starts the help keys, such as C-h k to see what a key does. You can bind keys of your own, see [keys](keys.md).
 
+## The kill ring
+
+C-k, C-u, C-w, M-d and M-DEL kill text, which means they delete it and keep it on the kill ring. The ring holds the last eight pieces and is shared by every tab, so text killed in one tab can be yanked in another. C-y inserts the newest piece at the cursor. M-y, typed straight after C-y or another M-y, replaces what was yanked with the next older piece.
+
+When a kill follows another kill with no other key between them, the text is added to the same piece: forward kills such as C-k and M-d add at the end, and backward kills such as C-u, C-w and M-DEL add at the start. That is why M-d typed three times and then C-y brings back three words in their original order.
+
+## Undo
+
+C-_ undoes the last change to the line. It keeps the last 16 states of the line, and a run of typed letters is one change, so typing a word and pressing C-_ removes the word. A kill, a yank, a completion and a recalled line are one change each. Ctrl-/ does the same as C-_.
+
+## Searching the history
+
+C-r starts a search backward through the last 16 lines of the tab, and C-s one forward from the oldest. The prompt shows the text you have typed and the line that matches it. Typing more narrows the match, DEL shortens the text, and C-r or C-s moves to the next match in that direction. C-g puts the line back as it was. Any other key ends the search and leaves the matching line in the editor, and RET does that without running the line.
+
+## Where the keys work
+
+The editing keys work wherever a line is read: at the prompt, in the lessons of `learn`, in `ask` and `calc`, and in the questions of the viewer, the editor and `dired`. A few keys need the real prompt of a tab, because they run words or redraw it:
+
+| Keys | At the prompt | Everywhere else |
+|---|---|---|
+| M-x, C-h and your bindings | yes | no |
+| C-l | yes | no |
+| TAB completion | yes, and in the M-x question | no |
+
 ## Completion
 
 Tab completes the name that ends at the cursor. The candidates are your tab's definitions, root's words and the built-ins.

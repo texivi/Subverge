@@ -135,7 +135,11 @@ Press F2. Tab 2 is a separate session with its own stack, and `sq` isn't defined
     7 sq .                      49, because root has its own sq
     'countdown defined? .       0
 
-Definitions made at a prompt stay in their tab. Root words, such as `sq`, `apps` and `clock`, work in every tab. Press F1 to go back ([tabs](tabs.md)).
+Definitions made at a prompt stay in their tab. Root words, such as `sq`, `apps` and `clock`, work in every tab. Press F1 to go back ([tabs](tabs.md)). To see two tabs at once, press Super-Enter, or C-x 3 for a window beside this one. C-x o moves to the other window and C-x 1 gives the screen back to one.
+
+## Editing a line
+
+The prompt edits a line with the keys of Emacs. C-a and C-e go to the start and the end of the line, M-b and M-f move over words, C-k kills the rest of the line and C-y puts it back, and C-_ undoes. C-r searches the lines you typed before, and TAB completes a name. M-x runs a word by name, and C-h k tells what a key does. The whole list is on the [key map](keys.md), and the lessons of `learn` from number 46 on teach it a key at a time.
 
 ## Programs
 

@@ -44,7 +44,19 @@ You booted with an installed disk attached. The live system loads the root and t
 
 ### How do I switch between the shells?
 
-Press F1 to F4 or Alt-1 to Alt-4 for shell 1 to 4. With a mouse, click a tab title in the top bar ([tabs](tabs)).
+Press F1 to F4 or Alt-1 to Alt-4 for shell 1 to 4. With a mouse, click a tab title in the top bar ([tabs](tabs)). To see several shells at once, open windows with Super-Enter or C-x 3 and C-x 2.
+
+### Does it have the keys of Emacs?
+
+At the prompt, in the page viewer and in the editor, yes: C-a, C-e, C-k, C-y, M-f, C-s and the rest, with M-x to run a word by name and C-h to ask about a key or a word. Where it differs from Emacs is on the [key map](keys).
+
+### How do I change a key?
+
+`bind` takes the name of a key and a quote and runs it when the key is typed at the prompt, as in `"M-j" [ "dup " insert ] bind`. A binding is saved with the world of the tab ([keys](keys)).
+
+### What is phi?
+
+A tree of sets that holds named values, such as notes. It is shared by the tabs and is saved on an installed disk ([phi](phi)).
 
 ### The mouse doesn't move.
 
@@ -82,11 +94,11 @@ Yes. `themes` lists the themes and `'haelide theme` switches to one. `n r g b rg
 
 ### Why is the screen so small?
 
-Subverge uses 80 by 25 VGA text mode, with the top row taken by the tab bar. `gfx` starts a 640 by 480 graphics mode that draws dots, boxes, text and titled frames. See [screen](screen.md).
+Subverge uses 80 by 25 VGA text mode, with the top row taken by the tab bar, and a tab shares it with others when windows are open. `gfx` starts a 640 by 480 graphics mode that draws dots, boxes, text and titled frames. See [screen](screen.md).
 
 ### Does it have networking or sound?
 
-Sound: yes, through the PC speaker. `beep` plays a tone with a pitch and a length ([ports](ports.md)). Anything beyond the speaker is on the [roadmap](roadmap.md).
+Sound: yes. `beep` plays a tone through the PC speaker ([ports](ports.md)), and a Sound Blaster 16 plays the six songs of `play` in the background ([sound](sound.md)).
 
 Networking: not yet. It is on the [roadmap](roadmap.md).
 

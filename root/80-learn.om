@@ -137,6 +137,132 @@
   [ "Root units"
     "  A root unit is a source file linked into the image, loaded in file\n  name order. unit ( s -- ) creates a new one at the end and opens it.\n  Its words are shared by every tab and saved on installed disks.\n  In the editor, type [ \"hi\" say ] :greet, then C-x C-s and C-x C-c."
     "\"mine\" unit" ]
+  [ "Key names"
+    "  Keys are written the way Emacs writes them. C- is Control and M-\n  is Alt, so C-k is Ctrl-K and M-f is Alt-F. DEL is Backspace, RET\n  is Enter and SPC is Space. C-x o is two keys, one after the\n  other. describe-key waits for a key and says what it does."
+    "describe-key" ]
+  [ "Moving along a line"
+    "  C-a goes to the start of the line and C-e to the end. C-b and\n  C-f move one character, M-b and M-f one word. Home, End and the\n  arrows do the same. Type the line below and try the keys on it\n  before you press RET."
+    "1 2 + 3 4 + * 5 6 + *" ]
+  [ "Deleting text"
+    "  DEL deletes before the cursor and C-d at the cursor. M-d deletes\n  the next word, M-DEL the word before, C-w the word before as\n  well, C-k everything to the end of the line and C-u everything\n  to the start. All of them except DEL and C-d keep the text for\n  the next lesson."
+    "10 20 30 40 50 + + + +" ]
+  [ "The kill ring"
+    "  Killed text goes on the kill ring, which holds eight pieces. C-y\n  puts the last one back at the cursor, and M-y right after it\n  swaps it for the piece before. Kills that follow each other with\n  no other key between are added to one piece, so M-d M-d takes\n  two words and one C-y brings both back."
+    "1 2 3 4 5 + + + +" ]
+  [ "Case and swaps"
+    "  C-t swaps the two characters at the cursor. M-u turns the next\n  word into capitals, M-l into small letters and M-c capitalizes\n  it. They work on any text in the line, strings included."
+    "\"hello world\" upper" ]
+  [ "Undo in the line"
+    "  C-_ undoes the last change to the line and a second C-_ the one\n  before it. Ctrl and the slash key does the same. A run of typed\n  letters counts as one change, and a kill or a completion is one\n  change each."
+    "1 2 3 + +" ]
+  [ "History"
+    "  C-p and C-n, or Up and Down, step through the last 16 lines of\n  the tab. M-< goes to the oldest and M-> back to the empty line.\n  Equal neighbours and empty lines are not kept. Try it at the\n  prompt when you leave learn."
+    "" ]
+  [ "Searching the history"
+    "  C-r searches the earlier lines for the text you type, newest\n  first. A second C-r goes to the next older match and C-s turns\n  around. DEL shortens the text, C-g puts the line back as it was,\n  and any other key leaves the match in the line. RET leaves it\n  there without running it."
+    "2 100 ^" ]
+  [ "Completion"
+    "  TAB completes the word before the cursor from your definitions,\n  root and the built-ins. One match is finished with a space,\n  several are extended as far as they share, and each further TAB\n  shows the next one. A ' or : in front of the name is kept."
+    "'square see" ]
+  [ "Running a word by name"
+    "  M-x asks for a word on a new line, with completion, and runs it\n  as if you had typed it. The line you were editing comes back\n  afterwards. It works at the prompt and in the page viewer, so it\n  opens a program from anywhere. It is off inside learn, so try it\n  after you leave."
+    "" ]
+  [ "Asking about a key"
+    "  C-h k waits for a key and says what it does at the prompt, in\n  the page viewer and in the editor, and shows the quote of a\n  binding of yours. describe-key is the word behind it, and it\n  works inside a lesson. Press C-k when it asks."
+    "describe-key" ]
+  [ "Asking about a word"
+    "  C-h f asks for a word and shows its help, like 'name help. C-h a\n  asks for text and lists every word whose help mentions it, like\n  apropos. C-h i opens the help pages and C-h b the list of key\n  bindings."
+    "\"line\" apropos" ]
+  [ "The list of bindings"
+    "  bindings, or C-h b, opens a page that lists every key at the\n  prompt, in the viewer and in the editor, and every binding of\n  yours, each with what it does. It is read like any help page,\n  and C-s searches it."
+    "bindings" ]
+  [ "Binding a key"
+    "  bind takes a key name and a quote, and runs the quote when the\n  key is typed at the prompt. The key has to be a C- or M- key or\n  an arrow, because plain keys type text. After this line, M-j\n  types dup and a space."
+    "\"M-j\" [ \"dup \" insert ] bind" ]
+  [ "Editing from a binding"
+    "  A binding can change the line being edited. line@ pushes the\n  line as a string and line! replaces it. point@ and point! read\n  and move the cursor, and insert types a string at the cursor.\n  They only work inside a binding. After this line, M-i turns the\n  whole line into capitals."
+    "\"M-i\" [ line@ upper line! ] bind" ]
+  [ "Removing a binding"
+    "  unbind removes a binding of yours. A binding is a definition\n  named key: and the key, such as key:M-j, so it is saved with the\n  world of the tab, back undoes it, and a binding made in a root\n  unit works in every tab."
+    "\"M-j\" unbind" ]
+  [ "Key sequences"
+    "  A key name can be a sequence that starts with C-x, such as C-x\n  C-t. After C-x the top bar shows C-x - and waits for the next\n  key, and C-g cancels. The editor and the window keys use the\n  same prefix."
+    "\"C-x C-t\" [ \"1 2 +\" insert ] bind" ]
+  [ "The page viewer"
+    "  docs opens the help pages in a viewer with keys from Emacs Info.\n  SPC and M-v scroll, C-n and C-p move a line, l goes back, t goes\n  to the index, g asks for a page by name and q leaves. TAB\n  selects a link and RET follows it."
+    "\"keys\" doc" ]
+  [ "Searching a page"
+    "  C-s in the viewer asks for text and jumps to the next line that\n  has it, and C-r searches backward. An empty answer repeats the\n  last search. M-x runs a word and closes the viewer, c shows the\n  credits and G the gallery."
+    "\"help\" doc" ]
+  [ "Moving in the editor"
+    "  scrawl moves like Emacs: C-f, C-b, C-n, C-p, C-a, C-e, M-f, M-b,\n  M-< and M->, C-v and M-v for a screen, and C-l to put the cursor\n  line in the middle. The arrows work as well. C-x C-c leaves."
+    "'square edit" ]
+  [ "Killing in the editor"
+    "  C-k kills to the end of the line, and on an empty line it takes\n  the line break, so C-k twice takes a whole line. M-d and M-DEL\n  kill words and C-y yanks. Kills in a row add up, and the kill\n  buffer stays between sessions."
+    "'square edit" ]
+  [ "The mark and the region"
+    "  C-SPC sets the mark. The text between the mark and the cursor is\n  the region. C-w kills it, M-w copies it and C-x C-x swaps the\n  cursor and the mark to show where it starts. C-g clears the\n  mark."
+    "'square edit" ]
+  [ "Searching the editor"
+    "  C-s asks for text on the bottom row and moves to the next match,\n  C-r to the one before, and an empty answer repeats the last\n  search. M-g asks for a line number. None of them changes the\n  text."
+    "'square edit" ]
+  [ "Saving in the editor"
+    "  C-x C-s saves and C-x C-c leaves, with C-q as an older way. With\n  unsaved changes the first C-x C-c warns and a second one leaves\n  without them. What happens to the text depends on whether it was\n  opened with edit, open or unit."
+    "'square edit" ]
+  [ "Windows"
+    "  Up to four tabs can be on the screen at once. Super-Enter opens\n  a window, Super-W closes the one that has the keyboard and Super\n  with an arrow key moves to the window in that direction. C-x 3,\n  C-x 2, C-x 1, C-x 0 and C-x o do the same without Super."
+    "" ]
+  [ "Where a window goes"
+    "  A new window splits the one that has the keyboard in half. It\n  goes beside it when the window is wider than it is tall as\n  drawn, and below it otherwise. The second window is beside the\n  first, the third below the second and the fourth beside the\n  third."
+    "" ]
+  [ "The size of a window"
+    "  A tab has the size of its window. size gives the width and\n  height in characters, 80 and 24 when the tab has the whole\n  screen. The prompt, the viewer, the editor and dired follow the\n  size, and games that draw at fixed places need C-x 1."
+    "size" ]
+  [ "Tabs and windows"
+    "  F1 to F4 show a tab in the window that has the keyboard, or move\n  to it when it already has one. Closing a window only hides its\n  tab, which keeps running. A click moves to the window under the\n  pointer."
+    "mytab" ]
+  [ "What phi is"
+    "  phi holds named values in sets. A set holds members, and each\n  member is a value or another set, so /notes/todo is the member\n  todo of the set notes. A value is a string. phi shows what is in\n  it."
+    "phi" ]
+  [ "Writing a value"
+    "  phi-write takes a string and a path and makes the sets on the\n  way. phi-read gives the string back. Writing to a path that\n  holds a value replaces it."
+    "\"buy milk\" \"/notes/todo\" phi-write  \"/notes/todo\" phi-read" ]
+  [ "Looking at a set"
+    "  members lists a set, sets first, with the size of each value.\n  phi? says what a path is: 0 for nothing, 1 for a set and 2 for a\n  value."
+    "\"/notes\" members  \"/notes\" phi?  \"/nothing\" phi?" ]
+  [ "Moving and deleting"
+    "  phi-move renames or moves a value or a set. phi-delete removes a\n  value, or a set with everything in it, and phi-set makes an\n  empty set."
+    "\"/notes/todo\" \"/notes/done\" phi-move  \"/notes\" members" ]
+  [ "Read only sets"
+    "  /doc holds the help pages as values and /pictures the built-in\n  pictures. They can be read and listed but not changed, and\n  nothing can be added to them."
+    "\"/doc/keys\" phi-read len  \"/pictures\" members" ]
+  [ "dired"
+    "  dired browses phi one set at a time. n and p move, RET opens a\n  set or edits a value, ^ goes up, + makes a set, c makes a value,\n  R renames, d deletes and q leaves. dired-at starts in a set."
+    "dired" ]
+  [ "Editing a value"
+    "  phi-edit opens a value in scrawl with its path as the name. C-x\n  C-s saves and C-x C-c leaves, and the saved text becomes the\n  value. The same happens when RET is pressed on a value in dired."
+    "\"/notes/done\" phi-edit" ]
+  [ "phi and the disk"
+    "  On an installed disk phi is written after every change, in a\n  slot of its own, so it is there after a reboot. On the live ISO\n  it starts with only /doc and /pictures. phi is not part of the\n  world of the tab, so back does not undo a write to it."
+    "" ]
+  [ "Songs"
+    "  The kernel has a Sound Blaster 16 driver, a synthesizer and six\n  songs. songs lists them and sound? says whether a card was\n  found."
+    "songs  sound?" ]
+  [ "Playing a song"
+    "  play takes the name of a song, or the start of one, and returns\n  at once. The song goes on while you do anything else in any tab,\n  and the top bar shows play. stop ends it and playing? says\n  whether one is going."
+    "\"canon\" play" ]
+  [ "One song at a time"
+    "  A second play replaces the song that is playing. The music is\n  mixed in the interrupt of the sound card, so a busy tab can't\n  make it stutter. Without a sound card, play fails with no sound\n  card."
+    "\"ode\" play  playing?  stop" ]
+  [ "Pictures"
+    "  gallery shows the built-in pictures: photographs, drawings and\n  screenshots of Subverge. The arrows, SPC and n go forward, p\n  goes back and q leaves. pictures lists the names."
+    "pictures" ]
+  [ "Credits"
+    "  credits shows the people on four pages: texivi, Terry A. Davis,\n  gretagen and Vsauce. In the page viewer the c key shows it and\n  the G key shows the gallery."
+    "credits" ]
+  [ "The golden ratio"
+    "  golden draws golden rectangles with their spiral, a sunflower of\n  seeds at the golden angle, and the digits of phi next to ratios\n  of Fibonacci numbers. SPC moves to the next view and q leaves."
+    "golden" ]
   [ "Persistence"
     "  The live ISO keeps nothing. install writes the bootloader, the\n  kernel and your tabs to a disk. After that every successful line\n  and every root edit is written back. save forces a write now.\n  Use a disk you can lose."
     "" ]

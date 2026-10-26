@@ -6,7 +6,7 @@ These are arranged in increasing order of difficulty, more or less, and can be u
 
 - [first steps](first-steps), a short session at the prompt
 - [tour](tour), the same session typed out for you
-- [learn](>learn), 47 lessons on omega from the stack upwards
+- [learn](>learn), 89 lessons, from the stack upwards to the Emacs keys and phi
 
 ## Small tools
 

@@ -119,7 +119,11 @@ The quote can use the line being edited:
 
     "M-u" [ line@ upper line! ] bind
 
-makes M-u turn the whole line into capitals. These words only work inside a binding. A binding runs on a copy of the stack, so what it leaves there is dropped, and an error in it is printed on the line below before the prompt comes back.
+makes M-u turn the whole line into capitals. These words only work inside a binding. A binding that prints something leaves its output above a new prompt, and the line you were editing comes back below it. A binding can run any line of code with `eval`, so this one shows the system information on M-s:
+
+    "M-s" [ "sys" eval ] bind
+
+A binding runs on a copy of the stack, so what it leaves there is dropped, and an error in it is printed on the line below before the prompt comes back.
 
 A binding is a definition named `key:` and the key, such as `key:C-t`, so it is saved with the tab's [world](world.md) like any other definition. A binding made in a [root](root.md) unit works in every tab.
 
@@ -131,6 +135,17 @@ A binding is a definition named `key:` and the key, such as `key:C-t`, so it is 
 | `describe-key` | `--`, waits for a key and says what it does |
 
     "C-t" unbind
+
+## Differences from Emacs
+
+The keys have the same names and meanings where there is a match. A few things are different:
+
+- The prompt has no mark and no region. C-w kills the word before the cursor, and C-u kills to the start of the line, where Emacs takes a numeric argument. [scrawl](scrawl) has a mark and a region, and C-w kills the region there.
+- C-x and C-h are the only prefix keys. There are no numeric arguments.
+- ESC doesn't work as the Meta key. Use Alt.
+- M-x runs a word by name, and the words are the only commands, so what it completes from is the list of words.
+- The search at the prompt is incremental. The searches in the pager and in the editor ask for the whole text first and then jump to the match.
+- C-x C-s and C-x C-c belong to the editor. C-x o, C-x 0, C-x 1, C-x 2 and C-x 3 work everywhere.
 
 ## The mouse
 
