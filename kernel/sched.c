@@ -34,6 +34,7 @@ void sched_init(void) {
         tabs[i].id = i;
         tabs[i].term.attr = ATTR(C_TEXT, C_BG);
         tabs[i].term.h = VH;
+        tabs[i].term.w = VW;
         for (int k = 0; k < VW * VH; k++) tabs[i].term.buf[k] = ' ' | (u16)ATTR(C_TEXT, C_BG) << 8;
         scopy(tabs[i].title, SHELL_NAME, sizeof tabs[i].title);
     }

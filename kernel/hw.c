@@ -194,7 +194,7 @@ static void b_text(void) {
 static void b_getch(void) {
     i64 x, y;
     if (!pop_int("screen@", &y) || !pop_int("screen@", &x)) return;
-    if (x < 0 || x >= VW || y < 0 || y >= term_h()) { push(I(0)); push(I(0)); return; }
+    if (x < 0 || x >= term_w() || y < 0 || y >= term_h()) { push(I(0)); push(I(0)); return; }
     u16 v = current->term.buf[y * VW + x];
     push(I(v & 0xFF)); push(I(v >> 8));
 }
@@ -203,7 +203,7 @@ static void b_wipe(void) { vga_clear(); }
 static void b_cursor(void) { i64 x, y; if (pop_int("cursor", &y) && pop_int("cursor", &x)) vga_setpos((int)x, (int)y); }
 static void b_nocursor(void) { vga_cursor(0, VH); }
 static void b_where(void) { int x, y; vga_getpos(&x, &y); push(I(x)); push(I(y)); }
-static void b_width(void) { push(I(VW)); push(I(term_h())); }
+static void b_width(void) { push(I(term_w())); push(I(term_h())); }
 
 static void b_key(void) { push(I(kbd_get())); }
 static void b_keyq(void) { push(I(kbd_poll())); }

@@ -8,7 +8,7 @@
 #define TOP 1
 #define ROWS (term_h() - 2)
 #define GUT 5
-#define TW (VW - GUT)
+#define TW (term_w() - GUT)
 #define A_TEXT ATTR(C_TEXT, C_BG)
 #define A_DIM ATTR(C_DIM, C_BG)
 #define A_BAR ATTR(C_TEXT, C_BAR)
@@ -91,7 +91,7 @@ static void draw(void) {
     vga_puts_at(8, 0, E->fname, A_BAR);
     if (E->dirty) vga_puts_at(9 + (int)strlen(E->fname), 0, "[+]", ATTR(C_PEACH, C_BAR));
     snfmt(t, sizeof t, "ln %d/%d  col %d", E->cy + 1, E->nl, E->cx + 1);
-    vga_puts_at(VW - 1 - (int)strlen(t), 0, t, ATTR(C_DIM, C_BAR));
+    vga_puts_at(term_w() - 1 - (int)strlen(t), 0, t, ATTR(C_DIM, C_BAR));
 
     for (int r = 0; r < ROWS; r++) {
         int y = r + E->rowoff, sy = r + TOP;
@@ -129,7 +129,7 @@ static int ask(const char *label, char *out, int cap) {
         if (k == K_ESC || k == CTRL('g')) return -1;
         if (k == '\n') return n;
         if (k == '\b' && n) out[--n] = 0;
-        else if (k >= ' ' && k <= '~' && n < cap - 1 && lx + n < VW - 2) { out[n++] = (char)k; out[n] = 0; }
+        else if (k >= ' ' && k <= '~' && n < cap - 1 && lx + n < term_w() - 2) { out[n++] = (char)k; out[n] = 0; }
     }
 }
 

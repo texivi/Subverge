@@ -33,7 +33,7 @@ static void remember(struct history *h, const char *b) {
 static int stop(char c) { return c == ' ' || c == '[' || c == ']' || c == '{' || c == '}' || c == '"'; }
 
 static void redisplay(struct ed *e) {
-    vga_fill(e->px, e->py, VW - e->px, ' ', ATTR(C_TEXT, C_BG));
+    vga_fill(e->px, e->py, term_w() - e->px, ' ', ATTR(C_TEXT, C_BG));
     vga_puts_at(e->px, e->py, e->b, ATTR(C_TEXT, C_BG));
     vga_cursor(e->px + e->pos, e->py);
 }
@@ -116,7 +116,7 @@ int minibuf(const char *label, char *out, int cap, int complete) {
     int id = current->id < 0 ? 0 : current->id;
     struct history *h = &mbh[id];
     h->complete = complete;
-    vga_fill(0, term_h() - 1, VW, ' ', ATTR(C_TEXT, C_BG));
+    vga_fill(0, term_h() - 1, term_w(), ' ', ATTR(C_TEXT, C_BG));
     vga_setpos(0, term_h() - 1);
     vga_color(C_SKY);
     kputs(label);
@@ -135,7 +135,7 @@ static void resume(struct ed *e) {
     if (x) kputc('\n');
     if (line_redraw) line_redraw();
     vga_getpos(&e->px, &e->py);
-    e->room = MIN(LINE_MAX, VW - e->px - 1);
+    e->room = MAX(1, MIN(LINE_MAX, term_w() - e->px - 1));
     if (e->len > e->room) { e->len = e->room; e->b[e->len] = 0; }
     e->pos = MIN(e->pos, e->len);
 }
@@ -295,7 +295,7 @@ static void isearch(struct ed *e, int dir) {
         char t[LINE_MAX + 64];
         const char *m = found >= 0 ? e->h->h[found % LINE_HIST] : "";
         snfmt(t, sizeof t, "[%s] %s: %s", dir < 0 ? "back" : "forward", q, found < 0 && ql ? "not found" : m);
-        vga_fill(e->px, e->py, VW - e->px, ' ', ATTR(C_TEXT, C_BG));
+        vga_fill(e->px, e->py, term_w() - e->px, ' ', ATTR(C_TEXT, C_BG));
         vga_puts_at(e->px, e->py, t, ATTR(C_SKY, C_BG));
         vga_cursor(e->px + 10 + ql, e->py);
         int k = kbd_get();
@@ -463,7 +463,7 @@ int readline(char *b, struct history *h) {
     e->cyc = -1;
     b[0] = 0;
     vga_getpos(&e->px, &e->py);
-    e->room = MIN(LINE_MAX, VW - e->px - 1);
+    e->room = MAX(1, MIN(LINE_MAX, term_w() - e->px - 1));
     while (!e->done) {
         vga_getpos(&e->px, &e->py);
         redisplay(e);

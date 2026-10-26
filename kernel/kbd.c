@@ -13,7 +13,7 @@ static const char shifted[] =
     "ASDFGHJKL:\"~" "\0" "|"
     "ZXCVBNM<>?" "\0" "*" "\0" " ";
 
-static int shift, ctrl, alt, caps, ext;
+static int shift, ctrl, alt, caps, ext, super_k;
 volatile int kbd_xpend;
 
 void kbd_post(int tab, int k) {
@@ -37,7 +37,8 @@ static void xflush(void) {
 static int xkey(int c) {
     switch (c) {
     case 'o': win_other(); return 1;
-    case '2': win_split(); return 1;
+    case '2': win_new(2); return 1;
+    case '3': win_new(1); return 1;
     case '1': win_one(); return 1;
     case '0': win_close(); return 1;
     }
@@ -53,8 +54,18 @@ static void on_key(void) {
     if (sc == 0x2A || sc == 0x36) { shift = !up; return; }
     if (sc == 0x1D) { ctrl = !up; return; }
     if (sc == 0x38) { alt = !up; return; }
+    if (e && (sc == 0x5B || sc == 0x5C)) { super_k = !up; return; }
     if (up) return;
     if (sc == 0x3A) { caps = !caps; return; }
+    if (super_k) {
+        if (sc == 0x1C) win_new(0);
+        else if (sc == 0x11) win_close();
+        else if (e && sc == 0x4B) win_move(-1, 0);
+        else if (e && sc == 0x4D) win_move(1, 0);
+        else if (e && sc == 0x48) win_move(0, -1);
+        else if (e && sc == 0x50) win_move(0, 1);
+        return;
+    }
     if (sc >= 0x3B && sc < 0x3B + NTABS) { if (kbd_xpend) xset(0); switch_tab(sc - 0x3B); return; }        /* F1..F4 */
     if (alt && sc >= 0x02 && sc < 0x02 + NTABS) { if (kbd_xpend) xset(0); switch_tab(sc - 0x02); return; }  /* alt+1..4 */
     switch (sc) {

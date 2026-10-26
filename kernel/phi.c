@@ -417,8 +417,8 @@ static void dired_draw(void) {
         vga_puts_at(2, r + 1, t, a);
         if (k->set) { int c = 0; for (struct node *x = k->kid; x; x = x->next) c++; snfmt(t, sizeof t, "%d", c); }
         else snfmt(t, sizeof t, "%u", k->len);
-        vga_puts_at(44, r + 1, t, a);
-        if (k->ro) vga_puts_at(54, r + 1, "read only", i == selected ? a : ATTR(C_DIM, C_BG));
+        vga_puts_at(MAX(14, term_w() - 36), r + 1, t, a);
+        if (k->ro) vga_puts_at(MAX(22, term_w() - 26), r + 1, "read only", i == selected ? a : ATTR(C_DIM, C_BG));
     }
     vga_fill(0, term_h() - 1, VW, ' ', bar);
     if (note[0]) vga_puts_at(1, term_h() - 1, note, ATTR(C_MOON, C_BAR));

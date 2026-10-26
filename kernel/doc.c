@@ -19,7 +19,8 @@ char doc_run[200];
 #define MAXLINES 4000
 #define MAXLINKS 600
 #define MAXATOMS 4096
-#define CW 76
+static int pw = VW;
+#define CW (pw - 4)
 #define LX 2
 #define VIEW (term_h() - 2)
 
@@ -299,7 +300,7 @@ static int wrap_end(int a, int b, int width) {
 }
 
 static void put_atoms(struct dline *d, int x, int a, int b) {
-    for (int i = a; i < b && x < VW; i++, x++) {
+    for (int i = a; i < b && x < pw; i++, x++) {
         d->c[x] = A[i].ch | (u16)A[i].attr << 8;
         d->lk[x] = A[i].lk;
         if (A[i].lk && links[A[i].lk - 1].line < 0) links[A[i].lk - 1].line = nl - 1;
@@ -370,7 +371,7 @@ static void code_line(const char *s, int n, int allow) {
     if (allow && note > 0 && runnable(s, note)) id = add_link(LK_RUN, s, note);
     struct dline *d = new_line();
     u8 at = id ? ATTR(C_TEAL, C_BAR) : ATTR(C_TEAL, C_BG);
-    for (int i = 0; i < n && LX + 2 + i < VW; i++) {
+    for (int i = 0; i < n && LX + 2 + i < pw; i++) {
         d->c[LX + 2 + i] = (u8)s[i] | (u16)(id && i < note ? at : ATTR(C_TEAL, C_BG)) << 8;
         if (id && i < note) d->lk[LX + 2 + i] = (u16)id;
     }
@@ -538,7 +539,7 @@ static void layout(const char *src, int len) {
                     inline_text(t, tn, ATTR(C_MAUVE, C_BG));
                     for (int i = 0; i < na; i++) if (!A[i].lk) A[i].attr = ATTR(C_MAUVE, C_BG);
                     struct dline *d = new_line();
-                    put_atoms(d, MAX(LX, (VW - na) / 2), 0, MIN(na, CW));
+                    put_atoms(d, MAX(LX, (pw - na) / 2), 0, MIN(na, CW));
                 } else {
                     if (prev_blank == 0 || prev_blank == 2) blank();
                     add_anchor(t, tn);
@@ -570,7 +571,7 @@ static void layout(const char *src, int len) {
         }
         if (n >= 3 && (s[0] == '-' || s[0] == '*') && s[1] == s[0] && s[2] == s[0]) {
             struct dline *d = new_line();
-            for (int i = LX; i < VW - LX; i++) d->c[i] = 0xC4 | (u16)ATTR(C_DIM, C_BG) << 8;
+            for (int i = LX; i < pw - LX; i++) d->c[i] = 0xC4 | (u16)ATTR(C_DIM, C_BG) << 8;
             blank();
             prev_blank = 1;
             p = eol + 1;
@@ -745,6 +746,7 @@ static int load(const char *name) {
         seen[pg] = 1;
     }
     scopy(cur, name, sizeof cur);
+    pw = MAX(30, term_w());
     title[0] = 0;
     int clen;
     char *cv = to_font(src, len, &clen);
@@ -763,7 +765,8 @@ static void draw(void) {
     vga_fill(0, 0, VW, ' ', bar);
     vga_puts_at(1, 0, "doc", ATTR(C_MOON, C_BAR));
     vga_puts_at(5, 0, title, bar);
-    vga_puts_at(VW - 21, 0, "q quit  bksp back", ATTR(C_DIM, C_BAR));
+    if (term_w() >= 70) vga_puts_at(term_w() - 30, 0, "c credits  G gallery  q quit", ATTR(C_DIM, C_BAR));
+    else if (term_w() >= 50) vga_puts_at(term_w() - 21, 0, "q quit  bksp back", ATTR(C_DIM, C_BAR));
     for (int r = 0; r < VIEW; r++) {
         int y = top + r;
         for (int x = 0; x < VW; x++) {
@@ -782,7 +785,7 @@ static void draw(void) {
     char pc[8];
     int pct = nl <= VIEW ? 100 : MIN(100, (top + VIEW) * 100 / nl);
     snfmt(pc, sizeof pc, "%d%%", pct);
-    vga_puts_at(VW - 1 - (int)strlen(pc), term_h() - 1, pc, ATTR(C_MOON, C_BAR));
+    vga_puts_at(term_w() - 1 - (int)strlen(pc), term_h() - 1, pc, ATTR(C_MOON, C_BAR));
     vga_cursor(0, term_h());
 }
 
@@ -884,6 +887,12 @@ static void open_page(const char *name) {
     mouse_flush();
     int done = 0;
     while (!done) {
+        if (pw != MAX(30, term_w())) {
+            char n[48];
+            int keep = top;
+            scopy(n, cur, sizeof n);
+            if (load(n)) { top = keep; sel = -1; clamp(); }
+        }
         draw();
         int k = kbd_get();
         msg[0] = 0;
@@ -902,6 +911,8 @@ static void open_page(const char *name) {
         case '\b': case 'l': back(); break;
         case CTRL('g'): sel = -1; break;
         case 't': push_hist(); if (!load("index")) nhist--; break;
+        case 'c': push_hist(); if (!load("credits")) nhist--; break;
+        case 'G': scopy(doc_run, "gallery", sizeof doc_run); done = 1; break;
         case 'g': {
             char in[48];
             if (minibuf("Go to page: ", in, sizeof in, 0) <= 0) break;

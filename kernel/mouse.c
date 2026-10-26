@@ -62,7 +62,11 @@ static void on_mouse(void) {
     mouse_move(px / 8, py / 16);
     int down = btn & ~old;
     if ((down & 1) && mouse_cy == 0 && tab_at(mouse_cx) >= 0) { switch_tab(tab_at(mouse_cx)); return; }
-    if (down || dz) post(mouse_cx, mouse_cy - 1, down, dz);
+    int w = win_at(mouse_cx, mouse_cy);
+    if ((down & 1) && w >= 0 && w != active_tab) { switch_tab(w); return; }
+    int ox, oy;
+    win_origin(active_tab, &ox, &oy);
+    if (down || dz) post(mouse_cx - ox, mouse_cy - 1 - oy, down, dz);
 }
 
 void mouse_init(void) {
@@ -100,8 +104,10 @@ int mouse_event(struct mev *e) {
 void mouse_flush(void) { u64 f = irq_save(); et = eh; irq_restore(f); }
 
 static void b_mouse(void) {
-    push(I(mouse_cx));
-    push(I(mouse_cy - 1));
+    int ox, oy;
+    win_origin(current->id, &ox, &oy);
+    push(I(mouse_cx - ox));
+    push(I(mouse_cy - 1 - oy));
     push(I(btn));
 }
 
