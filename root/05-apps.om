@@ -27,6 +27,7 @@
   [ "stars" "A starfield." ]
   [ "scribble" "Draw with the mouse." ]
   [ "gallery" "Pictures, full screen." ]
+  [ "golden" "Golden ratio drawings." ]
   [ "credits" "Who made what." ]
   [ "mandel" "Mandelbrot zoom." ]
   [ "sieve" "Primes by sieving." ]
