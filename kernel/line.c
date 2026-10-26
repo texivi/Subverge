@@ -116,8 +116,8 @@ int minibuf(const char *label, char *out, int cap, int complete) {
     int id = current->id < 0 ? 0 : current->id;
     struct history *h = &mbh[id];
     h->complete = complete;
-    vga_fill(0, VH - 1, VW, ' ', ATTR(C_TEXT, C_BG));
-    vga_setpos(0, VH - 1);
+    vga_fill(0, term_h() - 1, VW, ' ', ATTR(C_TEXT, C_BG));
+    vga_setpos(0, term_h() - 1);
     vga_color(C_SKY);
     kputs(label);
     vga_color(C_TEXT);
@@ -465,6 +465,7 @@ int readline(char *b, struct history *h) {
     vga_getpos(&e->px, &e->py);
     e->room = MIN(LINE_MAX, VW - e->px - 1);
     while (!e->done) {
+        vga_getpos(&e->px, &e->py);
         redisplay(e);
         int k = e->havepend ? (e->havepend = 0, e->pend) : kbd_get();
         int pk = e->wk == 2, py = e->wy == 2, pt = e->typing;

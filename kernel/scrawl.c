@@ -6,7 +6,7 @@
 #include "vga.h"
 
 #define TOP 1
-#define ROWS (VH - 2)
+#define ROWS (term_h() - 2)
 #define GUT 5
 #define TW (VW - GUT)
 #define A_TEXT ATTR(C_TEXT, C_BG)
@@ -102,15 +102,15 @@ static void draw(void) {
         for (int x = 0; x < TW && x + E->coloff < E->L[y].len; x++) vga_put(GUT + x, sy, E->L[y].s[x + E->coloff], A_TEXT);
     }
 
-    vga_fill(0, VH - 1, VW, ' ', A_BAR);
-    if (E->msg[0]) vga_puts_at(1, VH - 1, E->msg, ATTR(C_MOON, C_BAR));
+    vga_fill(0, term_h() - 1, VW, ' ', A_BAR);
+    if (E->msg[0]) vga_puts_at(1, term_h() - 1, E->msg, ATTR(C_MOON, C_BAR));
     else {
         static const char *const k[][2] = { { "C-x C-s", "save" }, { "C-x C-c", "quit" }, { "C-s", "search" }, { "C-k", "kill" }, { "C-SPC", "mark" }, { "M-g", "goto" } };
         int x = 1;
         for (int i = 0; i < 6; i++) {
-            vga_puts_at(x, VH - 1, k[i][0], ATTR(C_SKY, C_BAR));
+            vga_puts_at(x, term_h() - 1, k[i][0], ATTR(C_SKY, C_BAR));
             x += (int)strlen(k[i][0]) + 1;
-            vga_puts_at(x, VH - 1, k[i][1], A_BAR);
+            vga_puts_at(x, term_h() - 1, k[i][1], A_BAR);
             x += (int)strlen(k[i][1]) + 2;
         }
     }
@@ -121,10 +121,10 @@ static int ask(const char *label, char *out, int cap) {
     int n = 0, lx = (int)strlen(label) + 2;
     out[0] = 0;
     for (;;) {
-        vga_fill(0, VH - 1, VW, ' ', A_BAR);
-        vga_puts_at(1, VH - 1, label, ATTR(C_SKY, C_BAR));
-        vga_puts_at(lx, VH - 1, out, A_BAR);
-        vga_cursor(lx + n, VH - 1);
+        vga_fill(0, term_h() - 1, VW, ' ', A_BAR);
+        vga_puts_at(1, term_h() - 1, label, ATTR(C_SKY, C_BAR));
+        vga_puts_at(lx, term_h() - 1, out, A_BAR);
+        vga_cursor(lx + n, term_h() - 1);
         int k = kbd_get();
         if (k == K_ESC || k == CTRL('g')) return -1;
         if (k == '\n') return n;

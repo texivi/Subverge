@@ -11,6 +11,11 @@ enum {
 #define ATTR(fg, bg) ((u8)((fg) | ((bg) << 4)))
 
 void vga_init(void);
+int term_h(void);
+void win_split(void);
+void win_one(void);
+void win_close(void);
+void win_other(void);
 void vga_clear(void);
 void vga_color(u8 fg);
 void vga_attr(u8 a);

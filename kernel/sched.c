@@ -33,6 +33,7 @@ void sched_init(void) {
     for (int i = 0; i < NTABS; i++) {
         tabs[i].id = i;
         tabs[i].term.attr = ATTR(C_TEXT, C_BG);
+        tabs[i].term.h = VH;
         for (int k = 0; k < VW * VH; k++) tabs[i].term.buf[k] = ' ' | (u16)ATTR(C_TEXT, C_BG) << 8;
         scopy(tabs[i].title, SHELL_NAME, sizeof tabs[i].title);
     }

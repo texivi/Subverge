@@ -16,11 +16,13 @@ static const char shifted[] =
 static int shift, ctrl, alt, caps, ext;
 volatile int kbd_xpend;
 
-static void push(int k) {
-    struct task *t = &tabs[active_tab];
+void kbd_post(int tab, int k) {
+    struct task *t = &tabs[tab];
     int n = (t->kh + 1) % 64;
     if (n != t->kt) { t->kb[t->kh] = k; t->kh = n; }
 }
+
+static void push(int k) { kbd_post(active_tab, k); }
 
 static void xset(int on) { kbd_xpend = on; draw_tabbar(); }
 
@@ -34,7 +36,10 @@ static void xflush(void) {
 /* C-x window keys */
 static int xkey(int c) {
     switch (c) {
-    case 'o': switch_tab((active_tab + 1) % NTABS); return 1;
+    case 'o': win_other(); return 1;
+    case '2': win_split(); return 1;
+    case '1': win_one(); return 1;
+    case '0': win_close(); return 1;
     }
     return 0;
 }

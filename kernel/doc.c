@@ -21,7 +21,7 @@ char doc_run[200];
 #define MAXATOMS 4096
 #define CW 76
 #define LX 2
-#define VIEW (VH - 2)
+#define VIEW (term_h() - 2)
 
 enum { LK_PAGE = 1, LK_WORD, LK_RUN };
 
@@ -772,18 +772,18 @@ static void draw(void) {
             vga_put(x, r + 1, (char)(v & 0xFF), (u8)(v >> 8));
         }
     }
-    vga_fill(0, VH - 1, VW, ' ', bar);
+    vga_fill(0, term_h() - 1, VW, ' ', bar);
     if (sel >= 0) {
         const char *t = links[sel].tgt;
-        vga_puts_at(1, VH - 1, links[sel].kind == LK_RUN ? "run:" : links[sel].kind == LK_WORD ? "word:" : "page:", ATTR(C_SKY, C_BAR));
-        vga_puts_at(links[sel].kind == LK_WORD ? 7 : 6, VH - 1, t, bar);
-    } else if (msg[0]) vga_puts_at(1, VH - 1, msg, ATTR(C_MOON, C_BAR));
-    else vga_puts_at(1, VH - 1, "tab link  enter follow  C-s search  M-x run  g goto", ATTR(C_DIM, C_BAR));
+        vga_puts_at(1, term_h() - 1, links[sel].kind == LK_RUN ? "run:" : links[sel].kind == LK_WORD ? "word:" : "page:", ATTR(C_SKY, C_BAR));
+        vga_puts_at(links[sel].kind == LK_WORD ? 7 : 6, term_h() - 1, t, bar);
+    } else if (msg[0]) vga_puts_at(1, term_h() - 1, msg, ATTR(C_MOON, C_BAR));
+    else vga_puts_at(1, term_h() - 1, "tab link  enter follow  C-s search  M-x run  g goto", ATTR(C_DIM, C_BAR));
     char pc[8];
     int pct = nl <= VIEW ? 100 : MIN(100, (top + VIEW) * 100 / nl);
     snfmt(pc, sizeof pc, "%d%%", pct);
-    vga_puts_at(VW - 1 - (int)strlen(pc), VH - 1, pc, ATTR(C_MOON, C_BAR));
-    vga_cursor(0, VH);
+    vga_puts_at(VW - 1 - (int)strlen(pc), term_h() - 1, pc, ATTR(C_MOON, C_BAR));
+    vga_cursor(0, term_h());
 }
 
 static void clamp(void) {

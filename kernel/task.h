@@ -12,7 +12,7 @@ struct regs {
 
 struct term {
     u16 buf[VW * VH];
-    int cx, cy, curx, cury, activity;
+    int cx, cy, curx, cury, activity, h;
     u8 attr;
 };
 

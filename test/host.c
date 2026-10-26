@@ -63,6 +63,7 @@ int kbd_get(void) {
     return k;
 }
 volatile int kbd_xpend;
+void kbd_post(int tab, int k) { (void)tab; (void)k; }
 void kbd_init(void) {}
 
 static void key(int k) { struct task *t = current; t->kb[t->kh] = k; t->kh = (t->kh + 1) % 64; }

@@ -404,8 +404,8 @@ static void dired_draw(void) {
     vga_puts_at(1, 0, "dired", ATTR(C_MOON, C_BAR));
     vga_puts_at(7, 0, cwd, bar);
     if (selected < scroll) scroll = selected;
-    if (selected >= scroll + VH - 2) scroll = selected - (VH - 2) + 1;
-    for (int r = 0; r < VH - 2; r++) {
+    if (selected >= scroll + term_h() - 2) scroll = selected - (term_h() - 2) + 1;
+    for (int r = 0; r < term_h() - 2; r++) {
         int i = scroll + r;
         vga_fill(0, r + 1, VW, ' ', ATTR(C_TEXT, C_BG));
         if (i >= nlist) continue;
@@ -420,10 +420,10 @@ static void dired_draw(void) {
         vga_puts_at(44, r + 1, t, a);
         if (k->ro) vga_puts_at(54, r + 1, "read only", i == selected ? a : ATTR(C_DIM, C_BG));
     }
-    vga_fill(0, VH - 1, VW, ' ', bar);
-    if (note[0]) vga_puts_at(1, VH - 1, note, ATTR(C_MOON, C_BAR));
-    else vga_puts_at(1, VH - 1, "RET open  ^ up  + new set  c new value  d delete  R rename  g refresh  q quit", ATTR(C_DIM, C_BAR));
-    vga_cursor(0, VH);
+    vga_fill(0, term_h() - 1, VW, ' ', bar);
+    if (note[0]) vga_puts_at(1, term_h() - 1, note, ATTR(C_MOON, C_BAR));
+    else vga_puts_at(1, term_h() - 1, "RET open  ^ up  + new set  c new value  d delete  R rename  g refresh  q quit", ATTR(C_DIM, C_BAR));
+    vga_cursor(0, term_h());
 }
 
 static void dired_run(const char *start) {
