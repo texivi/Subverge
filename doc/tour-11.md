@@ -12,7 +12,7 @@ Open a program to see how it works:
 
     'snake open
 
-Leave the editor with Ctrl-Q.
+Leave the editor with C-x C-c.
 
 A program is a word that can read keys with `key` and draw with `put` and `text`. [Games](games) shows the shape they share, and [apps](apps) explains how to add a program to the menu.
 

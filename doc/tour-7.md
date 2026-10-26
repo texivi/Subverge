@@ -1,6 +1,6 @@
 # Part 7: Editing a program
 
-`'name edit` opens the editor, scrawl, on a word. Type the program and save with Ctrl-S, then quit with Ctrl-Q:
+`'name edit` opens the editor, scrawl, on a word. Type the program and save with C-x C-s, then quit with C-x C-c:
 
     'countdown edit
 
@@ -23,7 +23,7 @@ The programs in root are edited the same way, with `open`. An edit takes effect 
 
     'clock open
 
-Leave the editor with Ctrl-Q. The old version stays in use if the edit didn't build.
+Leave the editor with C-x C-c. The old version stays in use if the edit didn't build.
 
 See [scrawl](scrawl), [root](root) and [units](units).
 

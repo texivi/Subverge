@@ -6,7 +6,32 @@ Subverge has four tabs. Each is a complete omega session with its own stack, def
 
 F1 to F4 and Alt-1 to Alt-4 show tab 1 to 4. A click on a tab title in the top bar does the same when a PS/2 mouse is present ([ps2](ps2.md)). The keys are handled inside the keyboard interrupt, so they work even while every tab is busy, and they are the way out of a program that doesn't respond to Ctrl-C.
 
-Only one tab is shown at a time. Switching copies the chosen tab's screen to the display, so you see it exactly as it was left, including output it printed while it was hidden.
+Switching shows the chosen tab in the focused window, which is the whole screen until the screen is split. The tab appears exactly as it was left, including output it printed while it was hidden.
+
+## Windows
+
+The screen can show up to four tabs at once, each in its own window. Every window has a title line at its bottom with the tab's number and title, highlighted in the window that has the keyboard.
+
+| Key | Action |
+|---|---|
+| Super-Enter | opens a window |
+| Super-W | closes the window that has the keyboard |
+| Super-arrows | move to the window in that direction |
+| C-x 3 | opens a window beside this one |
+| C-x 2 | opens a window below this one |
+| C-x 1 | keeps only this window |
+| C-x 0 | closes this window |
+| C-x o | moves to the next window |
+
+A click in a window moves to it. F1 to F4 and Alt-1 to Alt-4 show that tab in the window that has the keyboard, or move to it when it already has a window.
+
+Super-Enter splits the window that has the keyboard in half and gives the new window to the lowest-numbered tab that is not on the screen, preferring the one that was in front last. The split goes side by side when the window is wider than it is tall as drawn, which counts a character as twice as tall as it is wide, and stacked otherwise. A new window is therefore beside the first one, and the next ones go below and then beside again, as in the dwindle layout of a tiling window manager. The new window gets the keyboard.
+
+Closing a window hides its tab and gives the space to its neighbour. The tab keeps running and keeps its screen. With four windows open there is no tab left to show, so Super-Enter does nothing.
+
+A tab has the size of its window: `size` gives the width and height in characters, the prompt wraps at the window's width, and the page viewer, the editor and `dired` lay themselves out again when the size changes. Output that was printed wider than the window is cut off at its edge and comes back when the window grows. Programs that draw at fixed places, such as the games, assume 80 by 24 and show only the part that fits, so give them the whole screen with C-x 1.
+
+The Super key is the Windows key. A desktop that takes it for its own shortcuts keeps it from QEMU unless QEMU has grabbed the keyboard. The C-x keys work without it.
 
 ## What each tab has
 
@@ -16,7 +41,7 @@ Each tab has its own:
 - **[back](back.md) history** of 64 worlds;
 - **[prompt](prompt.md) history** of 16 lines;
 - **key queue**. Keys go to the tab in front only;
-- **screen** of 80 by 24 characters, with its own cursor and colour;
+- **screen** of up to 80 by 24 characters, with its own cursor and colour;
 - **title**, shown in the tab bar;
 - **editor state**, so [scrawl](scrawl.md) can be open in two tabs at once;
 - **stack for the kernel**, 256 KiB, used by the interpreter and anything it calls.

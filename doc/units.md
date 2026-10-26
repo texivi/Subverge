@@ -19,7 +19,7 @@ creates an empty unit called `mine` at the end of root and opens it in [scrawl](
     [ "hi" say ] :greet
     [ { name } "hi, " name cat say ] :greet-name
 
-Save with Ctrl-S and quit with Ctrl-Q. The unit is built, and `greet` and `greet-name` exist in every tab at once. On an installed disk root is [saved](saving.md) immediately.
+Save with C-x C-s and quit with C-x C-c. The unit is built, and `greet` and `greet-name` exist in every tab at once. On an installed disk root is [saved](saving.md) immediately.
 
 
 To change it later:
@@ -39,7 +39,7 @@ In scrawl, write:
     # my sys logo
     [ [ " /\\_/\\" " (o.o)" "  > <" ] ] :logo-fox
 
-Save with Ctrl-S and quit with Ctrl-Q. Then `'fox logo` switches to it, and on an installed disk the next boot draws it too, since both the unit and the logo name are saved.
+Save with C-x C-s and quit with C-x C-c. Then `'fox logo` switches to it, and on an installed disk the next boot draws it too, since both the unit and the logo name are saved.
 
 ## Rules for names
 

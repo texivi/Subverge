@@ -27,7 +27,7 @@ and add a line inside the inner brackets:
 
     [ "hello" "Says hello." ]
 
-Save with Ctrl-S and quit with Ctrl-Q. The unit rebuilds, and the next `apps` shows the new entry.
+Save with C-x C-s and quit with C-x C-c. The unit rebuilds, and the next `apps` shows the new entry.
 
 
 

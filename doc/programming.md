@@ -39,7 +39,7 @@ and type:
     ] while
     "omega" title
 
-Save with Ctrl-S, leave with Ctrl-Q, and run it:
+Save with C-x C-s, leave with C-x C-c, and run it:
 
     guess
 

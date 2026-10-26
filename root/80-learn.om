@@ -123,19 +123,19 @@
     "  clock, stopwatch, timer, todo, convert, password, ascii, colors,\n  cal and date are ordinary root words. bases ( n -- ) prints n in\n  four radixes."
     "255 bases" ]
   [ "Editing a word"
-    "  'name edit opens a word you defined in scrawl, the editor. Ctrl-S\n  saves, Ctrl-Q leaves and redefines it. For words in root, use\n  'name open instead."
+    "  'name edit opens a word you defined in scrawl, the editor. C-x C-s\n  saves, C-x C-c leaves and redefines it. For words in root, use\n  'name open instead."
     "'square edit" ]
   [ "Writing a program"
     "  A program is a quote bound to a name. It exists in this tab\n  immediately, and once the system is installed it is saved with the\n  world."
     "[ \"hello\" say ] :hello  hello" ]
   [ "Registering it in apps"
-    "  apps discovers nothing. It prints app-list, a list literal in\n  root/05-apps.om, so a program appears only if you add its entry by\n  hand. In the editor, add this inside the list:\n    [ \"hello\" \"Says hello.\" ]\n  Ctrl-S saves, and Ctrl-Q rebuilds root and leaves. If the unit does not\n  build, the old root stays and your edit is kept as a draft."
+    "  apps discovers nothing. It prints app-list, a list literal in\n  root/05-apps.om, so a program appears only if you add its entry by\n  hand. In the editor, add this inside the list:\n    [ \"hello\" \"Says hello.\" ]\n  C-x C-s saves, and C-x C-c rebuilds root and leaves. If the unit does not\n  build, the old root stays and your edit is kept as a draft."
     "'apps open" ]
   [ "Checking the entry"
     "  apps reads app-list on every call, so the entry is live as soon as\n  the unit builds. If it is missing the unit did not build, and\n  'apps open shows your draft again."
     "apps" ]
   [ "Root units"
-    "  A root unit is a source file linked into the image, loaded in file\n  name order. unit ( s -- ) creates a new one at the end and opens it.\n  Its words are shared by every tab and saved on installed disks.\n  In the editor, type [ \"hi\" say ] :greet, then Ctrl-S and Ctrl-Q."
+    "  A root unit is a source file linked into the image, loaded in file\n  name order. unit ( s -- ) creates a new one at the end and opens it.\n  Its words are shared by every tab and saved on installed disks.\n  In the editor, type [ \"hi\" say ] :greet, then C-x C-s and C-x C-c."
     "\"mine\" unit" ]
   [ "Persistence"
     "  The live ISO keeps nothing. install writes the bootloader, the\n  kernel and your tabs to a disk. After that every successful line\n  and every root edit is written back. save forces a write now.\n  Use a disk you can lose."

@@ -14,19 +14,27 @@ The stack shown is the committed one. While a line is running, nothing is printe
 
 ## Editing keys
 
+The prompt edits a line with the keys of Emacs. The full table is on the [keys](keys.md) page. The ones used most:
+
 | Key | Action |
 |---|---|
-| Enter | runs the line |
-| Left, Right | move the cursor one character |
-| Home, End | move to the start or end of the line |
-| Backspace | deletes the character before the cursor |
-| Delete | deletes the character under the cursor |
-| Up, Down | step through earlier lines |
-| Tab | completes the name before the cursor |
-| Ctrl-C | throws the line away and starts a new one |
+| RET | runs the line |
+| C-a, C-e | move to the start or end of the line |
+| C-b, C-f, M-b, M-f | move by character or by word |
+| DEL, C-d | delete before or at the cursor |
+| C-k, C-u, C-w | kill to the end, to the start or the last word |
+| C-y, M-y | yank the last kill, or an older one |
+| C-p, C-n | step through earlier lines |
+| C-r, C-s | search the earlier lines |
+| C-_ | undoes the last change to the line |
+| TAB | completes the name before the cursor |
+| M-x | runs a word by name |
+| C-c, C-g | throws the line away and starts a new one |
 | F1 to F4, Alt-1 to Alt-4 | switch [tab](tabs.md) |
 
-Characters are inserted at the cursor, so a typo in the middle of a line can be fixed without retyping the rest.
+The arrow keys, Home, End and Delete do what their Emacs equivalents do. Characters are inserted at the cursor, so a typo in the middle of a line can be fixed without retyping the rest.
+
+M-x asks for a word on a new line, with completion, runs it as if it had been typed, and brings the prompt back with the line you were editing. C-h starts the help keys, such as C-h k to see what a key does. You can bind keys of your own, see [keys](keys.md).
 
 ## Completion
 
@@ -48,7 +56,7 @@ Code longer than one line belongs in a definition, written with `'name edit` in 
 
 ## History
 
-Up and Down step through the last 16 lines typed in the tab. Empty lines and a line identical to the one before it are not added. The history is per tab, it is not saved to disk, and it holds text only: recalling a line and pressing Enter runs it again, which is different from undoing it with [back](back.md).
+Up and Down, or C-p and C-n, step through the last 16 lines typed in the tab. C-r searches them for text. Empty lines and a line identical to the one before it are not added. The history is per tab, it is not saved to disk, and it holds text only: recalling a line and pressing Enter runs it again, which is different from undoing it with [back](back.md).
 
 ## Characters you can type
 
@@ -72,7 +80,7 @@ Keys pressed while the failing line was running are discarded, so the next promp
 
 ## When a line runs for a long time
 
-The prompt doesn't come back until the line finishes. Ctrl-C interrupts it with the error `interrupted`, which also undoes the line. If the line doesn't respond to Ctrl-C, switch to another tab with F1 to F4 or Alt-1 to Alt-4. The other tabs keep running and their prompts keep working ([tabs](tabs.md)).
+The prompt doesn't come back until the line finishes. C-c, or C-g, interrupts it with the error `interrupted`, which also undoes the line. If the line doesn't respond to Ctrl-C, switch to another tab with F1 to F4 or Alt-1 to Alt-4. The other tabs keep running and their prompts keep working ([tabs](tabs.md)).
 
 ## Programs that read keys
 

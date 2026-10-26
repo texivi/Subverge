@@ -122,7 +122,7 @@ In [scrawl](scrawl.md), type:
       n 1 - countdown
     ] when
 
-Press Ctrl-S to save and Ctrl-Q to quit. Then:
+Press C-x C-s to save and C-x C-c to quit. Then:
 
     5 countdown
 

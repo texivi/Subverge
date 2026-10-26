@@ -183,7 +183,7 @@ A word that every tab sees and that survives reboots:
 
     "mine" unit
 
-then write the definitions in the editor, save with Ctrl-S and leave with Ctrl-Q ([units](units.md)).
+then write the definitions in the editor, save with C-x C-s and leave with C-x C-c ([units](units.md)).
 
 Trying a change to a root word in one tab only:
 

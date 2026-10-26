@@ -36,7 +36,7 @@ A definition typed at the prompt belongs to the tab it was typed in. `sys` runs 
 
     "mylogo" unit
 
-opens a new unit in [scrawl](scrawl.md). Write the `:logo-mine` line in it, save with Ctrl-S, quit with Ctrl-Q, and then run `'mine logo`.
+opens a new unit in [scrawl](scrawl.md). Write the `:logo-mine` line in it, save with C-x C-s, quit with C-x C-c, and then run `'mine logo`.
 
 If the saved logo is removed later, `sys` draws the `subverge` logo instead.
 
