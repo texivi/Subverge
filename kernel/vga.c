@@ -1,5 +1,6 @@
 #include "cpu.h"
 #include "kbd.h"
+#include "omega.h"
 #include "sv.h"
 #include "task.h"
 #include "vga.h"
@@ -222,7 +223,8 @@ void draw_tabbar(void) {
     }
     u8 h = cmos(4), m = cmos(2), b = cmos(0x0B);
     if (!(b & 0x04)) { h = (u8)((h & 0x0F) + ((h >> 4) & 7) * 10); m = (u8)((m & 0x0F) + (m >> 4) * 10); }
-    if (kbd_xpend) for (int i = 0; "C-x -"[i]; i++) hw_put(VW - 14 + i, 0, "C-x -"[i], ATTR(C_MOON, C_BAR));
+    if (kbd_xpend) for (int i = 0; "C-x -"[i]; i++) hw_put(VW - 19 + i, 0, "C-x -"[i], ATTR(C_MOON, C_BAR));
+    if (audio_playing()) for (int i = 0; "play"[i]; i++) hw_put(VW - 13 + i, 0, "play"[i], ATTR(C_SKY, C_BAR));
     char t[8];
     snfmt(t, sizeof t, "%02u:%02u", h, m);
     for (int i = 0; t[i]; i++) hw_put(VW - 6 + i, 0, t[i], ATTR(C_TEXT, C_BAR));

@@ -19,6 +19,7 @@ static const struct grp groups[] = {
     { "text", "strings" },
     { "io", "printing and keys" },
     { "keys", "key bindings and line editing" },
+    { "sound", "playing songs" },
     { "names", "definitions" },
     { "world", "history, saving and root" },
     { "infinity", "ordinals and cardinals" },
@@ -135,6 +136,11 @@ static const struct doc docs[] = {
     { "names", "words", "--", "Lists everything defined in this tab.", "words" },
     { "names", "edit", "'x --", "Opens a name in the editor. Saving redefines it.", "'sq edit" },
 
+    { "sound", "play", "s --", "Plays a song in the background, by name.", "\"canon\" play" },
+    { "sound", "stop", "--", "Stops the song.", "stop" },
+    { "sound", "songs", "--", "Lists the built-in songs.", "songs" },
+    { "sound", "playing?", "-- n", "1 while a song is playing.", "playing? ." },
+    { "sound", "sound?", "-- n", "1 when a Sound Blaster 16 was found.", "sound? ." },
     { "keys", "bind", "key q --", "Runs a quote when the key is pressed at the prompt.", "\"C-t\" [ \"hi\" insert ] bind" },
     { "keys", "unbind", "key --", "Removes a binding you made.", "\"C-t\" unbind" },
     { "keys", "bindings", "--", "Lists every key binding.", "bindings" },
@@ -561,7 +567,7 @@ const struct builtin help_words[] = { { "help", b_help }, { "apropos", b_apropos
 #ifdef HOST
 int help_check(void) {
     extern const struct builtin core_words[], hw_words[], ord_words[], root_words[], persist_words[], jit_words[], dis_words[];
-    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words };
+    const struct builtin *sets[] = { core_words, hw_words, gfx_words, img_words, ord_words, root_words, persist_words, jit_words, dis_words, help_words, doc_words, mouse_words, key_words, audio_words };
     int bad = 0;
     for (unsigned k = 0; k < sizeof sets / sizeof *sets; k++)
         for (const struct builtin *b = sets[k]; b->name; b++) {
